@@ -1,6 +1,13 @@
 # Simtt - Interactive Simple Command Line Time Tracker in PHP
 
+[![CI Status](https://github.com/sigma-z/simtt/workflows/PHP%20Composer/badge.svg)](https://github.com/sigma-z/simtt/actions)
+
 Read the full [documentation](https://github.com/sigma-z/simtt/blob/master/docs/documentation.md)
+
+## Project status
+
+This is an early project state. Therefore the tool can't do much at the moment.
+
 
 ## Quick command overview
 
