@@ -1,0 +1,21 @@
+{
+    "name": "sigma/simtt",
+    "description": "Interactive Simple Command Line Time Tracker in PHP",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "sigma-z",
+            "email": "sigma_z@sigma-scripts.de"
+        }
+    ],
+    "require": {},
+    "autoload" : {
+        "psr-4" : {
+            "Simtt\\" : "src"
+        }
+    }
+}
