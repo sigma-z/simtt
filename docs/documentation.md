@@ -1,7 +1,7 @@
 # How it works
 
 The simple time tracker (Simtt) can be used interactively
- or non-interactively.
+ or non-interactively. All logs will be stored in simple text files.
 
 **Interactive mode:**
 ```
