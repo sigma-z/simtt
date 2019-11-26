@@ -49,7 +49,7 @@ Simtt can show log entries in a sequence, for a day, a week or a month
 Usage `log[:selection][:order-direction]`
 
 Examples:
-* `log` shows the last 15 entries (configurable with `config:max-log-items` - see [Configuration]). 
+* `log` shows the last 15 entries (configurable with `config:max-log-items` - see [Configuration](#Configuration)). 
 * `log:all[:asc|:desc]` shows all log entries in ascending or descending order. 'desc' is the default value.
 * `log:100[:asc|:desc]` shows the last 100 log entries by the given order. 
 * `log:100-120` shows the log entries from 100 to 120 (21 in total, if available).
@@ -69,7 +69,7 @@ Examples:
 
 ## Tasks
 
-You can show the last 15 task titles (configurable with `config:max-task-items` - see [Configuration]).
+You can show the last 15 task titles (configurable with `config:max-task-items` - see [Configuration](#Configuration)).
 
 Usage `tasks`
 
