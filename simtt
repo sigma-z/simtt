@@ -1,11 +1,29 @@
 #!/usr/bin/env php
 <?php
+declare(strict_types=1);
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
+require __DIR__ . '/vendor/autoload.php';
+
+use Simtt\Command\Simtt;
+use Simtt\Command\Start;
+use Symfony\Component\Console\Application;
 
 define('SIMTT_VERSION', '0.0.1');
-printf('Simtt %s - a simple interactive time tracker in PHP by Steffen Zeidler', SIMTT_VERSION);
-echo "\n";
-echo "\nUnfortunately this is an early project state. Therefore the tool can't do much at the moment.\n";
+
+echo 'A simple interactive time tracker in PHP by Steffen Zeidler';
+echo "\nNOTE: This is an early project state. Therefore the tool can't do much at the moment.\n\n";
+
+$simttInteractive = ($_SERVER['argv'][1] ?? null) === '-i';
+
+$application = new Application('Simtt', SIMTT_VERSION);
+$application->add(new Start());
+$application->add(new Simtt());
+
+if ($simttInteractive) {
+    unset($_SERVER['argv'][1]);
+    $application->setDefaultCommand('Simtt');
+}
+$application->run();

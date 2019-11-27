@@ -1,18 +1,4 @@
-# Simtt - Interactive Simple Command Line Time Tracker in PHP
-
-[![CI Status](https://github.com/sigma-z/simtt/workflows/PHP%20Composer/badge.svg)](https://github.com/sigma-z/simtt/actions)
-
-Read the full [documentation](https://github.com/sigma-z/simtt/blob/master/docs/documentation.md)
-
-## Project status
-
-This is an early project state. Therefore the tool can't do much at the moment.
-
-
-## Quick command overview
-
-Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
- You then can run a lot of commands directly by typing and pressing `<enter>`:
+Interactive command overview:
 
 `start [time<hmm|hhmm>] [task-title]` 
 > starts a timer at a given time for a named task. Note: time and task title can be left blank.
