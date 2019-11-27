@@ -1,6 +1,6 @@
 # Simtt - Interactive Simple Command Line Time Tracker in PHP
 
-[![CI Status](https://github.com/sigma-z/simtt/workflows/CI-Pipeline/badge.svg)](https://github.com/sigma-z/simtt/actions)
+[![CI Status](https://github.com/sigma-z/simtt/workflows/Continuous%20Integration/badge.svg)](https://github.com/sigma-z/simtt/actions)
 
 Read the full [documentation](https://github.com/sigma-z/simtt/blob/master/docs/documentation.md)
 
