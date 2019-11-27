@@ -14,6 +14,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Simtt extends Command
 {
 
+    public const INTERACTIVE_COMMAND_PATTERN = [
+        'start' => '(start)(\s+\d{3,4})?(\s+.+)?',
+    ];
+
     protected static $defaultName = 'simtt';
 
     /** @var Prompter */

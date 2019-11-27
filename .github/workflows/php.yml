@@ -1,4 +1,4 @@
-name: PHP Composer
+name: CI
 
 on: [push]
 
@@ -14,7 +14,10 @@ jobs:
       run: composer validate
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      run: composer install --no-progress --no-suggest
+
+    - name: Run tests
+      run: vendor/bin/phpunit tests
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
