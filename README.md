@@ -23,6 +23,9 @@ Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
 `status` 
 > shows status whether a task is running, or not.
 
+`comment[-n]`
+> adds a comment for a specified or currently running task. See also the documentation.
+
 `tasks`
 > shows a list of the latest time tracked tasks
 

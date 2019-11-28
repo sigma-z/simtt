@@ -25,12 +25,14 @@ $> simtt [options|command]
 * `start [task-title]` starts a timer a named task.
 * `start [time<HMM|HHMM>] [task-title]` starts a timer a named task at a given start time.
 
+
 ### Stop timer
 
 * `stop` stops a running timer.
 * `stop [time<HMM|HHMM>]` stops a running timer at a given stop time.
 * `stop [task-title]` stops a timer a named task (overwrites old name, if has been defined at the timer start).
 * `stop [time<HMM|HHMM>] [task-title]` stops a timer a named task (overwrites old name, if has been defined at the timer start) at a given stop time.
+
 
 ### Status of the timer
 
@@ -39,20 +41,34 @@ You can show the status to see, if time is currently tracked for a task.
 Usage `status`
 
 
+## Comments
+
+You can add a comment to a task.
+
+Usage `comment[-n]`
+
+When `comment` is called, it adds a comment to the currently running task.
+If no task is being time tracked, it asks to add the comment to the last task.
+
+When `comment-1` is called, it adds a comment to the last task. 
+
+
 ## Log & Summary
 
 Simtt can show log entries in a sequence, for a day, a week or a month 
  and also summarize entries by tasks.
+
 
 ### Log 
 
 Usage `log [range-selection<int>] [order-direction<asc|desc>]`
 
 Examples:
-* `log` shows the last 15 entries (configurable with `config max-log-items <int>` - see [Configuration](#Configuration)). 
+* `log` shows the last 15 entries (configurable with `config show-log-items <int>` - see [Configuration](#Configuration)). 
 * `log all [asc|desc]` shows all log entries in ascending or descending order. 'desc' is the default value.
 * `log 100 [asc|desc]` shows the last 100 log entries by the given order. 
 * `log 100-120` shows the log entries from 100 to 120 (21 in total, if available).
+
 
 ### Date log
 
@@ -67,9 +83,10 @@ Examples:
 * `month sum` shows summarized entries of the current month.
 * `month-1 sum` shows summarized entries of the last month.
 
+
 ## Tasks
 
-You can show the last 15 task titles (configurable with `config max-task-items <int>` - see [Configuration](#Configuration)).
+You can show the last 15 task titles (configurable with `config show-task-items <int>` - see [Configuration](#Configuration)).
 
 Usage `tasks`
 
@@ -78,17 +95,18 @@ Usage `tasks`
 
 Usage for reading a config value `config [config-name]`
 
-Usage for setting a config value `config [config-name] [config-value<int>]`
+Usage for setting a config value `config [config-name] [config-value]`
 
+**log-dir**
+* `config log-dir` path where log files are stored. Default is './logs' 
 
-**max-log-items**
-* `config max-log-items` reads config 'max-log-items'. 
-* `config max-log-items 20` sets the config 'max-log-items' to 20. Default is 15.
+**precision**
+* `config precision` precision for logging times. Default is 1.
 
-**round-minutes**
-* `config round-minutes` reads config 'round-minutes'.
-* `config round-minutes 5` sets the config 'round-minutes' to 5 minutes. Default is 0.
+**show-log-items**
+* `config show-log-items` number of log items, that will be shown,
+  when `log` is called with out range-selection. Default is 15.
 
-**max-task-items**
-* `config max-task-items` reads config 'max-task-items'.
-* `config max-task-items 20` sets the config 'max-task-items' to 20. Default is 15.
+**show-task-items**
+* `config show-task-items` number of tasks items, that will be shown,
+  when `tasks` is called. Default is 15.

@@ -69,18 +69,18 @@ class ParserTest extends TestCase
     }
 
     /**
-     * @dataProvider provideParseDateType
+     * @dataProvider provideParseOtherTypes
      * @param string $input
      * @param string $expectedCommand
      * @param array  $expectedArgs
      */
-    public function testParseDateType(string $input, string $expectedCommand, array $expectedArgs): void
+    public function testParseOtherTypes(string $input, string $expectedCommand, array $expectedArgs): void
     {
         $parseResult = self::executeParse($input);
         $this->assertParse($expectedCommand, $expectedArgs, $parseResult);
     }
 
-    public function provideParseDateType(): array
+    public function provideParseOtherTypes(): array
     {
         return [
             ['day', 'day', []],
@@ -90,26 +90,10 @@ class ParserTest extends TestCase
             ['week-1  sum', 'week', ['-1', 'sum']],
             ['month', 'month', []],
             ['month-1  sum', 'month', ['-1', 'sum']],
+            ['comment', 'comment', []],
+            ['comment-5', 'comment', ['-5']],
         ];
     }
-
-
-    ///**
-    // * @dataProvider provideParseSimpleCommand
-    // * @param string $input
-    // * @param string $expectedCommand
-    // */
-    //public function testParseSimpleCommand(string $input, string $expectedCommand): void
-    //{
-    //    $parser = new Parser();
-    //    $patterns = Simtt::getPatterns();
-    //    foreach ($patterns as $pattern) {
-    //        $parseResult = $parser->parse($pattern, $input);
-    //        if ($parseResult) {
-    //            self::assertSame($expectedCommand, $parseResult->getCommandName());
-    //        }
-    //    }
-    //}
 
     private static function executeParse(string $input): ParseResult
     {
