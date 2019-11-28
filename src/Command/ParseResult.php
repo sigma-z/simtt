@@ -30,6 +30,11 @@ class ParseResult
         return $this->commandName;
     }
 
+    public function isExitCommand(): bool
+    {
+        return in_array($this->commandName, ['exit', 'quit', 'q'], true);
+    }
+
     /**
      * @return array
      */

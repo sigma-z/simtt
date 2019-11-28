@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace Simtt\Command;
 
-use Simtt\Input\Prompter;
-use Simtt\Output\Echoer;
+use Simtt\Prompter\Prompter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -14,21 +13,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Simtt extends Command
 {
 
-    public const INTERACTIVE_COMMAND_PATTERN = [
-        'start' => '(start)(\s+\d{3,4})?(\s+.+)?',
-    ];
-
     protected static $defaultName = 'simtt';
 
     /** @var Prompter */
     private $prompter;
 
+    /** @var Parser */
+    private $parser;
 
-    public function __construct(Prompter $prompter = null)
+    public function __construct(Parser $parser = null)
     {
         parent::__construct();
 
-        $this->prompter = $prompter ?? Prompter::create(Echoer::create());
+        $this->parser = $parser ?? new Parser(PatternProvider::getPatterns());
     }
 
     protected function configure(): void
@@ -38,10 +35,46 @@ class Simtt extends Command
         $this->setDescription('Simtt (only) in interactive mode');
     }
 
+    public function setPrompter(Prompter $prompter): void
+    {
+        $this->prompter = $prompter;
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        //$command = $this->prompter->prompt('');
+        $this->prompter = $this->prompter ?? Prompter::create($output);
+        do {
+            $result = $this->promptCommand();
+            $continue = $this->runInteractiveCommand($result, $input, $output);
+        }
+        while ($continue);
         return 0;
+    }
+
+    protected function promptCommand(): ParseResult
+    {
+        do {
+            $command = $this->prompter->prompt('> ');
+        }
+        while (($result = $this->parser->parse($command)) === false);
+        return $result;
+    }
+
+    protected function getCommand(ParseResult $result): \Symfony\Component\Console\Command\Command
+    {
+        /** @noinspection NullPointerExceptionInspection */
+        return $this->getApplication()->find($result->getCommandName());
+    }
+
+    protected function runInteractiveCommand(ParseResult $result, InputInterface $input, OutputInterface $output): bool
+    {
+        if ($result->isExitCommand()) {
+            $output->writeln('Ok, bye bye.');
+            return false;
+        }
+        $command = $this->getCommand($result);
+        $command->run($input, $output);
+        return true;
     }
 
 }

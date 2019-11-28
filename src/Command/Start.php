@@ -26,7 +26,7 @@ class Start extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
+        $output->writeln($this->getName());
         return 0;
     }
 

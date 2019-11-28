@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Simtt\Input;
+namespace Simtt\Prompter;
 
-use Simtt\Output\OutputWriter;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
@@ -14,16 +14,16 @@ class Prompter
     /** @var resource */
     private $stream;
 
-    /** @var OutputWriter */
-    private $outputWriter;
+    /** @var OutputInterface */
+    private $output;
 
-    private function __construct($stream, OutputWriter $outputWriter)
+    private function __construct($stream, OutputInterface $output)
     {
         if (!is_resource($stream)) {
             throw new \RuntimeException('Expected stream resource');
         }
         $this->stream = $stream;
-        $this->outputWriter = $outputWriter;
+        $this->output = $output;
     }
 
     public function __destruct()
@@ -31,15 +31,15 @@ class Prompter
         fclose($this->stream);
     }
 
-    public static function create(OutputWriter $outputWriter): self
+    public static function create(OutputInterface $output): self
     {
         $stream = fopen('php://stdin','rb', false);
-        return new self($stream, $outputWriter);
+        return new self($stream, $output);
     }
 
     public function prompt(string $message = ''): string
     {
-        $this->outputWriter->out($message);
+        $this->output->write($message);
         $stdin = fgets($this->stream);
         return trim($stdin);
     }
