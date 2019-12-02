@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Simtt\Command;
+namespace Simtt\Application\Command;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>

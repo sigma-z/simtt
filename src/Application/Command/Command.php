@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Simtt\Command;
+namespace Simtt\Application\Command;
 
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 

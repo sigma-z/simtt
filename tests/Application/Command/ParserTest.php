@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Command;
+namespace Test\Application\Command;
 
 use PHPUnit\Framework\TestCase;
-use Simtt\Command\Parser;
-use Simtt\Command\ParseResult;
-use Simtt\Command\PatternProvider;
+use Simtt\Application\Command\Parser;
+use Simtt\Application\Command\ParseResult;
+use Simtt\Application\Command\PatternProvider;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>

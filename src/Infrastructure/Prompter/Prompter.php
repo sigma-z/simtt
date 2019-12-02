@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Simtt\Prompter;
+namespace Simtt\Infrastructure\Prompter;
 
 use Symfony\Component\Console\Output\OutputInterface;
 

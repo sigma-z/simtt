@@ -7,8 +7,8 @@ declare(strict_types=1);
  */
 require __DIR__ . '/vendor/autoload.php';
 
-use Simtt\Command\Simtt;
-use Simtt\Command\Start;
+use Simtt\Application\Command\Simtt;
+use Simtt\Application\Command\Start;
 use Symfony\Component\Console\Application;
 
 define('SIMTT_VERSION', '0.0.1');
