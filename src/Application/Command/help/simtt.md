@@ -1,9 +1,9 @@
 Interactive command overview:
 
-`start [time<hmm|hhmm>] [task-title]` 
+`start [<time>hmm|hhmm] [task-title]` 
 > starts a timer at a given time for a named task. Note: time and task title can be left blank.
                 
-`stop [time<hmm|hhmm>] [task-title]`
+`stop [<time>hmm|hhmm] [task-title]`
 > stops a timer at a given time for a named task. Note: time and task title can be left blank, a given task name will overwrite the task name given at the start.
   
 `status` 

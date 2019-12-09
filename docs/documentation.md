@@ -21,17 +21,17 @@ $> simtt [options|command]
 ### Start timer 
 
 * `start` starts a timer for an anonymous task.
-* `start [time<HMM|HHMM>]` starts a timer for an anonymous task at a given start time.
+* `start [<time>hmm|hhmm]` starts a timer for an anonymous task at a given start time.
 * `start [task-title]` starts a timer a named task.
-* `start [time<HMM|HHMM>] [task-title]` starts a timer a named task at a given start time.
+* `start [<time>hmm|hhmm] [task-title]` starts a timer a named task at a given start time.
 
 
 ### Stop timer
 
 * `stop` stops a running timer.
-* `stop [time<HMM|HHMM>]` stops a running timer at a given stop time.
+* `stop [<time>hmm|hhmm]` stops a running timer at a given stop time.
 * `stop [task-title]` stops a timer a named task (overwrites old name, if has been defined at the timer start).
-* `stop [time<HMM|HHMM>] [task-title]` stops a timer a named task (overwrites old name, if has been defined at the timer start) at a given stop time.
+* `stop [<time>hmm|hhmm] [task-title]` stops a timer a named task (overwrites old name, if has been defined at the timer start) at a given stop time.
 
 
 ### Status of the timer

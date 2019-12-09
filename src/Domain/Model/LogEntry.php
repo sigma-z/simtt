@@ -9,10 +9,10 @@ namespace Simtt\Domain\Model;
 class LogEntry
 {
 
-    /** @var \DateTime|null */
+    /** @var Time|null */
     public $startTime;
 
-    /** @var \DateTime|null */
+    /** @var Time|null */
     public $stopTime;
 
     /** @var string */
@@ -20,5 +20,18 @@ class LogEntry
 
     /** @var string */
     public $comment = '';
+
+    /**
+     * @param Time|null $startTime
+     * @param string    $task
+     * @return LogEntry
+     */
+    public static function create(?Time $startTime, string $task): LogEntry
+    {
+        $log = new self();
+        $log->startTime = $startTime;
+        $log->task = $task;
+        return $log;
+    }
 
 }

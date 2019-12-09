@@ -1,0 +1,97 @@
+<?php
+declare(strict_types=1);
+/**
+ * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
+ * @date   09.12.19
+ */
+
+namespace Domain;
+
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Simtt\Domain\Model\LogEntry;
+use Simtt\Domain\Model\Time;
+use Simtt\Domain\TimeTracker;
+use Simtt\Infrastructure\Service\LogHandler;
+
+class TimeTrackerTest extends TestCase
+{
+
+    /** @var LogEntry|null */
+    private $currentLog;
+
+    /** @var LogEntry|null */
+    private $lastLog;
+
+    public function testCommentThrowsException(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->comment('This a comment');
+    }
+
+    public function testStartNewLogWithEmptyParams(): void
+    {
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->start();
+        self::assertInstanceOf(Time::class, $log->startTime);
+        self::assertEmpty($log->task);
+    }
+
+    public function testStartNewLog(): void
+    {
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->start(new Time('0000'), 'task name');
+        self::assertSame(0, $log->startTime->getHour());
+        self::assertSame(0, $log->startTime->getMinute());
+        self::assertSame('task name', $log->task);
+    }
+
+    public function testStartRunningLogTask(): void
+    {
+        $this->setCurrentLog('200');
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->start(new Time('0220'), 'new task name');
+        self::assertSame(2, $log->startTime->getHour());
+        self::assertSame(20, $log->startTime->getMinute());
+        self::assertSame('new task name', $log->task);
+    }
+
+    /**
+     * Note: new task name will not be set, because the user has to decide interactively whether the new task name should be applied or not.
+     */
+    public function testStartRunningLogTaskWillNotBeOverwritten(): void
+    {
+        $this->setCurrentLog('200', 'old task name');
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->start(new Time('0220'), 'new task name');
+        self::assertSame(2, $log->startTime->getHour());
+        self::assertSame(20, $log->startTime->getMinute());
+        self::assertSame('old task name', $log->task);
+    }
+
+    /**
+     * @return TimeTracker
+     */
+    private function createTimeTracker(): TimeTracker
+    {
+        /** @var LogHandler|MockObject $logHandler */
+        $logHandler = $this->createMock(LogHandler::class);
+        $logHandler
+            ->method('getCurrentLog')
+            ->willReturn($this->currentLog);
+        $logHandler
+            ->method('getLastLog')
+            ->willReturn($this->lastLog);
+
+        return new TimeTracker($logHandler);
+    }
+
+    private function setCurrentLog(string $time, string $task = ''): void
+    {
+        $this->currentLog = new LogEntry();
+        $this->currentLog->startTime = new Time($time);
+        $this->currentLog->task = $task;
+    }
+
+}
