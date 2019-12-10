@@ -75,12 +75,12 @@ class Time
 
     public function isOlderThan(Time $time): bool
     {
-        return $this->compare($time) === -1;
+        return $this->compare($time) === 1;
     }
 
     public function isNewerThan(Time $time): bool
     {
-        return $this->compare($time) === 1;
+        return $this->compare($time) === -1;
     }
 
     public function __toString(): string

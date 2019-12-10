@@ -23,11 +23,14 @@ class TimeTracker
 
     public function start(Time $startTime = null, string $taskName = ''): LogEntry
     {
-        $log = $this->logHandler->getCurrentLog();
-        if (!$log) {
-            $log = new LogEntry();
+        $lastLog = $this->logHandler->getLastLog();
+        $startTime = $startTime ?: Time::now();
+        if ($lastLog && $lastLog->stopTime->isOlderThan($startTime)) {
+            throw new \RuntimeException('Stop time of last log is older than start time!');
         }
-        $log->startTime = $startTime ?: Time::now();
+
+        $log = $this->logHandler->getCurrentLog() ?: new LogEntry();
+        $log->startTime = $startTime;
         if (!$log->task && $taskName) {
             $log->task = $taskName;
         }
@@ -41,7 +44,7 @@ class TimeTracker
             throw new \RuntimeException('No log entry found for commenting!');
         }
         $stopTime = $stopTime ?: Time::now();
-        if ($log->startTime->isNewerThan($stopTime)) {
+        if ($log->startTime->isOlderThan($stopTime)) {
             throw new \RuntimeException('Stop time cannot be before start time!');
         }
         $log->stopTime = $stopTime;

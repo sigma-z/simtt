@@ -70,6 +70,14 @@ class TimeTrackerTest extends TestCase
         self::assertSame('old task name', $log->task);
     }
 
+    public function testStartBeforeLastLogThrowsException(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->setLastLog('200', '300');
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->start(new Time('230'));
+    }
+
     public function testStopOnEmptyLogThrowsException(): void
     {
         $this->expectException(\RuntimeException::class);
@@ -105,6 +113,33 @@ class TimeTrackerTest extends TestCase
         $this->setCurrentLog('900');
         $timeTracker = $this->createTimeTracker();
         $timeTracker->stop(new Time('845'));
+    }
+
+    public function testCommentCurrentLog(): void
+    {
+        $this->setCurrentLog('900');
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->comment('Test comment');
+        self::assertSame('Test comment', $log->comment);
+    }
+
+    public function testCommentLastLog(): void
+    {
+        $this->setLastLog('900', '9:45');
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->comment('Test comment');
+        self::assertSame('Test comment', $log->comment);
+    }
+
+    public function testCommentCurrentLogOverLastLog(): void
+    {
+        $this->setLastLog('900', '9:45');
+        $this->setCurrentLog('945');
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->comment('Test comment');
+        self::assertSame('Test comment', $log->comment);
+        self::assertSame($this->currentLog, $log);
+        self::assertEmpty($this->lastLog->comment);
     }
 
     /**

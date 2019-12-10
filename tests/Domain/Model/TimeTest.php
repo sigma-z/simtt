@@ -64,6 +64,18 @@ class TimeTest extends TestCase
         ];
     }
 
+    public function testIsOlderThan(): void
+    {
+        $actual = (new Time('300'))->isOlderThan(new Time('230'));
+        self::assertTrue($actual);
+    }
+
+    public function testIsNewThan(): void
+    {
+        $actual = (new Time('200'))->isNewerThan(new Time('230'));
+        self::assertTrue($actual);
+    }
+
     /**
      * @dataProvider provideCompare
      * @param string $timeA
