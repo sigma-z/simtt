@@ -57,5 +57,34 @@ class Time
         return new self($time);
     }
 
+    public function compare(Time $time): int
+    {
+        if ($this->getHour() < $time->getHour()) {
+            return -1;
+        }
+        if ($this->getHour() === $time->getHour()) {
+            if ($this->getMinute() < $time->getMinute()) {
+                return -1;
+            }
+            if ($this->getMinute() === $time->getMinute()) {
+                return 0;
+            }
+        }
+        return 1;
+    }
 
+    public function isOlderThan(Time $time): bool
+    {
+        return $this->compare($time) === -1;
+    }
+
+    public function isNewerThan(Time $time): bool
+    {
+        return $this->compare($time) === 1;
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('%02d', $this->getHour()) . ':' . sprintf('%02d', $this->getMinute());
+    }
 }

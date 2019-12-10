@@ -36,7 +36,19 @@ class TimeTracker
 
     public function stop(Time $stopTime = null, string $taskName = ''): LogEntry
     {
-
+        $log = $this->logHandler->getCurrentLog() ?? $this->logHandler->getLastLog();
+        if (!$log) {
+            throw new \RuntimeException('No log entry found for commenting!');
+        }
+        $stopTime = $stopTime ?: Time::now();
+        if ($log->startTime->isNewerThan($stopTime)) {
+            throw new \RuntimeException('Stop time cannot be before start time!');
+        }
+        $log->stopTime = $stopTime;
+        if (!$log->task && $taskName) {
+            $log->task = $taskName;
+        }
+        return $log;
     }
 
     public function comment(string $comment): LogEntry

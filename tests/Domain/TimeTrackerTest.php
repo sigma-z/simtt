@@ -5,7 +5,7 @@ declare(strict_types=1);
  * @date   09.12.19
  */
 
-namespace Domain;
+namespace Test\Domain;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -70,6 +70,43 @@ class TimeTrackerTest extends TestCase
         self::assertSame('old task name', $log->task);
     }
 
+    public function testStopOnEmptyLogThrowsException(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->stop(new Time('945'));
+    }
+
+    public function testStopLastLog(): void
+    {
+        $taskName = 'Last log task name';
+        $this->setLastLog('900', '930', $taskName);
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->stop(new Time('945'));
+        self::assertSame('09:00', (string)$log->startTime);
+        self::assertSame('09:45', (string)$log->stopTime);
+        self::assertSame($taskName, $log->task);
+    }
+
+    public function testStopCurrentLog(): void
+    {
+        $taskName = 'Current log task name';
+        $this->setCurrentLog('900', $taskName);
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->stop(new Time('945'));
+        self::assertSame('09:00', (string)$log->startTime);
+        self::assertSame('09:45', (string)$log->stopTime);
+        self::assertSame($taskName, $log->task);
+    }
+
+    public function testStopBeforeStartThrowsException(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->setCurrentLog('900');
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->stop(new Time('845'));
+    }
+
     /**
      * @return TimeTracker
      */
@@ -94,4 +131,11 @@ class TimeTrackerTest extends TestCase
         $this->currentLog->task = $task;
     }
 
+    private function setLastLog(string $startTime, string $stopTime = null, string $taskName = ''): void
+    {
+        $this->lastLog = new LogEntry();
+        $this->lastLog->startTime = new Time($startTime);
+        $this->lastLog->stopTime = $stopTime ? new Time($stopTime) : null;
+        $this->lastLog->task = $taskName;
+    }
 }
