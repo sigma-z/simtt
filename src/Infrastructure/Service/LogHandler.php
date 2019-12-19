@@ -29,8 +29,4 @@ class LogHandler
         return null;
     }
 
-    public function addLog(LogEntry $logEntry): void
-    {
-
-    }
 }

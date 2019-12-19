@@ -21,4 +21,21 @@ class LogEntry
     /** @var string */
     public $comment = '';
 
+    /** @var bool */
+    public $persisted = false;
+
+
+    public function __toString(): string
+    {
+        if (!$this->startTime) {
+            return '';
+        }
+        $parts = [
+            $this->startTime,
+            ($this->stopTime ? (string)$this->stopTime : '     '),
+            "\"$this->task\"",
+            "\"$this->comment\""
+        ];
+        return implode(';', $parts);
+    }
 }

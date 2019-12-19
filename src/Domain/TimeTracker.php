@@ -24,7 +24,6 @@ class TimeTracker
         $this->logHandler = $logHandler;
     }
 
-
     public function start(Time $startTime = null, string $taskName = ''): LogEntry
     {
         $lastLog = $this->logHandler->getLastLog();
@@ -40,7 +39,6 @@ class TimeTracker
         }
         return $log;
     }
-
 
     public function stop(Time $stopTime = null, string $taskName = ''): LogEntry
     {

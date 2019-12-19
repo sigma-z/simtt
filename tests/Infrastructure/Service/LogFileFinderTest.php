@@ -1,17 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace Test\Instructure\Service;
+namespace Test\Infrastructure\Service;
 
 use PHPUnit\Framework\TestCase;
 use Simtt\Infrastructure\Service\LogFileFinder;
-use Vfs\FileSystem;
+use Test\Helper\VirtualFileSystemTrait;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
 class LogFileFinderTest extends TestCase
 {
+
+    use VirtualFileSystemTrait;
 
     private const LOG_PATH = 'vfs://logs';
 
@@ -31,19 +33,10 @@ class LogFileFinderTest extends TestCase
         ]
     ];
 
-    /** @var FileSystem */
-    private static $fs;
-
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
-        self::setupFileSystem();
-    }
-
-    public static function tearDownAfterClass(): void
-    {
-        self::$fs->unmount();
-        parent::tearDownAfterClass();
+        self::createFileStructure();
     }
 
     public function testGetLogFiles(): void
@@ -69,11 +62,8 @@ class LogFileFinderTest extends TestCase
         self::assertSame(self::LOG_PATH . '/2013/07/2013-07-01.log', $actualFile);
     }
 
-    private static function setupFileSystem(): void
+    private static function createFileStructure(): void
     {
-        self::$fs = FileSystem::factory('vfs://');
-        self::$fs->mount();
-
         foreach (self::$structure as $path => $files) {
             mkdir(self::LOG_PATH . '/' . $path, 0777, true);
             foreach ($files as $file => $content) {
