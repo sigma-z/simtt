@@ -9,6 +9,9 @@ namespace Test\Domain;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Simtt\Domain\Exception\NoLogEntryFoundException;
+use Simtt\Domain\Exception\StartTimeBeforeLastLogEntryException;
+use Simtt\Domain\Exception\StopTimeBeforeStartException;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
 use Simtt\Domain\TimeTracker;
@@ -22,13 +25,6 @@ class TimeTrackerTest extends TestCase
 
     /** @var LogEntry|null */
     private $lastLog;
-
-    public function testCommentThrowsException(): void
-    {
-        $this->expectException(\RuntimeException::class);
-        $timeTracker = $this->createTimeTracker();
-        $timeTracker->comment('This a comment');
-    }
 
     public function testStartNewLogWithEmptyParams(): void
     {
@@ -72,7 +68,7 @@ class TimeTrackerTest extends TestCase
 
     public function testStartBeforeLastLogThrowsException(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(StartTimeBeforeLastLogEntryException::class);
         $this->setLastLog('200', '300');
         $timeTracker = $this->createTimeTracker();
         $timeTracker->start(new Time('230'));
@@ -80,7 +76,7 @@ class TimeTrackerTest extends TestCase
 
     public function testStopOnEmptyLogThrowsException(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(NoLogEntryFoundException::class);
         $timeTracker = $this->createTimeTracker();
         $timeTracker->stop(new Time('945'));
     }
@@ -109,10 +105,17 @@ class TimeTrackerTest extends TestCase
 
     public function testStopBeforeStartThrowsException(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(StopTimeBeforeStartException::class);
         $this->setCurrentLog('900');
         $timeTracker = $this->createTimeTracker();
         $timeTracker->stop(new Time('845'));
+    }
+
+    public function testCommentThrowsException(): void
+    {
+        $this->expectException(NoLogEntryFoundException::class);
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->comment('This a comment');
     }
 
     public function testCommentCurrentLog(): void
