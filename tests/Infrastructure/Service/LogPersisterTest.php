@@ -16,13 +16,10 @@ use Test\Helper\VirtualFileSystem;
 class LogPersisterTest extends TestCase
 {
 
-    const LOG_DIR = 'vfs://logs';
-
     protected function setUp(): void
     {
         parent::setUp();
         VirtualFileSystem::setUpFileSystem();
-        mkdir(self::LOG_DIR);
     }
 
     protected function tearDown(): void
@@ -35,7 +32,7 @@ class LogPersisterTest extends TestCase
     {
         $logEntry = LogEntryCreator::create('800', '830', 'task #1', 'comment #1');
 
-        $persister = new LogPersister(self::LOG_DIR);
+        $persister = new LogPersister(VirtualFileSystem::LOG_DIR);
         $persister->saveLog($logEntry);
 
         $file = $persister->getFile();
@@ -47,7 +44,7 @@ class LogPersisterTest extends TestCase
 
     public function testSaveToExistingLog(): void
     {
-        $persister = new LogPersister(self::LOG_DIR);
+        $persister = new LogPersister(VirtualFileSystem::LOG_DIR);
 
         $lastLogEntry = LogEntryCreator::create('900', '930', 'task #1', 'comment #1');
         $persister->saveLog($lastLogEntry);
@@ -62,7 +59,7 @@ class LogPersisterTest extends TestCase
 
     public function testUpdateStopTimeForLogEntry(): void
     {
-        $persister = new LogPersister(self::LOG_DIR);
+        $persister = new LogPersister(VirtualFileSystem::LOG_DIR);
 
         $lastLogEntry = LogEntryCreator::create('900', '930', 'task #1', 'comment #1');
         $persister->saveLog($lastLogEntry);
@@ -78,7 +75,7 @@ class LogPersisterTest extends TestCase
 
     public function testUpdateStartTimeForLogEntry(): void
     {
-        $persister = new LogPersister(self::LOG_DIR);
+        $persister = new LogPersister(VirtualFileSystem::LOG_DIR);
 
         $lastLogEntry = LogEntryCreator::create('900', '930', 'task #1', 'comment #1');
         $persister->saveLog($lastLogEntry);

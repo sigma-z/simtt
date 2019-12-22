@@ -13,8 +13,6 @@ use Test\Helper\VirtualFileSystem;
 class LogFileFinderTest extends TestCase
 {
 
-    private const LOG_PATH = 'vfs://logs';
-
     /** @var array */
     private static $structure = [
         '2019/11' => [
@@ -46,7 +44,7 @@ class LogFileFinderTest extends TestCase
 
     public function testGetLogFiles(): void
     {
-        $logFileFinder = new LogFileFinder(self::LOG_PATH);
+        $logFileFinder = new LogFileFinder(VirtualFileSystem::LOG_DIR);
         $actualFiles = $logFileFinder->getLogFiles();
         $expectedFiles = self::getExpectedLogFiles();
         self::assertSame($expectedFiles, $actualFiles);
@@ -54,26 +52,26 @@ class LogFileFinderTest extends TestCase
 
     public function testLastLogFile(): void
     {
-        $logFileFinder = new LogFileFinder(self::LOG_PATH);
+        $logFileFinder = new LogFileFinder(VirtualFileSystem::LOG_DIR);
         $actualFile = $logFileFinder->getLastLogFile();
-        self::assertSame(self::LOG_PATH . '/2020/01/2020-01-02.log', $actualFile);
+        self::assertSame(VirtualFileSystem::LOG_DIR . '/2020/01/2020-01-02.log', $actualFile);
     }
 
     public function testGetLogFileForDate(): void
     {
-        $logFileFinder = new LogFileFinder(self::LOG_PATH);
+        $logFileFinder = new LogFileFinder(VirtualFileSystem::LOG_DIR);
         $date = new \DateTime('2013-07-01');
         $actualFile = $logFileFinder->getLogFileForDate($date);
-        self::assertSame(self::LOG_PATH . '/2013/07/2013-07-01.log', $actualFile);
+        self::assertSame(VirtualFileSystem::LOG_DIR . '/2013/07/2013-07-01.log', $actualFile);
     }
 
     private static function createFileStructure(): void
     {
         foreach (self::$structure as $path => $files) {
-            mkdir(self::LOG_PATH . '/' . $path, 0777, true);
+            mkdir(VirtualFileSystem::LOG_DIR . '/' . $path, 0777, true);
             foreach ($files as $file => $content) {
                 if (is_string($content)) {
-                    file_put_contents(self::LOG_PATH . '/' . $path . '/' . $file, $content);
+                    file_put_contents(VirtualFileSystem::LOG_DIR . '/' . $path . '/' . $file, $content);
                 }
             }
         }
@@ -85,7 +83,7 @@ class LogFileFinderTest extends TestCase
         foreach (self::$structure as $path => $files) {
             foreach ($files as $file => $content) {
                 if (is_string($content) && substr($file, -4) === '.log') {
-                    $expectedFiles[] = self::LOG_PATH . '/' . $path . '/' . $file;
+                    $expectedFiles[] = VirtualFileSystem::LOG_DIR . '/' . $path . '/' . $file;
                 }
             }
         }

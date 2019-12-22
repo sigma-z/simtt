@@ -112,6 +112,24 @@ class TimeTrackerTest extends TestCase
         $timeTracker->stop(new Time('845'));
     }
 
+    public function testTaskThrowsException(): void
+    {
+        $this->expectException(NoLogEntryFoundException::class);
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->task('task');
+    }
+
+    public function testTaskCurrentLogOverLastLog(): void
+    {
+        $this->setLastLog('900', '9:45');
+        $this->setCurrentLog('945');
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->task('Test task');
+        self::assertSame('Test task', $log->task);
+        self::assertSame($this->currentLog, $log);
+        self::assertEmpty($this->lastLog->task);
+    }
+
     public function testCommentThrowsException(): void
     {
         $this->expectException(NoLogEntryFoundException::class);

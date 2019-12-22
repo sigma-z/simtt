@@ -20,18 +20,18 @@ $> simtt [options|command]
 
 ### Start timer 
 
-* `start` starts a timer for an anonymous task.
-* `start [<time>hmm|hhmm]` starts a timer for an anonymous task at a given start time.
-* `start [task-title]` starts a timer a named task.
-* `start [<time>hmm|hhmm] [task-title]` starts a timer a named task at a given start time.
+* `start` starts timer NOW for an anonymous task.
+* `start [<time>hhmm|hh:mm]` starts a timer for an anonymous task at a given start time.
+* `start [task-title]` starts timer NOW for a named task.
+* `start [<time>hhmm|hh:mm] [task-title]` starts a timer a named task at a given start time.
 
 
 ### Stop timer
 
-* `stop` stops a running timer.
-* `stop [<time>hmm|hhmm]` stops a running timer at a given stop time.
-* `stop [task-title]` stops a timer a named task (overwrites old name, if has been defined at the timer start).
-* `stop [<time>hmm|hhmm] [task-title]` stops a timer a named task (overwrites old name, if has been defined at the timer start) at a given stop time.
+* `stop` stops running timer NOW.
+* `stop [<time>hhmm|hh:mm]` stops a running timer at a given stop time.
+* `stop [task-title]` stops timer NOW for a named task (overwrites old name, if has been defined at the timer start).
+* `stop [<time>hhmm|hh:mm] [task-title]` stops a timer a named task (overwrites old name, if has been defined at the timer start) at a given stop time.
 
 
 ### Status of the timer
@@ -41,16 +41,28 @@ You can show the status to see, if time is currently tracked for a task.
 Usage `status`
 
 
+## Tasks
+
+You can add or update a task text.
+
+Usage `task[-n]`
+
+When `task` is called, it sets a task text to the currently running task.
+If no task is being time tracked, it asks to set the task text to the last task.
+
+When `task-1` is called, it sets the task text to the last task. 
+
+
 ## Comments
 
-You can add a comment to a task.
+You can add or update a comment text.
 
 Usage `comment[-n]`
 
-When `comment` is called, it adds a comment to the currently running task.
-If no task is being time tracked, it asks to add the comment to the last task.
+When `comment` is called, it sets a comment to the currently running task.
+If no task is being time tracked, it asks to set the comment to the last task.
 
-When `comment-1` is called, it adds a comment to the last task. 
+When `comment-1` is called, it sets a comment to the last task. 
 
 
 ## Log & Summary
@@ -84,7 +96,7 @@ Examples:
 * `month-1 sum` shows summarized entries of the last month.
 
 
-## Tasks
+## Recent tasks
 
 You can show the last 15 task titles (configurable with `config show-task-items <int>` - see [Configuration](#Configuration)).
 

@@ -14,17 +14,20 @@ This is an early project state. Therefore the tool can't do much at the moment.
 Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
  You then can run a lot of commands directly by typing and pressing `<enter>`:
 
-`start [time<hmm|hhmm>] [task-title]` 
+`start [time<hhmm|hh:mm>] [task-title]` 
 > starts a timer at a given time for a named task. Note: time and task title can be left blank.
                 
-`stop [time<hmm|hhmm>] [task-title]`
+`stop [time<hhmm|hh:mm>] [task-title]`
 > stops a timer at a given time for a named task. Note: time and task title can be left blank, a given task name will overwrite the task name given at the start.
   
 `status` 
 > shows status whether a task is running, or not.
 
+`task[-n]`
+> sets a task text for a specified or currently running task. See also the documentation.
+
 `comment[-n]`
-> adds a comment for a specified or currently running task. See also the documentation.
+> sets a comment for a specified or currently running task. See also the documentation.
 
 `tasks`
 > shows a list of the latest time tracked tasks

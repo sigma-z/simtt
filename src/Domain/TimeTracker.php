@@ -42,10 +42,7 @@ class TimeTracker
 
     public function stop(Time $stopTime = null, string $taskName = ''): LogEntry
     {
-        $log = $this->logHandler->getCurrentLog() ?? $this->logHandler->getLastLog();
-        if (!$log) {
-            throw self::noLogEntryFoundException();
-        }
+        $log = $this->getCorrespondingLogEntry();
         $stopTime = $stopTime ?: Time::now();
         if ($log->startTime->isOlderThan($stopTime)) {
             throw self::stopTimeBeforeStartException();
@@ -57,13 +54,26 @@ class TimeTracker
         return $log;
     }
 
+    public function task(string $task): LogEntry
+    {
+        $log = $this->getCorrespondingLogEntry();
+        $log->task = $task;
+        return $log;
+    }
+
     public function comment(string $comment): LogEntry
     {
-        $log = $this->logHandler->getCurrentLog() ?? $this->logHandler->getLastLog();
+        $log = $this->getCorrespondingLogEntry();
+        $log->comment = $comment;
+        return $log;
+    }
+
+    private function getCorrespondingLogEntry(): LogEntry
+    {
+        $log = $this->logHandler->getCurrentLog() ?: $this->logHandler->getLastLog();
         if (!$log) {
             throw self::noLogEntryFoundException();
         }
-        $log->comment = $comment;
         return $log;
     }
 

@@ -12,7 +12,7 @@ use Simtt\Domain\Model\Time;
 class LogEntryCreator
 {
 
-    public static function create(string $startTime, string $stopTime, string $taskName = '', string $comment = ''): LogEntry
+    public static function create(string $startTime, string $stopTime = '', string $taskName = '', string $comment = ''): LogEntry
     {
         $logEntry = new LogEntry();
         $logEntry->task = $taskName;

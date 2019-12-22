@@ -11,6 +11,8 @@ use Vfs\FileSystem;
 class VirtualFileSystem
 {
 
+    public const LOG_DIR = 'vfs://logs';
+
     /** @var FileSystem */
     private static $fs;
 
@@ -18,6 +20,7 @@ class VirtualFileSystem
     {
         self::$fs = FileSystem::factory('vfs://');
         self::$fs->mount();
+        mkdir(self::LOG_DIR);
     }
 
     public static function tearDownFileSystem(): void

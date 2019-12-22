@@ -21,6 +21,10 @@ class Config
     /** @var int */
     private $showTaskItems = 15;
 
+    public function setLogDir(string $logDir): void
+    {
+        $this->logDir = $logDir;
+    }
 
     public function getLogDir(): string
     {
