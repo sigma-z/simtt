@@ -16,6 +16,7 @@ use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
 use Simtt\Domain\TimeTracker;
 use Simtt\Infrastructure\Service\LogHandler;
+use Test\Helper\LogEntryCreator;
 
 class TimeTrackerTest extends TestCase
 {
@@ -164,16 +165,11 @@ class TimeTrackerTest extends TestCase
 
     private function setCurrentLog(string $time, string $task = ''): void
     {
-        $this->currentLog = new LogEntry();
-        $this->currentLog->startTime = new Time($time);
-        $this->currentLog->task = $task;
+        $this->currentLog = LogEntryCreator::create($time, '', $task, '');
     }
 
     private function setLastLog(string $startTime, string $stopTime = null, string $taskName = ''): void
     {
-        $this->lastLog = new LogEntry();
-        $this->lastLog->startTime = new Time($startTime);
-        $this->lastLog->stopTime = $stopTime ? new Time($stopTime) : null;
-        $this->lastLog->task = $taskName;
+        $this->lastLog = LogEntryCreator::create($startTime, $stopTime, $taskName);
     }
 }

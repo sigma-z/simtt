@@ -5,7 +5,7 @@ namespace Test\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
 use Simtt\Domain\Model\LogEntry;
-use Simtt\Domain\Model\Time;
+use Test\Helper\LogEntryCreator;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
@@ -23,7 +23,7 @@ class LogEntryTest extends TestCase
      */
     public function testToString(string $startTime, string $stopTime, string $taskName, string $comment, string $expected): void
     {
-        $logEntry = self::createLogEntry($startTime, $stopTime, $taskName, $comment);
+        $logEntry = LogEntryCreator::create($startTime, $stopTime, $taskName, $comment);
         self::assertEquals($expected, (string)$logEntry);
     }
 
@@ -40,18 +40,42 @@ class LogEntryTest extends TestCase
         ];
     }
 
-    private static function createLogEntry(string $startTime, string $stopTime, string $taskName, string $comment): LogEntry
+    /**
+     * @dataProvider provideFromString
+     * @param string $raw
+     * @param string $expectedStart
+     * @param string $expectedStop
+     * @param string $expectedTask
+     * @param string $expectedComment
+     */
+    public function testFromString(
+        string $raw,
+        string $expectedStart,
+        string $expectedStop,
+        string $expectedTask,
+        string $expectedComment
+    ): void
     {
-        $logEntry = new LogEntry();
-        $logEntry->task = $taskName;
-        $logEntry->comment = $comment;
-        if ($startTime) {
-            $logEntry->startTime = new Time($startTime);
-        }
-        if ($stopTime) {
-            $logEntry->stopTime = new Time($stopTime);
-        }
-        return $logEntry;
+        $logEntry = LogEntry::fromString($raw);
+        self::assertSame($expectedStart, (string)$logEntry->startTime);
+        self::assertSame($expectedStop, (string)$logEntry->stopTime);
+        self::assertSame($expectedTask, $logEntry->task);
+        self::assertSame($expectedComment, $logEntry->comment);
     }
 
+    public function provideFromString(): array
+    {
+        return [
+            ['09:00;09:30;"task \"1\"";"comment"', '09:00', '09:30', 'task "1"', 'comment'],
+            ['09:00;     ;"task";"comment"', '09:00', '', 'task', 'comment'],
+            ['09:00;     ;"";""', '09:00', '', '', ''],
+        ];
+    }
+
+    public function testFromStringWithId(): void
+    {
+        $logEntry = LogEntry::fromString('09:00;     ;"";""', '2019-12-21');
+        self::assertTrue($logEntry->isPersisted());
+        self::assertSame('2019-12-21-09:00', $logEntry->getId());
+    }
 }

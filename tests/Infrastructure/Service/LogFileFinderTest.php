@@ -5,15 +5,13 @@ namespace Test\Infrastructure\Service;
 
 use PHPUnit\Framework\TestCase;
 use Simtt\Infrastructure\Service\LogFileFinder;
-use Test\Helper\VirtualFileSystemTrait;
+use Test\Helper\VirtualFileSystem;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
 class LogFileFinderTest extends TestCase
 {
-
-    use VirtualFileSystemTrait;
 
     private const LOG_PATH = 'vfs://logs';
 
@@ -36,7 +34,14 @@ class LogFileFinderTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
+        VirtualFileSystem::setUpFileSystem();
         self::createFileStructure();
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        VirtualFileSystem::tearDownFileSystem();
+        parent::tearDownAfterClass();
     }
 
     public function testGetLogFiles(): void

@@ -21,9 +21,43 @@ class LogPersister
 
     public function saveLog(LogEntry $logEntry): void
     {
+        $entries = $this->getEntries();
+        $found = false;
         $fh = $this->getFileHandle();
-        fwrite($fh, (string)$logEntry);
+        foreach ($entries as $entry) {
+            if ($entry->equals($logEntry)) {
+                fwrite($fh, $logEntry . "\n");
+                $logEntry->setId($this->getBaseId() . '-' . $logEntry->startTime);
+                $found = true;
+            }
+            else {
+                fwrite($fh, $entry . "\n");
+            }
+        }
+        if (!$found) {
+            fwrite($fh, $logEntry . "\n");
+            $logEntry->setId($this->getBaseId() . '-' . $logEntry->startTime);
+        }
         fclose($fh);
+    }
+
+    /**
+     * @return LogEntry[]
+     */
+    private function getEntries(): array
+    {
+        $file = $this->getFile();
+        $baseId = $this->getBaseId();
+        if (!is_file($file)) {
+            return [];
+        }
+        $lines = file($file);
+        return array_filter(array_map(static function (string $line) use ($baseId) {
+            if (trim($line)) {
+                return LogEntry::fromString($line, $baseId);
+            }
+            return null;
+        }, $lines));
     }
 
     private function getFileHandle()
@@ -31,7 +65,7 @@ class LogPersister
         $file = $this->getFile();
         $dir = dirname($file);
         $this->createDirectory($dir);
-        return fopen($file, 'ab');
+        return fopen($file, 'wb');
     }
 
     public function getFile(): string
@@ -43,8 +77,13 @@ class LogPersister
 
     private function createDirectory(string $dir): void
     {
-        if (!mkdir($dir, 0755, true) && !is_dir($dir)) {
+        if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
         }
+    }
+
+    private function getBaseId(): string
+    {
+        return date('Y-m-d');
     }
 }

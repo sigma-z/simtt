@@ -8,24 +8,18 @@ use Vfs\FileSystem;
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
-trait VirtualFileSystemTrait
+class VirtualFileSystem
 {
 
     /** @var FileSystem */
     private static $fs;
 
-    /**
-     * @beforeClass
-     */
     public static function setUpFileSystem(): void
     {
         self::$fs = FileSystem::factory('vfs://');
         self::$fs->mount();
     }
 
-    /**
-     * @afterClass
-     */
     public static function tearDownFileSystem(): void
     {
         self::$fs->unmount();
