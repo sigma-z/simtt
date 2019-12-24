@@ -20,6 +20,7 @@ class PatternProvider
             'stop' => '(stop)' . $timePattern . $taskPattern,
             'status' => '(status)',
             'tasks' => '(tasks)',
+            'task' => "(task){$minusNum}",
             'comment' => "(comment){$minusNum}",
             'log' => "(log)({$sp}\d+-\d+|{$sp}\d+|{$sp}all)?({$sp}asc|{$sp}desc)?",
             'day' => "(day){$minusNum}({$sp}sum)?",
