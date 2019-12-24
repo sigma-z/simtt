@@ -11,12 +11,27 @@ use Simtt\Domain\Model\LogEntry;
 class LogHandler
 {
 
+    /** @var LogFileFinder */
+    private $logFileFinder;
+
+    public function __construct(LogFileFinder $logFileFinder)
+    {
+        $this->logFileFinder = $logFileFinder;
+    }
+
     /**
      * @return LogEntry[]
      */
     public function getAllLogs(): array
     {
-        return [];
+        $allEntries = [];
+        foreach ($this->logFileFinder->getLogFiles() as $logFile) {
+            $date = pathinfo($logFile, PATHINFO_FILENAME);
+            $dateTime = new \DateTime($date);
+            $entries = (new LogFile($dateTime, $this->logFileFinder->getPath()))->getEntries();
+            $allEntries = array_merge($allEntries, $entries);
+        }
+        return $allEntries;
     }
 
     public function getLastLog(): ?LogEntry

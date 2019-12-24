@@ -53,4 +53,9 @@ class LogFileFinder
         });
         return new \RegexIterator($filterIterator, $pattern);
     }
+
+    public function getPath(): string
+    {
+        return $this->path;
+    }
 }

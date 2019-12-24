@@ -17,13 +17,12 @@ class Prompter
     /** @var OutputInterface */
     private $output;
 
-    private function __construct($stream, OutputInterface $output)
+    private function __construct($stream)
     {
         if (!is_resource($stream)) {
             throw new \RuntimeException('Expected stream resource');
         }
         $this->stream = $stream;
-        $this->output = $output;
     }
 
     public function __destruct()
@@ -31,10 +30,18 @@ class Prompter
         fclose($this->stream);
     }
 
-    public static function create(OutputInterface $output): self
+    public static function create(): self
     {
         $stream = fopen('php://stdin','rb', false);
-        return new self($stream, $output);
+        return new self($stream);
+    }
+
+    /**
+     * @param OutputInterface $output
+     */
+    public function setOutput(OutputInterface $output): void
+    {
+        $this->output = $output;
     }
 
     public function prompt(string $message = ''): string

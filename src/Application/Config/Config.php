@@ -13,13 +13,21 @@ class Config
     private $logDir;
 
     /** @var int */
-    private $precision = 1;
+    private $precision;
 
     /** @var int */
-    private $showLogItems = 15;
+    private $showLogItems;
 
     /** @var int */
-    private $showTaskItems = 15;
+    private $showTaskItems;
+
+    public function __construct(array $data = [])
+    {
+        $this->logDir = $data['logDir'] ?? './logs';
+        $this->precision = $data['precision'] ?? 1;
+        $this->showLogItems = $data['showLogItems'] ?? 15;
+        $this->showTaskItems = $data['showTaskItems'] ?? 15;
+    }
 
     public function setLogDir(string $logDir): void
     {

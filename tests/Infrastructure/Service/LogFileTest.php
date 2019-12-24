@@ -9,11 +9,11 @@ namespace Test\Infrastructure\Service;
 
 use PHPUnit\Framework\TestCase;
 use Simtt\Domain\Model\Time;
-use Simtt\Infrastructure\Service\LogPersister;
+use Simtt\Infrastructure\Service\LogFile;
 use Test\Helper\LogEntryCreator;
 use Test\Helper\VirtualFileSystem;
 
-class LogPersisterTest extends TestCase
+class LogFileTest extends TestCase
 {
 
     protected function setUp(): void
@@ -32,7 +32,7 @@ class LogPersisterTest extends TestCase
     {
         $logEntry = LogEntryCreator::create('800', '830', 'task #1', 'comment #1');
 
-        $persister = new LogPersister(VirtualFileSystem::LOG_DIR);
+        $persister = new LogFile(new \DateTime(), VirtualFileSystem::LOG_DIR);
         $persister->saveLog($logEntry);
 
         $file = $persister->getFile();
@@ -44,7 +44,7 @@ class LogPersisterTest extends TestCase
 
     public function testSaveToExistingLog(): void
     {
-        $persister = new LogPersister(VirtualFileSystem::LOG_DIR);
+        $persister = new LogFile(new \DateTime(), VirtualFileSystem::LOG_DIR);
 
         $lastLogEntry = LogEntryCreator::create('900', '930', 'task #1', 'comment #1');
         $persister->saveLog($lastLogEntry);
@@ -59,7 +59,7 @@ class LogPersisterTest extends TestCase
 
     public function testUpdateStopTimeForLogEntry(): void
     {
-        $persister = new LogPersister(VirtualFileSystem::LOG_DIR);
+        $persister = new LogFile(new \DateTime(), VirtualFileSystem::LOG_DIR);
 
         $lastLogEntry = LogEntryCreator::create('900', '930', 'task #1', 'comment #1');
         $persister->saveLog($lastLogEntry);
@@ -75,7 +75,7 @@ class LogPersisterTest extends TestCase
 
     public function testUpdateStartTimeForLogEntry(): void
     {
-        $persister = new LogPersister(VirtualFileSystem::LOG_DIR);
+        $persister = new LogFile(new \DateTime(), VirtualFileSystem::LOG_DIR);
 
         $lastLogEntry = LogEntryCreator::create('900', '930', 'task #1', 'comment #1');
         $persister->saveLog($lastLogEntry);

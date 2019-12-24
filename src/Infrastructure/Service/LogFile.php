@@ -8,14 +8,18 @@ use Simtt\Domain\Model\LogEntry;
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
-class LogPersister
+class LogFile
 {
+
+    /** @var \DateTime */
+    private $date;
 
     /** @var string */
     private $logDir;
 
-    public function __construct(string $logDir)
+    public function __construct(\DateTime $date, string $logDir)
     {
+        $this->date = $date;
         $this->logDir = $logDir;
     }
 
@@ -44,7 +48,7 @@ class LogPersister
     /**
      * @return LogEntry[]
      */
-    private function getEntries(): array
+    public function getEntries(): array
     {
         $file = $this->getFile();
         $baseId = $this->getBaseId();
@@ -68,13 +72,6 @@ class LogPersister
         return fopen($file, 'wb');
     }
 
-    public function getFile(): string
-    {
-        $date = date('Y-m-d');
-        [$year, $month, ] = explode('-', $date);
-        return "$this->logDir/$year/$month/$date.log";
-    }
-
     private function createDirectory(string $dir): void
     {
         if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
@@ -82,8 +79,16 @@ class LogPersister
         }
     }
 
-    private function getBaseId(): string
+    public function getFile(): string
     {
-        return date('Y-m-d');
+        $date = $this->date->format('Y-m-d');
+        [$year, $month, ] = explode('-', $date);
+        return "$this->logDir/$year/$month/$date.log";
+    }
+
+    public function getBaseId(): string
+    {
+        $file = $this->getFile();
+        return pathinfo($file, PATHINFO_FILENAME);
     }
 }

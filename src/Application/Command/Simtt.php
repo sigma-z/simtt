@@ -21,11 +21,12 @@ class Simtt extends Command
     /** @var Parser */
     private $parser;
 
-    public function __construct(Parser $parser = null)
+    public function __construct(Parser $parser, Prompter $prompter)
     {
         parent::__construct();
 
-        $this->parser = $parser ?? new Parser(PatternProvider::getPatterns());
+        $this->parser = $parser;
+        $this->prompter = $prompter;
     }
 
     protected function configure(): void
@@ -35,14 +36,9 @@ class Simtt extends Command
         $this->setDescription('Simtt (only) in interactive mode');
     }
 
-    public function setPrompter(Prompter $prompter): void
-    {
-        $this->prompter = $prompter;
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->prompter = $this->prompter ?? Prompter::create($output);
+        $this->prompter->setOutput($output);
         do {
             $result = $this->promptCommand();
             $continue = $this->runInteractiveCommand($result, $input, $output);

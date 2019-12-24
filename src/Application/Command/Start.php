@@ -3,11 +3,9 @@ declare(strict_types=1);
 
 namespace Simtt\Application\Command;
 
-use Simtt\Application\Config\Config;
 use Simtt\Domain\Model\Time;
 use Simtt\Domain\TimeTracker;
-use Simtt\Infrastructure\Service\LogHandler;
-use Simtt\Infrastructure\Service\LogPersister;
+use Simtt\Infrastructure\Service\LogFile;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,17 +18,17 @@ class Start extends Command
 
     protected static $defaultName = 'start';
 
-    /** @var LogPersister */
-    private $logPersister;
+    /** @var LogFile */
+    private $logFile;
 
     /** @var TimeTracker */
     private $timeTracker;
 
-    public function __construct(LogPersister $logPersister = null, TimeTracker $timeTracker = null)
+    public function __construct(LogFile $logFile, TimeTracker $timeTracker)
     {
         parent::__construct();
-        $this->logPersister = $logPersister ?: new LogPersister((new Config())->getLogDir());
-        $this->timeTracker = $timeTracker ?: new TimeTracker(new LogHandler());
+        $this->logFile = $logFile;
+        $this->timeTracker = $timeTracker;
     }
 
     protected function configure(): void
@@ -46,10 +44,10 @@ class Start extends Command
     {
         $startTime = $this->getStartTime($input);
         $logEntry = $this->timeTracker->start($startTime, $input->getArgument('taskTitle'));
-        $this->logPersister->saveLog($logEntry);
+        $this->logFile->saveLog($logEntry);
 
 
-        //$output->writeln($this->getName());
+        $output->writeln($this->getName());
         return 0;
     }
 

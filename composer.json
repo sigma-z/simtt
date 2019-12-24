@@ -3,6 +3,7 @@
     "description": "Interactive Simple Command Line Time Tracker in PHP",
     "type": "project",
     "require-dev": {
+        "roave/security-advisories": "dev-master",
         "phpunit/phpunit": "^8",
         "symfony/console": "^5.0",
         "squizlabs/php_codesniffer": "^3.5",
@@ -15,11 +16,15 @@
             "email": "sigma_z@sigma-scripts.de"
         }
     ],
-    "require": {},
+    "require": {
+        "symfony/dependency-injection": "^5.0",
+        "symfony/config": "^5.0",
+        "symfony/yaml": "^5.0",
+        "ext-json": "*"
+    },
     "autoload" : {
         "psr-4" : {
-            "Simtt\\" : "src",
-            "Test\\" : "tests"
+            "Simtt\\" : "src"
         }
     }
 }

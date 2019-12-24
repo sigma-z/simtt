@@ -7,11 +7,9 @@ declare(strict_types=1);
 
 namespace Test\Application\Command;
 
+use Helper\DIContainer;
 use PHPUnit\Framework\TestCase;
-use Simtt\Application\Command\Start;
-use Simtt\Domain\TimeTracker;
-use Simtt\Infrastructure\Service\LogHandler;
-use Simtt\Infrastructure\Service\LogPersister;
+use Simtt\Infrastructure\Service\LogFile;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Test\Helper\LogEntryCreator;
@@ -34,10 +32,11 @@ class StartTest extends TestCase
 
     public function testStart(): void
     {
-        $persister = new LogPersister(VirtualFileSystem::LOG_DIR);
+        $persister = new LogFile(new \DateTime(), VirtualFileSystem::LOG_DIR);
         $application = new Application('Simtt');
         $application->setAutoExit(false);
-        $application->add(new Start($persister, new TimeTracker(new LogHandler())));
+        /** @noinspection PhpParamsInspection */
+        $application->add(DIContainer::$container->get('start.cmd'));
         $input = new StringInput('start 930');
         $application->run($input);
 
