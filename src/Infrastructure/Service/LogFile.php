@@ -35,7 +35,7 @@ class LogFile
     {
         $entries = $this->getEntries();
         $found = false;
-        $fh = $this->getFileHandle();
+        $fh = $this->openFileWriteHandle();
         foreach ($entries as $entry) {
             if ($entry->equals($logEntry)) {
                 fwrite($fh, $logEntry . "\n");
@@ -58,12 +58,11 @@ class LogFile
      */
     public function getEntries(): array
     {
-        $file = $this->getFile();
-        $baseId = $this->getBaseId();
-        if (!is_file($file)) {
+        if (!$this->isPersisted()) {
             return [];
         }
-        $lines = file($file);
+        $baseId = $this->getBaseId();
+        $lines = file($this->getFile());
         return array_filter(array_map(static function (string $line) use ($baseId) {
             if (trim($line)) {
                 return LogEntry::fromString($line, $baseId);
@@ -72,7 +71,7 @@ class LogFile
         }, $lines));
     }
 
-    private function getFileHandle()
+    private function openFileWriteHandle()
     {
         $file = $this->getFile();
         $dir = dirname($file);
@@ -95,5 +94,10 @@ class LogFile
     public function getBaseId(): string
     {
         return $this->date;
+    }
+
+    private function isPersisted(): bool
+    {
+        return is_file($this->getFile());
     }
 }

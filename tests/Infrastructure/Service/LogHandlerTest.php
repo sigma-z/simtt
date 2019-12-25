@@ -15,10 +15,14 @@ use Test\Helper\VirtualFileSystem;
 class LogHandlerTest extends TestCase
 {
 
+    /** @var LogHandler */
+    private $logHandler;
+
     protected function setUp(): void
     {
         parent::setUp();
         VirtualFileSystem::setUpFileSystem();
+        $this->logHandler = new LogHandler(new LogFileFinder(VirtualFileSystem::LOG_DIR));
     }
 
     protected function tearDown(): void
@@ -42,9 +46,53 @@ class LogHandlerTest extends TestCase
             '12:30;     ;"";""'
         ]);
 
-        $logHandler = new LogHandler(new LogFileFinder(VirtualFileSystem::LOG_DIR));
-        $logEntries = $logHandler->getAllLogs();
+        $logEntries = $this->logHandler->getAllLogs();
         self::assertCount(6, $logEntries);
+    }
+
+    public function testGetLogOnEmptyLogReturnsNull(): void
+    {
+        $currentLog = $this->logHandler->getCurrentLog();
+        $lastLog = $this->logHandler->getLastLog();
+        self::assertNull($currentLog);
+        self::assertNull($lastLog);
+    }
+
+    public function testGetLogForYesterdayReturnsNull(): void
+    {
+        $yesterday = (new \DateTime())->sub(new \DateInterval('P1D'))->format('Y-m-d');
+        $this->setUpLogEntries($yesterday, [
+            '12:00;     ;"";""',
+            '12:30;     ;"";""'
+        ]);
+        $currentLog = $this->logHandler->getCurrentLog();
+        $lastLog = $this->logHandler->getLastLog();
+        self::assertNull($currentLog);
+        self::assertNull($lastLog);
+    }
+
+    public function testGetLogForStartedTimerReturnsNull(): void
+    {
+        $this->setUpLogEntries((new \DateTime())->format('Y-m-d'), [
+            '12:00;     ;"";""'
+        ]);
+        $currentLog = $this->logHandler->getCurrentLog();
+        $lastLog = $this->logHandler->getLastLog();
+        self::assertNull($lastLog);
+        self::assertNotNull($currentLog);
+        self::assertSame('12:00', (string)$currentLog->startTime);
+    }
+
+    public function testGetLogForStoppedTimerReturnsObject(): void
+    {
+        $this->setUpLogEntries((new \DateTime())->format('Y-m-d'), [
+            '12:00;12:30;"";""'
+        ]);
+        $currentLog = $this->logHandler->getCurrentLog();
+        $lastLog = $this->logHandler->getLastLog();
+        self::assertNull($currentLog);
+        self::assertNotNull($lastLog);
+        self::assertSame('12:30', (string)$lastLog->stopTime);
     }
 
     private function setUpLogEntries(string $date, array $entries): void

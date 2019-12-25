@@ -34,13 +34,21 @@ class LogHandler
 
     public function getLastLog(): ?LogEntry
     {
-
-        return null;
+        $logEntry = $this->getLastLogEntry();
+        return $logEntry && $logEntry->stopTime !== null ? $logEntry : null;
     }
 
     public function getCurrentLog(): ?LogEntry
     {
-        return null;
+        $logEntry = $this->getLastLogEntry();
+        return $logEntry && $logEntry->stopTime === null ? $logEntry : null;
+    }
+
+    private function getLastLogEntry(): ?LogEntry
+    {
+        $logFile = LogFile::createTodayLogFile($this->logFileFinder->getPath());
+        $entries = $logFile->getEntries();
+        return end($entries) ?: null;
     }
 
 }
