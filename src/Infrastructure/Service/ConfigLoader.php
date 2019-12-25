@@ -17,6 +17,9 @@ class ConfigLoader
         if ($configFile) {
             $json = file_get_contents($configFile);
             $data = json_decode($json, true);
+            if (!is_array($data)) {
+                $data = [];
+            }
         }
         return new Config($data);
     }
