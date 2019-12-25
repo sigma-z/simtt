@@ -30,11 +30,11 @@ class ParserTest extends TestCase
     public function provideParseStart(): array
     {
         return [
-            ['  start  ', 'start', []],
-            ['start 921', 'start', ['921']],
-            ['start 2221', 'start', ['2221']],
+            ['  start  ', 'start', [null, null]],
+            ['start 921', 'start', ['921', null]],
+            ['start 2221', 'start', ['2221', null]],
             ['start  2221  Task title sample', 'start', ['2221', 'Task title sample']],
-            ['start Task title sample', 'start', ['Task title sample']],
+            ['start Task title sample', 'start', [null, 'Task title sample']],
             ['start 921 Task title sample', 'start', ['921', 'Task title sample']],
             ['start 9:21 Task title sample', 'start', ['9:21', 'Task title sample']],
             ['  start 09:21 Task title sample ', 'start', ['09:21', 'Task title sample']],
@@ -57,11 +57,11 @@ class ParserTest extends TestCase
     public function provideParseLog(): array
     {
         return [
-            ['log', 'log', []],
-            ['log 100', 'log', ['100']],
-            ['log all', 'log', ['all']],
-            ['log 100-100', 'log', ['100-100']],
-            ['log 100-120', 'log', ['100-120']],
+            ['log', 'log', [null, null]],
+            ['log 100', 'log', ['100', null]],
+            ['log all', 'log', ['all', null]],
+            ['log 100-100', 'log', ['100-100', null]],
+            ['log 100-120', 'log', ['100-120', null]],
             ['log 100-120 desc', 'log', ['100-120', 'desc']],
             ['log 100-120 asc', 'log', ['100-120', 'asc']],
             ['log 100 asc', 'log', ['100', 'asc']],
@@ -83,14 +83,15 @@ class ParserTest extends TestCase
     public function provideParseOtherTypes(): array
     {
         return [
-            ['day', 'day', []],
-            ['day-1', 'day', ['-1']],
+            ['day', 'day', [null, null]],
+            ['day-1', 'day', ['-1', null]],
             ['day-1  sum', 'day', ['-1', 'sum']],
-            ['week', 'week', []],
+            ['day  sum', 'day', [null, 'sum']],
+            ['week', 'week', [null, null]],
             ['week-1  sum', 'week', ['-1', 'sum']],
-            ['month', 'month', []],
+            ['month', 'month', [null, null]],
             ['month-1  sum', 'month', ['-1', 'sum']],
-            ['comment', 'comment', []],
+            ['comment', 'comment', [null]],
             ['comment-5', 'comment', ['-5']],
         ];
     }
