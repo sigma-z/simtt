@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Test\Infrastructure\Service;
 
 use PHPUnit\Framework\TestCase;
+use Simtt\Infrastructure\Service\LogFile;
 use Simtt\Infrastructure\Service\LogFileFinder;
 use Test\Helper\VirtualFileSystem;
 
@@ -45,16 +46,19 @@ class LogFileFinderTest extends TestCase
     public function testGetLogFiles(): void
     {
         $logFileFinder = new LogFileFinder(VirtualFileSystem::LOG_DIR);
-        $actualFiles = $logFileFinder->getLogFiles();
+        $actualLogFiles = $logFileFinder->getLogFiles();
         $expectedFiles = self::getExpectedLogFiles();
+        $actualFiles = array_map(static function (LogFile $logFile) {
+            return $logFile->getFile();
+        }, $actualLogFiles);
         self::assertSame($expectedFiles, $actualFiles);
     }
 
     public function testLastLogFile(): void
     {
         $logFileFinder = new LogFileFinder(VirtualFileSystem::LOG_DIR);
-        $actualFile = $logFileFinder->getLastLogFile();
-        self::assertSame(VirtualFileSystem::LOG_DIR . '/2020/01/2020-01-02.log', $actualFile);
+        $actualLogFile = $logFileFinder->getLastLogFile();
+        self::assertSame(VirtualFileSystem::LOG_DIR . '/2020/01/2020-01-02.log', $actualLogFile->getFile());
     }
 
     public function testGetLogFileForDate(): void

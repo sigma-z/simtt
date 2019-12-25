@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Test\Helper;
 
-use Helper\DIContainer;
 use Vfs\FileSystem;
 
 /**
@@ -21,8 +20,6 @@ class VirtualFileSystem
     public static function setUpFileSystem(): void
     {
         //echo 'setUp ' . debug_backtrace()[1]['class'] . "\n";
-
-        DIContainer::$container->setParameter('logDir', self::LOG_DIR);
 
         self::$fs = FileSystem::factory(self::SCHEME);
         self::$fs->mount();

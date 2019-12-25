@@ -11,16 +11,24 @@ use Simtt\Domain\Model\LogEntry;
 class LogFile
 {
 
-    /** @var \DateTime */
-    private $date;
+    /** @var string */
+    private $file;
 
     /** @var string */
-    private $logDir;
+    private $date;
 
-    public function __construct(\DateTime $date, string $logDir)
+    public function __construct(string $file)
     {
-        $this->date = $date;
-        $this->logDir = $logDir;
+        $this->file = $file;
+        $this->date = pathinfo($file, PATHINFO_FILENAME);
+    }
+
+    public static function createTodayLogFile(string $logDir): self
+    {
+        $date = (new \DateTime())->format('Y-m-d');
+        [$year, $month, ] = explode('-', $date);
+        $file = "$logDir/$year/$month/$date.log";
+        return new LogFile($file);
     }
 
     public function saveLog(LogEntry $logEntry): void
@@ -81,14 +89,11 @@ class LogFile
 
     public function getFile(): string
     {
-        $date = $this->date->format('Y-m-d');
-        [$year, $month, ] = explode('-', $date);
-        return "$this->logDir/$year/$month/$date.log";
+        return $this->file;
     }
 
     public function getBaseId(): string
     {
-        $file = $this->getFile();
-        return pathinfo($file, PATHINFO_FILENAME);
+        return $this->date;
     }
 }

@@ -26,9 +26,7 @@ class LogHandler
     {
         $allEntries = [];
         foreach ($this->logFileFinder->getLogFiles() as $logFile) {
-            $date = pathinfo($logFile, PATHINFO_FILENAME);
-            $dateTime = new \DateTime($date);
-            $entries = (new LogFile($dateTime, $this->logFileFinder->getPath()))->getEntries();
+            $entries = $logFile->getEntries();
             $allEntries = array_merge($allEntries, $entries);
         }
         return $allEntries;
@@ -36,6 +34,7 @@ class LogHandler
 
     public function getLastLog(): ?LogEntry
     {
+
         return null;
     }
 

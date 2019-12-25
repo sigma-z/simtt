@@ -32,10 +32,10 @@ class LogFileTest extends TestCase
     {
         $logEntry = LogEntryCreator::create('800', '830', 'task #1', 'comment #1');
 
-        $persister = new LogFile(new \DateTime(), VirtualFileSystem::LOG_DIR);
-        $persister->saveLog($logEntry);
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile->saveLog($logEntry);
 
-        $file = $persister->getFile();
+        $file = $logFile->getFile();
 
         self::assertTrue($logEntry->isPersisted());
         self::assertFileExists($file);
@@ -44,51 +44,51 @@ class LogFileTest extends TestCase
 
     public function testSaveToExistingLog(): void
     {
-        $persister = new LogFile(new \DateTime(), VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
 
         $lastLogEntry = LogEntryCreator::create('900', '930', 'task #1', 'comment #1');
-        $persister->saveLog($lastLogEntry);
+        $logFile->saveLog($lastLogEntry);
 
         $currentLogEntry = LogEntryCreator::create('930', '1030', 'task #2', 'comment #2');
-        $persister->saveLog($currentLogEntry);
+        $logFile->saveLog($currentLogEntry);
 
         self::assertTrue($lastLogEntry->isPersisted());
         self::assertTrue($currentLogEntry->isPersisted());
-        self::assertStringEqualsFile($persister->getFile(), $lastLogEntry . "\n" . $currentLogEntry . "\n");
+        self::assertStringEqualsFile($logFile->getFile(), $lastLogEntry . "\n" . $currentLogEntry . "\n");
     }
 
     public function testUpdateStopTimeForLogEntry(): void
     {
-        $persister = new LogFile(new \DateTime(), VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
 
         $lastLogEntry = LogEntryCreator::create('900', '930', 'task #1', 'comment #1');
-        $persister->saveLog($lastLogEntry);
+        $logFile->saveLog($lastLogEntry);
 
         $currentLogEntry = LogEntryCreator::create('930', '1030', 'task #2', 'comment #2');
-        $persister->saveLog($currentLogEntry);
+        $logFile->saveLog($currentLogEntry);
 
         $currentLogEntry->stopTime = new Time('11:15');
-        $persister->saveLog($currentLogEntry);
+        $logFile->saveLog($currentLogEntry);
 
-        self::assertStringEqualsFile($persister->getFile(), $lastLogEntry . "\n" . $currentLogEntry . "\n");
+        self::assertStringEqualsFile($logFile->getFile(), $lastLogEntry . "\n" . $currentLogEntry . "\n");
     }
 
     public function testUpdateStartTimeForLogEntry(): void
     {
-        $persister = new LogFile(new \DateTime(), VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
 
         $lastLogEntry = LogEntryCreator::create('900', '930', 'task #1', 'comment #1');
-        $persister->saveLog($lastLogEntry);
+        $logFile->saveLog($lastLogEntry);
 
         $currentLogEntry = LogEntryCreator::create('930', '1030', 'task #2', 'comment #2');
-        $persister->saveLog($currentLogEntry);
+        $logFile->saveLog($currentLogEntry);
 
         $currentLogEntry->startTime = new Time('9:45');
-        $persister->saveLog($currentLogEntry);
+        $logFile->saveLog($currentLogEntry);
         $currentLogEntry->startTime = new Time('9:50');
-        $persister->saveLog($currentLogEntry);
+        $logFile->saveLog($currentLogEntry);
 
-        self::assertStringEqualsFile($persister->getFile(), $lastLogEntry . "\n" . $currentLogEntry . "\n");
+        self::assertStringEqualsFile($logFile->getFile(), $lastLogEntry . "\n" . $currentLogEntry . "\n");
     }
 
 }

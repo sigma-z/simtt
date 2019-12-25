@@ -17,7 +17,7 @@ class LogFileFinder
         $this->path = $path;
     }
 
-    public function getLastLogFile(): ?string
+    public function getLastLogFile(): ?LogFile
     {
         $logFiles = $this->getLogFiles();
         return end($logFiles) ?: null;
@@ -30,7 +30,7 @@ class LogFileFinder
     }
 
     /**
-     * @return string[]
+     * @return LogFile[]
      */
     public function getLogFiles(): array
     {
@@ -38,9 +38,14 @@ class LogFileFinder
         $files = [];
         /** @var \SplFileInfo $file */
         foreach ($iterator as $file) {
-            $files[] = $file->getPathname();
+            $files[] = new LogFile($file->getPathname());
         }
         return $files;
+    }
+
+    public function getCurrentLogFile(): string
+    {
+
     }
 
     private function getLogFileIterator(): \RegexIterator

@@ -8,16 +8,13 @@ services:
     logFileFinder:
         class:      \Simtt\Infrastructure\Service\LogFileFinder
         arguments:  ['%logDir%']
-    logFile:
-        class:      \Simtt\Infrastructure\Service\LogFile
-        arguments:  ['%today%', '%logDir%']
     parser:
         class:      \Simtt\Application\Command\Parser
         arguments:  ['%parserPattern%']
 
     start.cmd:
         class:      \Simtt\Application\Command\Start
-        arguments:  ['@logFile', '@timeTracker']
+        arguments:  ['%currentLogFile%', '@timeTracker']
     simtt.cmd:
         class:      \Simtt\Application\Command\Simtt
         arguments:  ['@parser', '%prompter%']

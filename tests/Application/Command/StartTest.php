@@ -32,7 +32,7 @@ class StartTest extends TestCase
 
     public function testStart(): void
     {
-        $persister = new LogFile(new \DateTime(), VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
         $application = new Application('Simtt');
         $application->setAutoExit(false);
         /** @noinspection PhpParamsInspection */
@@ -41,6 +41,6 @@ class StartTest extends TestCase
         $application->run($input);
 
         $logEntry = LogEntryCreator::create('9:30');
-        self::assertStringEqualsFile($persister->getFile(),  $logEntry . "\n");
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 }

@@ -18,13 +18,14 @@ echo "\nNOTE: This is an early project state. Therefore the tool can't do much a
 $simttInteractive = ($_SERVER['argv'][1] ?? null) === '-i';
 
 $application = new Application('Simtt', SIMTT_VERSION);
-/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
-$application->add($containerBuilder->get('start.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
-$application->add($containerBuilder->get('simtt.cmd'));
-
 if ($simttInteractive) {
     unset($_SERVER['argv'][1]);
+    /** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+    $application->add($containerBuilder->get('simtt.cmd'));
     $application->setDefaultCommand('Simtt');
+}
+else {
+    /** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+    $application->add($containerBuilder->get('start.cmd'));
 }
 $application->run();
