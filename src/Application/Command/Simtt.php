@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Simtt\Application\Command;
 
 use Simtt\Infrastructure\Prompter\Prompter;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -41,7 +42,7 @@ class Simtt extends Command
         $this->prompter->setOutput($output);
         do {
             $result = $this->promptCommand();
-            $continue = $this->runInteractiveCommand($result, $input, $output);
+            $continue = $this->runInteractiveCommand($result, $output);
         }
         while ($continue);
         return 0;
@@ -56,18 +57,19 @@ class Simtt extends Command
         return $result;
     }
 
-    protected function getCommand(ParseResult $result): \Symfony\Component\Console\Command\Command
+    protected function getCommand(ParseResult $result): SymfonyCommand
     {
         /** @noinspection NullPointerExceptionInspection */
         return $this->getApplication()->find($result->getCommandName());
     }
 
-    protected function runInteractiveCommand(ParseResult $result, InputInterface $input, OutputInterface $output): bool
+    protected function runInteractiveCommand(ParseResult $result, OutputInterface $output): bool
     {
         if ($result->isExitCommand()) {
             $output->writeln('Ok, bye bye.');
             return false;
         }
+        $input = $result->createInput();
         $command = $this->getCommand($result);
         $command->run($input, $output);
         return true;

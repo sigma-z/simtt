@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Simtt\Application\Command;
 
+use Symfony\Component\Console\Input\StringInput;
+
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
@@ -16,10 +18,13 @@ class ParseResult
     private $args;
 
 
-    public function __construct(string $commandName, array $args)
+    public function __construct(array $argv)
     {
-        $this->commandName = $commandName;
-        $this->args = $args;
+        if (!isset($argv[0])) {
+            throw new \RuntimeException('Missing command name in arguments.');
+        }
+        $this->commandName = array_shift($argv);
+        $this->args = $argv;
     }
 
     /**
@@ -35,12 +40,16 @@ class ParseResult
         return in_array($this->commandName, ['exit', 'quit', 'q'], true);
     }
 
-    /**
-     * @return array
-     */
     public function getArgs(): array
     {
         return $this->args;
+    }
+
+    public function createInput(): StringInput
+    {
+        $arguments = $this->getArgs();
+        array_unshift($arguments, $this->getCommandName());
+        return new StringInput(implode(' ', $arguments));
     }
 
 }

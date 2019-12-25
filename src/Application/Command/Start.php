@@ -36,16 +36,16 @@ class Start extends Command
         parent::configure();
 
         $this->setDescription('Starts a timer');
-        $this->addArgument('startTime', InputArgument::OPTIONAL, 'time format: hhmm or hmm');
+        $this->addArgument('startTime', InputArgument::OPTIONAL, 'time format: hh:mm or hhmm');
         $this->addArgument('taskTitle', InputArgument::OPTIONAL, 'task title', '');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $startTime = $this->getStartTime($input);
-        $logEntry = $this->timeTracker->start($startTime, $input->getArgument('taskTitle'));
+        $taskName = $input->getArgument('taskTitle');
+        $logEntry = $this->timeTracker->start($startTime, $taskName);
         $this->logFile->saveLog($logEntry);
-
 
         $output->writeln($this->getName());
         return 0;

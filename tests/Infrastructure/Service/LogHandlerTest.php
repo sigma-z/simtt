@@ -10,6 +10,7 @@ namespace Infrastructure\Service;
 use PHPUnit\Framework\TestCase;
 use Simtt\Infrastructure\Service\LogFileFinder;
 use Simtt\Infrastructure\Service\LogHandler;
+use Test\Helper\LogEntryCreator;
 use Test\Helper\VirtualFileSystem;
 
 class LogHandlerTest extends TestCase
@@ -33,15 +34,15 @@ class LogHandlerTest extends TestCase
 
     public function testGetAllLogs(): void
     {
-        $this->setUpLogEntries('2019-11-30', [
+        LogEntryCreator::setUpLogFile('2019-11-30', [
             '12:00;     ;"";""',
             '12:30;     ;"";""'
         ]);
-        $this->setUpLogEntries('2019-12-24', [
+        LogEntryCreator::setUpLogFile('2019-12-24', [
             '22:20;     ;"";""',
             '22:25;     ;"";""'
         ]);
-        $this->setUpLogEntries('2019-12-25', [
+        LogEntryCreator::setUpLogFile('2019-12-25', [
             '12:20;     ;"";""',
             '12:30;     ;"";""'
         ]);
@@ -61,7 +62,7 @@ class LogHandlerTest extends TestCase
     public function testGetLogForYesterdayReturnsNull(): void
     {
         $yesterday = (new \DateTime())->sub(new \DateInterval('P1D'))->format('Y-m-d');
-        $this->setUpLogEntries($yesterday, [
+        LogEntryCreator::setUpLogFile($yesterday, [
             '12:00;     ;"";""',
             '12:30;     ;"";""'
         ]);
@@ -73,7 +74,7 @@ class LogHandlerTest extends TestCase
 
     public function testGetLogForStartedTimerReturnsNull(): void
     {
-        $this->setUpLogEntries((new \DateTime())->format('Y-m-d'), [
+        LogEntryCreator::setUpLogFile((new \DateTime())->format('Y-m-d'), [
             '12:00;     ;"";""'
         ]);
         $currentLog = $this->logHandler->getCurrentLog();
@@ -85,7 +86,7 @@ class LogHandlerTest extends TestCase
 
     public function testGetLogForStoppedTimerReturnsObject(): void
     {
-        $this->setUpLogEntries((new \DateTime())->format('Y-m-d'), [
+        LogEntryCreator::setUpLogFile((new \DateTime())->format('Y-m-d'), [
             '12:00;12:30;"";""'
         ]);
         $currentLog = $this->logHandler->getCurrentLog();
@@ -93,15 +94,5 @@ class LogHandlerTest extends TestCase
         self::assertNull($currentLog);
         self::assertNotNull($lastLog);
         self::assertSame('12:30', (string)$lastLog->stopTime);
-    }
-
-    private function setUpLogEntries(string $date, array $entries): void
-    {
-        [$year, $month, ] = explode('-', $date);
-        $dir = VirtualFileSystem::LOG_DIR . "/$year/$month";
-        if (!is_dir($dir)) {
-            mkdir($dir, 0755, true);
-        }
-        file_put_contents("$dir/$date.log", implode("\n", $entries) . "\n");
     }
 }

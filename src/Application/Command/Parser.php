@@ -34,17 +34,15 @@ class Parser
             return false;
         }
 
-        preg_match("/$pattern/", trim($input), $matches);
+        preg_match("/$pattern/", trim($input), $matches, PREG_UNMATCHED_AS_NULL);
         if ($matches) {
             array_shift($matches);
         }
         if ($matches) {
-            $command = trim(array_shift($matches));
-            $args = array_map(static function (string $item) {
-                return trim($item);
+            $args = array_map(static function ($item) {
+                return $item ? trim($item) : $item;
             }, $matches);
-            $args = array_values(array_filter($args));
-            return new ParseResult($command, $args);
+            return new ParseResult(array_values($args));
         }
         return false;
     }

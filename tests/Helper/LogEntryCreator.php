@@ -26,4 +26,18 @@ class LogEntryCreator
         return $logEntry;
     }
 
+    public static function createToString(string $startTime, string $stopTime = '', string $taskName = '', string $comment = ''): string
+    {
+        return (string)self::create($startTime, $stopTime, $taskName, $comment);
+    }
+
+    public static function setUpLogFile(string $date, array $entries): void
+    {
+        [$year, $month, ] = explode('-', $date);
+        $dir = VirtualFileSystem::LOG_DIR . "/$year/$month";
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+        file_put_contents("$dir/$date.log", implode("\n", $entries) . "\n");
+    }
 }

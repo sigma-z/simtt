@@ -24,8 +24,7 @@ if ($simttInteractive) {
     $application->add($containerBuilder->get('simtt.cmd'));
     $application->setDefaultCommand('Simtt');
 }
-else {
-    /** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
-    $application->add($containerBuilder->get('start.cmd'));
-}
+
+/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+$application->add($containerBuilder->get('start.cmd'));
 $application->run();
