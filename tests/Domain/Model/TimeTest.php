@@ -99,4 +99,32 @@ class TimeTest extends TestCase
             ['2:00', '01:59', 1],
         ];
     }
+
+    /**
+     * @dataProvider provideDiff
+     * @param string $timeA
+     * @param string $timeB
+     * @param int    $expectedHourDiff
+     * @param int    $expectedMinuteDiff
+     */
+    public function testDiff(string $timeA, string $timeB, int $expectedHourDiff, int $expectedMinuteDiff): void
+    {
+        $timeObjA = new Time($timeA);
+        $timeObjB = new Time($timeB);
+        $dateInterval = $timeObjA->diff($timeObjB);
+        self::assertSame($expectedHourDiff, $dateInterval->h);
+        self::assertSame($expectedMinuteDiff, $dateInterval->i);
+    }
+
+    public function provideDiff(): array
+    {
+        return [
+            ['0:00', '0:00', 0, 0],
+            ['0:00', '0:05', 0, 5],
+            ['1:00', '0:00', 1, 0],
+            ['23:59', '0:00', 23, 59],
+            ['0:00', '23:59', 23, 59],
+        ];
+    }
+
 }

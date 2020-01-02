@@ -78,4 +78,29 @@ class LogEntryTest extends TestCase
         self::assertTrue($logEntry->isPersisted());
         self::assertSame('2019-12-21-09:00', $logEntry->getId());
     }
+
+    /**
+     * @dataProvider provideDiff
+     * @param string $start
+     * @param string $stop
+     * @param string $expected
+     */
+    public function testDiff(string $start, string $stop, string $expected): void
+    {
+        $logEntry = LogEntryCreator::create($start, $stop);
+        self::assertSame($expected, $logEntry->diff());
+    }
+
+    public function provideDiff(): array
+    {
+        return [
+            ['0:00', '0:00', '0:00'],
+            ['0:00', '0:05', '0:05'],
+            ['1:00', '0:00', '1:00'],
+            ['23:59', '0:00', '23:59'],
+            ['0:00', '23:59', '23:59'],
+            ['0:00', '', ''],
+        ];
+    }
+
 }

@@ -61,8 +61,7 @@ class LogHandlerTest extends TestCase
 
     public function testGetLogForYesterdayReturnsNull(): void
     {
-        $yesterday = (new \DateTime())->sub(new \DateInterval('P1D'))->format('Y-m-d');
-        LogEntryCreator::setUpLogFile($yesterday, [
+        LogEntryCreator::setUpLogFileYesterday([
             '12:00;     ;"";""',
             '12:30;     ;"";""'
         ]);
@@ -74,7 +73,7 @@ class LogHandlerTest extends TestCase
 
     public function testGetLogForStartedTimerReturnsNull(): void
     {
-        LogEntryCreator::setUpLogFile((new \DateTime())->format('Y-m-d'), [
+        LogEntryCreator::setUpLogFileToday([
             '12:00;     ;"";""'
         ]);
         $currentLog = $this->logHandler->getCurrentLog();
@@ -86,7 +85,7 @@ class LogHandlerTest extends TestCase
 
     public function testGetLogForStoppedTimerReturnsObject(): void
     {
-        LogEntryCreator::setUpLogFile((new \DateTime())->format('Y-m-d'), [
+        LogEntryCreator::setUpLogFileToday([
             '12:00;12:30;"";""'
         ]);
         $currentLog = $this->logHandler->getCurrentLog();

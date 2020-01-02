@@ -7,16 +7,17 @@ declare(strict_types=1);
 
 namespace Test\Application\Command;
 
-use Helper\DIContainer;
-use PHPUnit\Framework\TestCase;
 use Simtt\Infrastructure\Service\LogFile;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\StringInput;
 use Test\Helper\LogEntryCreator;
 use Test\Helper\VirtualFileSystem;
 
 class StartTest extends TestCase
 {
+
+    protected function getCommandShortName(): string
+    {
+        return 'start.cmd';
+    }
 
     protected function setUp(): void
     {
@@ -32,7 +33,9 @@ class StartTest extends TestCase
 
     public function testStart(): void
     {
-        $this->runCommand('start 930');
+        $output = $this->runCommand('start 930');
+        self::assertSame('Timer started at 09:30', rtrim($output->fetch()));
+
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
         $logEntry = LogEntryCreator::create('9:30');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
@@ -40,10 +43,11 @@ class StartTest extends TestCase
 
     public function testStartUpdateStart(): void
     {
-        LogEntryCreator::setUpLogFile((new \DateTime())->format('Y-m-d'), [
+        LogEntryCreator::setUpLogFileToday([
             LogEntryCreator::createToString('900')
         ]);
-        $this->runCommand('start 930');
+        $output = $this->runCommand('start 930');
+        self::assertSame('Timer start updated to 09:30', rtrim($output->fetch()));
 
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
         $logEntry = LogEntryCreator::create('9:30');
@@ -52,7 +56,8 @@ class StartTest extends TestCase
 
     public function testStartWithTaskTitle(): void
     {
-        $this->runCommand('start 930 task');
+        $output = $this->runCommand('start 930 task');
+        self::assertSame("Timer started at 09:30 for 'task'", rtrim($output->fetch()));
 
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
         $logEntry = LogEntryCreator::create('9:30', '', 'task');
@@ -62,10 +67,11 @@ class StartTest extends TestCase
     public function testStartUpdateWithTaskTitleWillNotBeOverwritten(): void
     {
         $expectedTaskTitle = 'test task';
-        LogEntryCreator::setUpLogFile((new \DateTime())->format('Y-m-d'), [
+        LogEntryCreator::setUpLogFileToday([
             LogEntryCreator::createToString('900', '', $expectedTaskTitle)
         ]);
-        $this->runCommand('start 930 task');
+        $output = $this->runCommand('start 930 task');
+        self::assertSame("Timer start updated to 09:30 for 'test task'", rtrim($output->fetch()));
 
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
         $logEntry = LogEntryCreator::create('9:30', '', $expectedTaskTitle);
@@ -75,23 +81,14 @@ class StartTest extends TestCase
     public function testStartAddsEntry(): void
     {
         $logEntryOne = LogEntryCreator::createToString('900', '1000');
-        LogEntryCreator::setUpLogFile((new \DateTime())->format('Y-m-d'), [
+        LogEntryCreator::setUpLogFileToday([
             $logEntryOne
         ]);
-        $this->runCommand('start 10:30');
+        $output = $this->runCommand('start 10:30');
+        self::assertSame('Timer started at 10:30', rtrim($output->fetch()));
 
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
         $logEntryTwo = LogEntryCreator::create('10:30');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntryOne . "\n" . $logEntryTwo . "\n");
-    }
-
-    protected function runCommand(string $stringInput): void
-    {
-        $application = new Application('Simtt');
-        $application->setAutoExit(false);
-        /** @noinspection PhpParamsInspection */
-        $application->add(DIContainer::$container->get('start.cmd'));
-        $input = new StringInput($stringInput);
-        $application->run($input);
     }
 }

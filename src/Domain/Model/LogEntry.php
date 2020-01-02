@@ -103,4 +103,13 @@ class LogEntry
         }
         return '';
     }
+
+    public function diff(): string
+    {
+        if ($this->stopTime === null) {
+            return '';
+        }
+        $dateInterval = $this->startTime->diff($this->stopTime);
+        return sprintf('%d:%02d', $dateInterval->h, $dateInterval->i);
+    }
 }

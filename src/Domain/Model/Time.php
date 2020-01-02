@@ -83,6 +83,11 @@ class Time
         return $this->compare($time) === -1;
     }
 
+    public function diff(Time $time): \DateInterval
+    {
+        return (new \DateTime((string)$this))->diff(new \DateTime((string)($time)));
+    }
+
     public function __toString(): string
     {
         return sprintf('%02d', $this->getHour()) . ':' . sprintf('%02d', $this->getMinute());

@@ -12,9 +12,13 @@ services:
         class:      \Simtt\Application\Command\Parser
         arguments:  ['%parserPattern%']
 
-    start.cmd:
-        class:      \Simtt\Application\Command\Start
-        arguments:  ['%currentLogFile%', '@timeTracker']
     simtt.cmd:
         class:      \Simtt\Application\Command\Simtt
         arguments:  ['@parser', '%prompter%']
+    start.cmd:
+        class:      \Simtt\Application\Command\Start
+        arguments:  ['%currentLogFile%', '@timeTracker']
+    status.cmd:
+        class:      \Simtt\Application\Command\Status
+        arguments:  ['@logHandler']
+

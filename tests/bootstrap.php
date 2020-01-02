@@ -13,6 +13,7 @@ require_once __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/Helper/DIContainer.php';
 require_once __DIR__ . '/Helper/LogEntryCreator.php';
 require_once __DIR__ . '/Helper/VirtualFileSystem.php';
+require_once __DIR__ . '/Application/Command/TestCase.php';
 
 $containerBuilder->setParameter('logDir', VirtualFileSystem::LOG_DIR);
 $containerBuilder->setParameter('currentLogFile', LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR));

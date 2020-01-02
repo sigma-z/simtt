@@ -40,14 +40,27 @@ class Start extends Command
         $this->addArgument('taskTitle', InputArgument::OPTIONAL, 'task title', '');
     }
 
+    /**
+     * @TODO missing case of updating the task title
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return int
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $startTime = $this->getStartTime($input);
         $taskName = $input->getArgument('taskTitle');
         $logEntry = $this->timeTracker->start($startTime, $taskName);
+        $isPersisted = $logEntry->isPersisted();
         $this->logFile->saveLog($logEntry);
+        $message = $isPersisted
+            ? 'Timer start updated to ' . $logEntry->startTime
+            : 'Timer started at ' . $logEntry->startTime;
+        if ($logEntry->task) {
+            $message .= " for '{$logEntry->task}'";
+        }
+        $output->writeln($message);
 
-        $output->writeln($this->getName());
         return 0;
     }
 

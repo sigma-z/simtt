@@ -40,4 +40,17 @@ class LogEntryCreator
         }
         file_put_contents("$dir/$date.log", implode("\n", $entries) . "\n");
     }
+
+    public static function setUpLogFileToday(array $entries): void
+    {
+        $date = (new \DateTime())->format('Y-m-d');
+        self::setUpLogFile($date, $entries);
+    }
+
+    public static function setUpLogFileYesterday(array $entries): void
+    {
+        $yesterday = (new \DateTime())->sub(new \DateInterval('P1D'))->format('Y-m-d');
+        self::setUpLogFile($yesterday, $entries);
+    }
+
 }
