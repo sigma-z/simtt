@@ -10,8 +10,7 @@ namespace Test\Domain;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Simtt\Domain\Exception\NoLogEntryFoundException;
-use Simtt\Domain\Exception\StartTimeBeforeLastLogEntryException;
-use Simtt\Domain\Exception\StopTimeBeforeStartException;
+use Simtt\Domain\Exception\InvalidLogEntryException;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
 use Simtt\Domain\TimeTracker;
@@ -22,10 +21,11 @@ class TimeTrackerTest extends TestCase
 {
 
     /** @var LogEntry|null */
-    private $currentLog;
+    private $beforeLastLog;
 
     /** @var LogEntry|null */
     private $lastLog;
+
 
     public function testStartNewLogWithEmptyParams(): void
     {
@@ -35,44 +35,131 @@ class TimeTrackerTest extends TestCase
         self::assertEmpty($log->task);
     }
 
+    public function testUpdateStartNewLogWithEmptyParams(): void
+    {
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->updateStart();
+        self::assertInstanceOf(Time::class, $log->startTime);
+        self::assertEmpty($log->task);
+    }
+
     public function testStartNewLog(): void
     {
         $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->updateStart(new Time('0000'), 'task name');
+        self::assertSame('00:00', (string)$log->startTime);
+        self::assertSame('task name', $log->task);
+    }
+
+    public function testUpdateStartNewLog(): void
+    {
+        $timeTracker = $this->createTimeTracker();
         $log = $timeTracker->start(new Time('0000'), 'task name');
-        self::assertSame(0, $log->startTime->getHour());
-        self::assertSame(0, $log->startTime->getMinute());
+        self::assertSame('00:00', (string)$log->startTime);
         self::assertSame('task name', $log->task);
     }
 
     public function testStartRunningLogTask(): void
     {
-        $this->setCurrentLog('200');
+        $this->setLastLog('200');
         $timeTracker = $this->createTimeTracker();
         $log = $timeTracker->start(new Time('0220'), 'new task name');
-        self::assertSame(2, $log->startTime->getHour());
-        self::assertSame(20, $log->startTime->getMinute());
+        self::assertSame('02:20', (string)$log->startTime);
         self::assertSame('new task name', $log->task);
+        self::assertNotSame($log, $this->lastLog);
+    }
+
+    public function testUpdateStartRunningLogTask(): void
+    {
+        $this->setLastLog('200');
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->updateStart(new Time('0220'), 'new task name');
+        self::assertSame('02:20', (string)$log->startTime);
+        self::assertSame('new task name', $log->task);
+        self::assertSame($log, $this->lastLog);
     }
 
     /**
      * Note: new task name will not be set, because the user has to decide interactively whether the new task name should be applied or not.
      */
-    public function testStartRunningLogTaskWillNotBeOverwritten(): void
+    public function testUpdateStartRunningLogTaskWillNotBeOverwritten(): void
     {
-        $this->setCurrentLog('200', 'old task name');
+        $this->setLastLog('200', 'old task name');
         $timeTracker = $this->createTimeTracker();
-        $log = $timeTracker->start(new Time('0220'), 'new task name');
-        self::assertSame(2, $log->startTime->getHour());
-        self::assertSame(20, $log->startTime->getMinute());
+        $log = $timeTracker->updateStart(new Time('0220'), 'new task name');
+        self::assertSame('02:20', (string)$log->startTime);
         self::assertSame('old task name', $log->task);
+        self::assertSame($log, $this->lastLog);
     }
 
-    public function testStartBeforeLastLogThrowsException(): void
+    public function testUpdateStartForStoppedLog(): void
     {
-        $this->expectException(StartTimeBeforeLastLogEntryException::class);
-        $this->setLastLog('200', '300');
+        $this->setLastLog('200', 'task', '300');
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->updateStart(new Time('230'));
+        self::assertSame('02:30', (string)$log->startTime);
+        self::assertSame('03:00', (string)$log->stopTime);
+        self::assertSame($log, $this->lastLog);
+    }
+
+    public function testStartBeforeLastLogStopThrowsException(): void
+    {
+        $this->expectException(InvalidLogEntryException::class);
+        $this->setLastLog('200', 'task', '300');
         $timeTracker = $this->createTimeTracker();
         $timeTracker->start(new Time('230'));
+    }
+
+    public function testStartBeforeLastLogStartThrowsException(): void
+    {
+        $this->expectException(InvalidLogEntryException::class);
+        $this->setLastLog('200', 'task');
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->start(new Time('130'));
+    }
+
+    public function testStopOnStoppedEntryThrowsException(): void
+    {
+        $this->expectException(InvalidLogEntryException::class);
+        $this->setLastLog('200', 'task', '300');
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->stop(new Time('330'));
+    }
+
+    public function testUpdateStartBeforeCurrentLogStopThrowsException(): void
+    {
+        $this->expectException(InvalidLogEntryException::class);
+        $this->setLastLog('200', 'task', '300');
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->updateStart(new Time('330'));
+    }
+
+    public function testUpdateStartBeforeLastLogStartThrowsException(): void
+    {
+        $this->expectException(InvalidLogEntryException::class);
+        $this->setBeforeLastLog('200');
+        $this->setLastLog('300');
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->updateStart(new Time('130'));
+    }
+
+    public function testUpdateStartBeforeLastLogStopThrowsException(): void
+    {
+        $this->expectException(InvalidLogEntryException::class);
+        $this->setBeforeLastLog('200', 'task', '300');
+        $this->setLastLog('300');
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->updateStart(new Time('230'));
+    }
+
+    public function testUpdateStopOnStoppedEntry(): void
+    {
+        $this->setLastLog('200', 'task', '300');
+        $timeTracker = $this->createTimeTracker();
+        $log = $timeTracker->updateStop(new Time('230'));
+        self::assertSame($this->lastLog, $log);
+        self::assertSame('02:00', (string)$log->startTime);
+        self::assertSame('02:30', (string)$log->stopTime);
     }
 
     public function testStopOnEmptyLogThrowsException(): void
@@ -82,21 +169,28 @@ class TimeTrackerTest extends TestCase
         $timeTracker->stop(new Time('945'));
     }
 
-    public function testStopLastLog(): void
+    public function testUpdateStopOnEmptyLogThrowsException(): void
+    {
+        $this->expectException(NoLogEntryFoundException::class);
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->updateStop(new Time('945'));
+    }
+
+    public function testUpdateStopLastLog(): void
     {
         $taskName = 'Last log task name';
-        $this->setLastLog('900', '930', $taskName);
+        $this->setLastLog('900', $taskName, '930');
         $timeTracker = $this->createTimeTracker();
-        $log = $timeTracker->stop(new Time('945'));
+        $log = $timeTracker->updateStop(new Time('945'));
         self::assertSame('09:00', (string)$log->startTime);
         self::assertSame('09:45', (string)$log->stopTime);
         self::assertSame($taskName, $log->task);
     }
 
-    public function testStopCurrentLog(): void
+    public function testStopLastLog(): void
     {
-        $taskName = 'Current log task name';
-        $this->setCurrentLog('900', $taskName);
+        $taskName = 'Last log task name';
+        $this->setLastLog('900', $taskName);
         $timeTracker = $this->createTimeTracker();
         $log = $timeTracker->stop(new Time('945'));
         self::assertSame('09:00', (string)$log->startTime);
@@ -106,10 +200,18 @@ class TimeTrackerTest extends TestCase
 
     public function testStopBeforeStartThrowsException(): void
     {
-        $this->expectException(StopTimeBeforeStartException::class);
-        $this->setCurrentLog('900');
+        $this->expectException(InvalidLogEntryException::class);
+        $this->setLastLog('900');
         $timeTracker = $this->createTimeTracker();
         $timeTracker->stop(new Time('845'));
+    }
+
+    public function testUpdateStopBeforeStartThrowsException(): void
+    {
+        $this->expectException(InvalidLogEntryException::class);
+        $this->setLastLog('900');
+        $timeTracker = $this->createTimeTracker();
+        $timeTracker->updateStop(new Time('845'));
     }
 
     public function testTaskThrowsException(): void
@@ -119,15 +221,13 @@ class TimeTrackerTest extends TestCase
         $timeTracker->task('task');
     }
 
-    public function testTaskCurrentLogOverLastLog(): void
+    public function testTaskLastLog(): void
     {
         $this->setLastLog('900', '9:45');
-        $this->setCurrentLog('945');
         $timeTracker = $this->createTimeTracker();
         $log = $timeTracker->task('Test task');
         self::assertSame('Test task', $log->task);
-        self::assertSame($this->currentLog, $log);
-        self::assertEmpty($this->lastLog->task);
+        self::assertSame($this->lastLog, $log);
     }
 
     public function testCommentThrowsException(): void
@@ -135,14 +235,6 @@ class TimeTrackerTest extends TestCase
         $this->expectException(NoLogEntryFoundException::class);
         $timeTracker = $this->createTimeTracker();
         $timeTracker->comment('This a comment');
-    }
-
-    public function testCommentCurrentLog(): void
-    {
-        $this->setCurrentLog('900');
-        $timeTracker = $this->createTimeTracker();
-        $log = $timeTracker->comment('Test comment');
-        self::assertSame('Test comment', $log->comment);
     }
 
     public function testCommentLastLog(): void
@@ -153,17 +245,6 @@ class TimeTrackerTest extends TestCase
         self::assertSame('Test comment', $log->comment);
     }
 
-    public function testCommentCurrentLogOverLastLog(): void
-    {
-        $this->setLastLog('900', '9:45');
-        $this->setCurrentLog('945');
-        $timeTracker = $this->createTimeTracker();
-        $log = $timeTracker->comment('Test comment');
-        self::assertSame('Test comment', $log->comment);
-        self::assertSame($this->currentLog, $log);
-        self::assertEmpty($this->lastLog->comment);
-    }
-
     /**
      * @return TimeTracker
      */
@@ -172,22 +253,22 @@ class TimeTrackerTest extends TestCase
         /** @var LogHandler|MockObject $logHandler */
         $logHandler = $this->createMock(LogHandler::class);
         $logHandler
-            ->method('getCurrentLog')
-            ->willReturn($this->currentLog);
-        $logHandler
             ->method('getLastLog')
             ->willReturn($this->lastLog);
+        $logHandler
+            ->method('getLogReverseIndex')
+            ->willReturn($this->beforeLastLog);
 
         return new TimeTracker($logHandler);
     }
 
-    private function setCurrentLog(string $time, string $task = ''): void
+    private function setLastLog(string $time, string $task = '', string $stopTime = ''): void
     {
-        $this->currentLog = LogEntryCreator::create($time, '', $task, '');
+        $this->lastLog = LogEntryCreator::create($time, $stopTime, $task);
     }
 
-    private function setLastLog(string $startTime, string $stopTime = null, string $taskName = ''): void
+    private function setBeforeLastLog(string $time, string $task = '', string $stopTime = ''): void
     {
-        $this->lastLog = LogEntryCreator::create($startTime, $stopTime, $taskName);
+        $this->beforeLastLog = LogEntryCreator::create($time, $stopTime, $task);
     }
 }

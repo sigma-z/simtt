@@ -9,7 +9,7 @@ $> simtt -i
 ```
 
 Running Simmt interactively means the command line script will execute
- continuously.  
+ continuously.
 
 **Non-interactive mode:**
 ```
@@ -18,12 +18,13 @@ $> simtt [options|command]
 
 ## How to track time
 
-### Start timer 
+### Start timer
 
 * `start` starts timer NOW for an anonymous task.
 * `start [<time>hhmm|hh:mm]` starts a timer for an anonymous task at a given start time.
 * `start [task-title]` starts timer NOW for a named task.
 * `start [<time>hhmm|hh:mm] [task-title]` starts a timer a named task at a given start time.
+* `start* [<time>hhmm|hh:mm]` Updates the timer start of the last entry
 
 
 ### Stop timer
@@ -32,6 +33,7 @@ $> simtt [options|command]
 * `stop [<time>hhmm|hh:mm]` stops a running timer at a given stop time.
 * `stop [task-title]` stops timer NOW for a named task (overwrites old name, if has been defined at the timer start).
 * `stop [<time>hhmm|hh:mm] [task-title]` stops a timer a named task (overwrites old name, if has been defined at the timer start) at a given stop time.
+* `stop* [<time>hhmm|hh:mm]` Updates the timer stop of the last entry
 
 
 ### Status of the timer
@@ -50,7 +52,7 @@ Usage `task[-n]`
 When `task` is called, it sets a task text to the currently running task.
 If no task is being time tracked, it asks to set the task text to the last task.
 
-When `task-1` is called, it sets the task text to the last task. 
+When `task-1` is called, it sets the task text to the last task.
 
 
 ## Comments
@@ -62,30 +64,30 @@ Usage `comment[-n]`
 When `comment` is called, it sets a comment to the currently running task.
 If no task is being time tracked, it asks to set the comment to the last task.
 
-When `comment-1` is called, it sets a comment to the last task. 
+When `comment-1` is called, it sets a comment to the last task.
 
 
 ## Log & Summary
 
-Simtt can show log entries in a sequence, for a day, a week or a month 
+Simtt can show log entries in a sequence, for a day, a week or a month
  and also summarize entries by tasks.
 
 
-### Log 
+### Log
 
 Usage `log [range-selection<int>] [order-direction<asc|desc>]`
 
 Examples:
-* `log` shows the last 15 entries (configurable with `config show-log-items <int>` - see [Configuration](#Configuration)). 
+* `log` shows the last 15 entries (configurable with `config show-log-items <int>` - see [Configuration](#Configuration)).
 * `log all [asc|desc]` shows all log entries in ascending or descending order. 'desc' is the default value.
-* `log 100 [asc|desc]` shows the last 100 log entries by the given order. 
+* `log 100 [asc|desc]` shows the last 100 log entries by the given order.
 * `log 100-120` shows the log entries from 100 to 120 (21 in total, if available).
 
 
 ### Date log
 
 Usage `[day|yesterday|week|month][-n] [sum]`
-  
+
 Examples:
 * `day` shows log entries of today.
 * `yesterday` shows log entries of yesterday.
@@ -110,7 +112,7 @@ Usage for reading a config value `config [config-name]`
 Usage for setting a config value `config [config-name] [config-value]`
 
 **log-dir**
-* `config log-dir` path where log files are stored. Default is './logs' 
+* `config log-dir` path where log files are stored. Default is './logs'
 
 **precision**
 * `config precision` precision for logging times. Default is 1.

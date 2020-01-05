@@ -53,9 +53,9 @@ class LogHandlerTest extends TestCase
 
     public function testGetLogOnEmptyLogReturnsNull(): void
     {
-        $currentLog = $this->logHandler->getCurrentLog();
+        $beforeLastLog = $this->logHandler->getLogReverseIndex(1);
         $lastLog = $this->logHandler->getLastLog();
-        self::assertNull($currentLog);
+        self::assertNull($beforeLastLog);
         self::assertNull($lastLog);
     }
 
@@ -65,9 +65,9 @@ class LogHandlerTest extends TestCase
             '12:00;     ;"";""',
             '12:30;     ;"";""'
         ]);
-        $currentLog = $this->logHandler->getCurrentLog();
+        $beforeLastLog = $this->logHandler->getLogReverseIndex(1);
         $lastLog = $this->logHandler->getLastLog();
-        self::assertNull($currentLog);
+        self::assertNull($beforeLastLog);
         self::assertNull($lastLog);
     }
 
@@ -76,11 +76,11 @@ class LogHandlerTest extends TestCase
         LogEntryCreator::setUpLogFileToday([
             '12:00;     ;"";""'
         ]);
-        $currentLog = $this->logHandler->getCurrentLog();
+        $beforeLastLog = $this->logHandler->getLogReverseIndex(1);
         $lastLog = $this->logHandler->getLastLog();
-        self::assertNull($lastLog);
-        self::assertNotNull($currentLog);
-        self::assertSame('12:00', (string)$currentLog->startTime);
+        self::assertNull($beforeLastLog);
+        self::assertNotNull($lastLog);
+        self::assertSame('12:00', (string)$lastLog->startTime);
     }
 
     public function testGetLogForStoppedTimerReturnsObject(): void
@@ -88,9 +88,9 @@ class LogHandlerTest extends TestCase
         LogEntryCreator::setUpLogFileToday([
             '12:00;12:30;"";""'
         ]);
-        $currentLog = $this->logHandler->getCurrentLog();
+        $beforeLastLog = $this->logHandler->getLogReverseIndex(1);
         $lastLog = $this->logHandler->getLastLog();
-        self::assertNull($currentLog);
+        self::assertNull($beforeLastLog);
         self::assertNotNull($lastLog);
         self::assertSame('12:30', (string)$lastLog->stopTime);
     }

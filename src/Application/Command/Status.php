@@ -36,7 +36,7 @@ class Status extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $logEntry = $this->logHandler->getCurrentLog() ?: $this->logHandler->getLastLog();
+        $logEntry = $this->logHandler->getLastLog();
         if ($logEntry) {
             $this->outputLogEntryStatus($logEntry, $output);
             return 0;

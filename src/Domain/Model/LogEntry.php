@@ -14,7 +14,7 @@ class LogEntry
     /** @var string|null */
     private $id;
 
-    /** @var Time|null */
+    /** @var Time */
     public $startTime;
 
     /** @var Time|null */
@@ -25,6 +25,12 @@ class LogEntry
 
     /** @var string */
     public $comment = '';
+
+    public function __construct(Time $startTime, string $task = '')
+    {
+        $this->startTime = $startTime;
+        $this->task = $task;
+    }
 
     /**
      * @return string|null
@@ -72,8 +78,8 @@ class LogEntry
     public static function fromString(string $raw, string $baseId = null): self
     {
         $parts = explode(self::SEPARATOR, $raw, 4);
-        $log = new self();
-        $log->startTime = self::parseTime($parts[0]);
+        $startTime = self::parseTime($parts[0]);
+        $log = new self($startTime);
         $log->stopTime = isset($parts[1]) ? self::parseTime($parts[1]) : null;
         $log->task = isset($parts[2]) ? self::parseText($parts[2]) : '';
         $log->comment = isset($parts[3]) ? self::parseText($parts[3]) : '';

@@ -6,7 +6,7 @@ namespace Simtt\Domain\Exception;
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
-class StartTimeBeforeLastLogEntryException extends \RuntimeException
+class InvalidLogEntryException extends \RuntimeException
 {
 
 }

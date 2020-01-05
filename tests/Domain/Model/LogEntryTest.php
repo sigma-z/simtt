@@ -30,8 +30,6 @@ class LogEntryTest extends TestCase
     public function provideToString(): array
     {
         return [
-            ['', '', '', '', ''],
-            ['', '900', 'task', 'comment', ''],
             ['900', '', 'task', 'comment', '09:00;     ;"task";"comment"'],
             ['900', '1000', 'task', 'comment', '09:00;10:00;"task";"comment"'],
             ['900', '1000', '', '', '09:00;10:00;"";""'],

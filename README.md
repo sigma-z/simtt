@@ -17,8 +17,14 @@ Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
 `start [time<hhmm|hh:mm>] [task-title]`
 > starts a timer at a given time for a named task. Note: time and task title can be left blank.
 
+`start* [time<hhmm|hh:mm>] [task-title]`
+> updates the start of last log entry. Note: time and task title can be left blank.
+
 `stop [time<hhmm|hh:mm>] [task-title]`
 > stops a timer at a given time for a named task. Note: time and task title can be left blank, a given task name will overwrite the task name given at the start.
+
+`stop* [time<hhmm|hh:mm>] [task-title]`
+> updates the stopping time of last log entry. Note: time and task title can be left blank.
 
 `status`
 > shows status whether a task is running, or not.

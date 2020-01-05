@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace Simtt\Domain;
 
 use Simtt\Domain\Exception\NoLogEntryFoundException;
-use Simtt\Domain\Exception\StartTimeBeforeLastLogEntryException;
-use Simtt\Domain\Exception\StopTimeBeforeStartException;
+use Simtt\Domain\Exception\InvalidLogEntryException;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
 use Simtt\Infrastructure\Service\LogHandler;
@@ -24,72 +23,111 @@ class TimeTracker
         $this->logHandler = $logHandler;
     }
 
+    public function updateStart(Time $startTime = null, string $taskName = ''): LogEntry
+    {
+        $lastLog = $this->logHandler->getLastLog();
+        $startTime = $startTime ?: Time::now();
+        if ($lastLog && $lastLog->stopTime && $lastLog->stopTime->isOlderThan($startTime)) {
+            throw new InvalidLogEntryException('Stop time of last log is older than start time!');
+        }
+        $logBefore = $this->logHandler->getLogReverseIndex(1);
+        if ($logBefore) {
+            if ($logBefore->stopTime && $logBefore->stopTime->isNewerThan($startTime)) {
+                throw new InvalidLogEntryException('Stop time of last lastLog is older than start time!');
+            }
+            if ($logBefore->startTime->isNewerThan($startTime)) {
+                throw new InvalidLogEntryException('Start time of last lastLog is older than start time!');
+            }
+        }
+
+        if (!$lastLog) {
+            $lastLog = new LogEntry($startTime);
+        }
+
+        $lastLog->startTime = $startTime;
+        $this->setLogTaskIfEmpty($lastLog, $taskName);
+        return $lastLog;
+    }
+
     public function start(Time $startTime = null, string $taskName = ''): LogEntry
     {
         $lastLog = $this->logHandler->getLastLog();
         $startTime = $startTime ?: Time::now();
-        if ($lastLog && $lastLog->stopTime->isOlderThan($startTime)) {
-            throw self::startTimeBeforeLastLogEntryException();
+        if ($lastLog && $lastLog->stopTime && $lastLog->stopTime->isNewerThan($startTime)) {
+            throw new InvalidLogEntryException('Stop time of last log is newer than the new start time!');
+        }
+        if ($lastLog && $lastLog->startTime->isNewerThan($startTime)) {
+            throw new InvalidLogEntryException('Start time of last log is newer than the new start time!');
+        }
+        return new LogEntry($startTime, $taskName);
+    }
+
+    public function updateStop(Time $stopTime = null, string $taskName = ''): LogEntry
+    {
+        $log = $this->getLogEntryOrThrowNotFoundException();
+
+        $stopTime = $stopTime ?: Time::now();
+        if ($log->startTime->isNewerThan($stopTime)) {
+            throw new InvalidLogEntryException('Stop time cannot be before start time!');
         }
 
-        $log = $this->logHandler->getCurrentLog() ?: new LogEntry();
-        $log->startTime = $startTime;
-        if (!$log->task && $taskName) {
-            $log->task = $taskName;
-        }
+        $log->stopTime = $stopTime;
+        $this->setLogTaskIfEmpty($log, $taskName);
+
         return $log;
     }
 
     public function stop(Time $stopTime = null, string $taskName = ''): LogEntry
     {
-        $log = $this->getCorrespondingLogEntry();
+        $log = $this->getLogEntryOrThrowNotFoundException();
+        if ($log->stopTime) {
+            throw new InvalidLogEntryException("Cannot stop a stopped timer, please use update stop 'stop*'");
+        }
+
         $stopTime = $stopTime ?: Time::now();
-        if ($log->startTime->isOlderThan($stopTime)) {
-            throw self::stopTimeBeforeStartException();
+        if ($log->startTime->isNewerThan($stopTime)) {
+            throw new InvalidLogEntryException('Stop time cannot be before start time!');
         }
+
         $log->stopTime = $stopTime;
-        if (!$log->task && $taskName) {
-            $log->task = $taskName;
-        }
+        $this->setLogTaskIfEmpty($log, $taskName);
+
         return $log;
     }
 
     public function task(string $task): LogEntry
     {
-        $log = $this->getCorrespondingLogEntry();
+        $log = $this->getLogEntryOrThrowNotFoundException();
         $log->task = $task;
         return $log;
     }
 
     public function comment(string $comment): LogEntry
     {
-        $log = $this->getCorrespondingLogEntry();
+        $log = $this->getLogEntryOrThrowNotFoundException();
         $log->comment = $comment;
         return $log;
     }
 
-    private function getCorrespondingLogEntry(): LogEntry
+    private function getLogEntryOrThrowNotFoundException(): LogEntry
     {
-        $log = $this->logHandler->getCurrentLog() ?: $this->logHandler->getLastLog();
+        $log = $this->logHandler->getLastLog();
         if (!$log) {
             throw self::noLogEntryFoundException();
         }
         return $log;
     }
 
-    private static function startTimeBeforeLastLogEntryException(): StartTimeBeforeLastLogEntryException
-    {
-        return new StartTimeBeforeLastLogEntryException('Stop time of last log is older than start time!');
-    }
-
-    private static function stopTimeBeforeStartException(): StopTimeBeforeStartException
-    {
-        throw new StopTimeBeforeStartException('Stop time cannot be before start time!');
-    }
-
     private static function noLogEntryFoundException(): NoLogEntryFoundException
     {
         return new NoLogEntryFoundException('No log entry found!');
+    }
+
+    private function setLogTaskIfEmpty(LogEntry $log, string $taskName): void
+    {
+        if (!$log->task && $taskName) {
+            $log->task = $taskName;
+        }
     }
 
 }

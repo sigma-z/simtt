@@ -66,13 +66,13 @@ class TimeTest extends TestCase
 
     public function testIsOlderThan(): void
     {
-        $actual = (new Time('300'))->isOlderThan(new Time('230'));
+        $actual = (new Time('230'))->isOlderThan(new Time('300'));
         self::assertTrue($actual);
     }
 
     public function testIsNewThan(): void
     {
-        $actual = (new Time('200'))->isNewerThan(new Time('230'));
+        $actual = (new Time('230'))->isNewerThan(new Time('200'));
         self::assertTrue($actual);
     }
 

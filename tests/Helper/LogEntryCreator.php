@@ -14,12 +14,8 @@ class LogEntryCreator
 
     public static function create(string $startTime, string $stopTime = '', string $taskName = '', string $comment = ''): LogEntry
     {
-        $logEntry = new LogEntry();
-        $logEntry->task = $taskName;
+        $logEntry = new LogEntry(new Time($startTime), $taskName);
         $logEntry->comment = $comment;
-        if ($startTime) {
-            $logEntry->startTime = new Time($startTime);
-        }
         if ($stopTime) {
             $logEntry->stopTime = new Time($stopTime);
         }

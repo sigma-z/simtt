@@ -14,6 +14,9 @@ class LogHandler
     /** @var LogFileFinder */
     private $logFileFinder;
 
+    /** @var null|LogEntry[] */
+    private $entries;
+
     public function __construct(LogFileFinder $logFileFinder)
     {
         $this->logFileFinder = $logFileFinder;
@@ -34,21 +37,27 @@ class LogHandler
 
     public function getLastLog(): ?LogEntry
     {
-        $logEntry = $this->getLastLogEntry();
-        return $logEntry && $logEntry->stopTime !== null ? $logEntry : null;
-    }
-
-    public function getCurrentLog(): ?LogEntry
-    {
-        $logEntry = $this->getLastLogEntry();
-        return $logEntry && $logEntry->stopTime === null ? $logEntry : null;
-    }
-
-    private function getLastLogEntry(): ?LogEntry
-    {
-        $logFile = LogFile::createTodayLogFile($this->logFileFinder->getPath());
-        $entries = $logFile->getEntries();
+        $entries = $this->getLogEntries();
         return end($entries) ?: null;
+    }
+
+    public function getLogReverseIndex(int $reverseIndex)
+    {
+        $entries = $this->getLogEntries();
+        $index = (int)(count($entries) - (abs($reverseIndex) + 1));
+        return $entries[$index] ?? null;
+    }
+
+    /**
+     * @return LogEntry[]
+     */
+    private function getLogEntries(): array
+    {
+        if ($this->entries === null) {
+            $logFile = LogFile::createTodayLogFile($this->logFileFinder->getPath());
+            $this->entries = $logFile->getEntries();
+        }
+        return $this->entries;
     }
 
 }
