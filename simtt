@@ -28,5 +28,7 @@ if ($simttInteractive) {
 /** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
 $application->add($containerBuilder->get('start.cmd'));
 /** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+$application->add($containerBuilder->get('stop.cmd'));
+/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
 $application->add($containerBuilder->get('status.cmd'));
 $application->run();

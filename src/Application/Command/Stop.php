@@ -9,24 +9,25 @@ use Symfony\Component\Console\Input\InputInterface;
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
-class Start extends TimerCommand
+class Stop extends TimerCommand
 {
 
-    protected static $defaultName = 'start';
+    protected static $defaultName = 'stop';
 
     protected function configure(): void
     {
         parent::configure();
 
-        $this->setAliases(['start*']);
-        $this->setDescription('Starts a timer');
+        $this->setAliases(['stop*']);
+        $this->setDescription('Stops a timer');
     }
 
     protected function getMessageForActionPerformed(LogEntry $logEntry, InputInterface $input): string
     {
+        $time = self::$defaultName === 'start' ? $logEntry->startTime : $logEntry->stopTime;
         $message = $this->isUpdate($input)
-            ? 'Timer start updated to ' . $logEntry->startTime
-            : 'Timer started at ' . $logEntry->startTime;
+            ? 'Timer stop updated to ' . $time
+            : 'Timer stopped at ' . $time;
         if ($logEntry->task) {
             $message .= " for '{$logEntry->task}'";
         }

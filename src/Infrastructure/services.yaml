@@ -18,6 +18,9 @@ services:
     start.cmd:
         class:      \Simtt\Application\Command\Start
         arguments:  ['%currentLogFile%', '@timeTracker']
+    stop.cmd:
+        class:      \Simtt\Application\Command\Stop
+        arguments:  ['%currentLogFile%', '@timeTracker']
     status.cmd:
         class:      \Simtt\Application\Command\Status
         arguments:  ['@logHandler']
