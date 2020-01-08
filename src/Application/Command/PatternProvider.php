@@ -16,8 +16,8 @@ class PatternProvider
         $taskPattern = "({$sp}.+)?";
         $minusNum = "(-\d+)?";
         return [
-            'start' => '(start)' . $timePattern . $taskPattern,
-            'stop' => '(stop)' . $timePattern . $taskPattern,
+            'start' => '(start\*?)' . $timePattern . $taskPattern,
+            'stop' => '(stop\*?)' . $timePattern . $taskPattern,
             'status' => '(status)',
             'tasks' => '(tasks)',
             'task' => "(task){$minusNum}",

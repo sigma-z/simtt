@@ -60,4 +60,8 @@ class LogHandler
         return $this->entries;
     }
 
+    public function clear(): void
+    {
+        $this->entries = null;
+    }
 }

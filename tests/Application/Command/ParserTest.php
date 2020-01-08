@@ -15,32 +15,33 @@ class ParserTest extends TestCase
 {
 
     /**
-     * @dataProvider provideParseStart
+     * @dataProvider provideParseStartStop
      * @param string $input
      * @param string $expectedCommand
      * @param array  $expectedArgs
      */
-    public function testParseStart(string $input, string $expectedCommand, array $expectedArgs): void
+    public function testParseStartStop(string $input, string $expectedCommand, array $expectedArgs): void
     {
         $parseResult = self::executeParse($input);
         $this->assertParse($expectedCommand, $expectedArgs, $parseResult);
     }
 
-
-    public function provideParseStart(): array
+    public function provideParseStartStop(): array
     {
         return [
+            ['start*  2221  Task title sample', 'start*', ['2221', 'Task title sample']],
+            ['start* 921', 'start*', ['921', null]],
             ['  start  ', 'start', [null, null]],
+            ['stop 921', 'stop', ['921', null]],
+            ['stop* 921', 'stop*', ['921', null]],
             ['start 921', 'start', ['921', null]],
             ['start 2221', 'start', ['2221', null]],
-            ['start  2221  Task title sample', 'start', ['2221', 'Task title sample']],
             ['start Task title sample', 'start', [null, 'Task title sample']],
             ['start 921 Task title sample', 'start', ['921', 'Task title sample']],
             ['start 9:21 Task title sample', 'start', ['9:21', 'Task title sample']],
             ['  start 09:21 Task title sample ', 'start', ['09:21', 'Task title sample']],
         ];
     }
-
 
     /**
      * @dataProvider provideParseLog
@@ -104,7 +105,7 @@ class ParserTest extends TestCase
 
     private function assertParse(string $expectedCommand, array $expectedArgs, ParseResult $parseResult): void
     {
-        self::assertSame($expectedCommand, $parseResult->getCommandName());
-        self::assertSame($expectedArgs, $parseResult->getArgs());
+        self::assertSame($expectedCommand, $parseResult->getCommandName(), 'Expected command does not match');
+        self::assertSame($expectedArgs, $parseResult->getArgs(), 'Expected command arguments does not match');
     }
 }

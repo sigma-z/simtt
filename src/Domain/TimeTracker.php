@@ -45,7 +45,7 @@ class TimeTracker
         }
 
         $lastLog->startTime = $startTime;
-        $this->setLogTaskIfEmpty($lastLog, $taskName);
+        $lastLog->task = $taskName;
         return $lastLog;
     }
 

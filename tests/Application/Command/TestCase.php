@@ -16,6 +16,12 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     abstract protected function getCommandShortName(): string;
 
+    protected function setUp(): void
+    {
+        DIContainer::$container->reset();
+        parent::setUp();
+    }
+
     protected function runCommand(string $stringInput): BufferedOutput
     {
         $application = new Application('Simtt');

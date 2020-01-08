@@ -79,16 +79,13 @@ class TimeTrackerTest extends TestCase
         self::assertSame($log, $this->lastLog);
     }
 
-    /**
-     * Note: new task name will not be set, because the user has to decide interactively whether the new task name should be applied or not.
-     */
-    public function testUpdateStartRunningLogTaskWillNotBeOverwritten(): void
+    public function testUpdateStartRunningLogTaskWillBeOverwritten(): void
     {
         $this->setLastLog('200', 'old task name');
         $timeTracker = $this->createTimeTracker();
         $log = $timeTracker->updateStart(new Time('0220'), 'new task name');
         self::assertSame('02:20', (string)$log->startTime);
-        self::assertSame('old task name', $log->task);
+        self::assertSame('new task name', $log->task);
         self::assertSame($log, $this->lastLog);
     }
 

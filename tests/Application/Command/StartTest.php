@@ -46,12 +46,26 @@ class StartTest extends TestCase
         LogEntryCreator::setUpLogFileToday([
             LogEntryCreator::createToString('900')
         ]);
-        $output = $this->runCommand('start 930');
+        $output = $this->runCommand('start* 930');
         self::assertSame('Timer start updated to 09:30', rtrim($output->fetch()));
 
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
         $logEntry = LogEntryCreator::create('9:30');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
+    }
+
+    public function testStartNewLog(): void
+    {
+        $logEntryOne = LogEntryCreator::createToString('900');
+        LogEntryCreator::setUpLogFileToday([
+            $logEntryOne
+        ]);
+        $output = $this->runCommand('start 930');
+        self::assertSame('Timer started at 09:30', rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntryTwo = (string)LogEntryCreator::create('9:30');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntryOne . "\n" . $logEntryTwo . "\n");
     }
 
     public function testStartWithTaskTitle(): void
@@ -64,17 +78,16 @@ class StartTest extends TestCase
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 
-    public function testStartUpdateWithTaskTitleWillNotBeOverwritten(): void
+    public function testStartUpdateWithTaskTitleWillBeOverwritten(): void
     {
-        $expectedTaskTitle = 'test task';
         LogEntryCreator::setUpLogFileToday([
-            LogEntryCreator::createToString('900', '', $expectedTaskTitle)
+            LogEntryCreator::createToString('900', '', 'test task')
         ]);
-        $output = $this->runCommand('start 930 task');
-        self::assertSame("Timer start updated to 09:30 for 'test task'", rtrim($output->fetch()));
+        $output = $this->runCommand('start* 930 task');
+        self::assertSame("Timer start updated to 09:30 for 'task'", rtrim($output->fetch()));
 
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
-        $logEntry = LogEntryCreator::create('9:30', '', $expectedTaskTitle);
+        $logEntry = LogEntryCreator::create('9:30', '', 'task');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 

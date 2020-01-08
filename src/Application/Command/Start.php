@@ -35,6 +35,7 @@ class Start extends Command
     {
         parent::configure();
 
+        $this->setAliases(['start*']);
         $this->setDescription('Starts a timer');
         $this->addArgument('startTime', InputArgument::OPTIONAL, 'time format: hh:mm or hhmm');
         $this->addArgument('taskTitle', InputArgument::OPTIONAL, 'task title', '');
@@ -50,7 +51,10 @@ class Start extends Command
     {
         $startTime = $this->getStartTime($input);
         $taskName = $input->getArgument('taskTitle');
-        $logEntry = $this->timeTracker->start($startTime, $taskName);
+        $update = $input->getArgument('command') === 'start*';
+        $logEntry = $update
+            ? $this->timeTracker->updateStart($startTime, $taskName)
+            : $this->timeTracker->start($startTime, $taskName);
         $isPersisted = $logEntry->isPersisted();
         $this->logFile->saveLog($logEntry);
         $message = $isPersisted
