@@ -88,6 +88,27 @@ class Time
         return (new \DateTime((string)$this))->diff(new \DateTime((string)($time)));
     }
 
+    public function roundBy(int $precision): void
+    {
+        if ($precision < 1) {
+            $precision = 1;
+        }
+        $modulo = $this->minute % $precision;
+        if ($modulo >= $precision / 2) {
+            $this->minute = $this->minute - $modulo + $precision;
+            if ($this->minute >= 60) {
+                $this->minute = 0;
+                if ($this->hour + 1 > 23) {
+                    throw new \RuntimeException('Invalid hour, is bigger than 23!');
+                }
+                $this->hour++;
+            }
+        }
+        elseif ($modulo > 0) {
+            $this->minute -= $modulo;
+        }
+    }
+
     public function __toString(): string
     {
         return sprintf('%02d', $this->getHour()) . ':' . sprintf('%02d', $this->getMinute());

@@ -18,15 +18,20 @@ class TimeTracker
     /** @var LogHandler */
     private $logHandler;
 
-    public function __construct(LogHandler $logHandler)
+    /** @var int */
+    private $precision;
+
+    public function __construct(LogHandler $logHandler, int $precision = 1)
     {
         $this->logHandler = $logHandler;
+        $this->precision = $precision;
     }
 
     public function updateStart(Time $startTime = null, string $taskName = ''): LogEntry
     {
         $lastLog = $this->logHandler->getLastLog();
         $startTime = $startTime ?: Time::now();
+        $startTime->roundBy($this->precision);
         if ($lastLog && $lastLog->stopTime && $lastLog->stopTime->isOlderThan($startTime)) {
             throw new InvalidLogEntryException('Stop time of last log is older than start time!');
         }
@@ -56,6 +61,7 @@ class TimeTracker
     {
         $lastLog = $this->logHandler->getLastLog();
         $startTime = $startTime ?: Time::now();
+        $startTime->roundBy($this->precision);
         if ($lastLog && $lastLog->stopTime && $lastLog->stopTime->isNewerThan($startTime)) {
             throw new InvalidLogEntryException('Stop time of last log is newer than the new start time!');
         }
@@ -70,6 +76,7 @@ class TimeTracker
         $log = $this->getLogEntryOrThrowNotFoundException();
 
         $stopTime = $stopTime ?: Time::now();
+        $stopTime->roundBy($this->precision);
         if ($log->startTime->isNewerThan($stopTime)) {
             throw new InvalidLogEntryException('Stop time cannot be before start time!');
         }
@@ -90,6 +97,7 @@ class TimeTracker
         }
 
         $stopTime = $stopTime ?: Time::now();
+        $stopTime->roundBy($this->precision);
         if ($log->startTime->isNewerThan($stopTime)) {
             throw new InvalidLogEntryException('Stop time cannot be before start time!');
         }

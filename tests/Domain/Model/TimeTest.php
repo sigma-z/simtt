@@ -127,4 +127,45 @@ class TimeTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider provideRoundBy
+     * @param string $time
+     * @param int    $precision
+     * @param string $expectedTime
+     */
+    public function testRoundBy(string $time, int $precision, string $expectedTime): void
+    {
+        $time = new Time($time);
+        $time->roundBy($precision);
+        self::assertSame($expectedTime, (string)$time);
+    }
+
+    public function provideRoundBy(): array
+    {
+        return [
+            ['11:10', -5, '11:10'],
+            ['11:10', 0, '11:10'],
+            ['11:10', 1, '11:10'],
+            ['11:10', 5, '11:10'],
+            ['11:11', 5, '11:10'],
+            ['11:12', 5, '11:10'],
+            ['11:13', 5, '11:15'],
+            ['11:17', 5, '11:15'],
+            ['11:17', 2, '11:18'],
+            ['11:16', 2, '11:16'],
+            ['11:16', 10, '11:20'],
+            ['11:14', 10, '11:10'],
+            ['11:14', 60, '11:00'],
+            ['11:30', 60, '12:00'],
+            ['11:58', 5, '12:00'],
+            ['23:57', 5, '23:55'],
+        ];
+    }
+
+    public function testRoundByOutOfRange(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $time = new Time('23:58');
+        $time->roundBy(5);
+    }
 }

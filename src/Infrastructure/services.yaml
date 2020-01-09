@@ -1,13 +1,13 @@
 services:
     timeTracker:
         class:      \Simtt\Domain\TimeTracker
-        arguments:  ['@logHandler']
+        arguments:  ['@logHandler', '%config.precision%']
     logHandler:
         class:      \Simtt\Infrastructure\Service\LogHandler
         arguments:  ['@logFileFinder']
     logFileFinder:
         class:      \Simtt\Infrastructure\Service\LogFileFinder
-        arguments:  ['%logDir%']
+        arguments:  ['%config.logDir%']
     parser:
         class:      \Simtt\Application\Command\Parser
         arguments:  ['%parserPattern%']

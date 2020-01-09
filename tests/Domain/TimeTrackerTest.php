@@ -35,6 +35,68 @@ class TimeTrackerTest extends TestCase
         self::assertEmpty($log->task);
     }
 
+    /**
+     * @dataProvider provideTimeForRoundByPrecision
+     * @param string $time
+     * @param int    $precision
+     * @param string $expectedTime
+     */
+    public function testStartByPrecisionRoundsTime(string $time, int $precision, string $expectedTime): void
+    {
+        $timeTracker = $this->createTimeTracker($precision);
+        $log = $timeTracker->start(new Time($time));
+        self::assertSame($expectedTime, (string)$log->startTime, 'Expected time is rounded to ' . $expectedTime);
+    }
+
+    /**
+     * @dataProvider provideTimeForRoundByPrecision
+     * @param string $time
+     * @param int    $precision
+     * @param string $expectedTime
+     */
+    public function testUpdateStartByPrecisionRoundsTime(string $time, int $precision, string $expectedTime): void
+    {
+        $timeTracker = $this->createTimeTracker($precision);
+        $log = $timeTracker->updateStart(new Time($time));
+        self::assertSame($expectedTime, (string)$log->startTime, 'Expected time is rounded to ' . $expectedTime);
+    }
+
+    /**
+     * @dataProvider provideTimeForRoundByPrecision
+     * @param string $time
+     * @param int    $precision
+     * @param string $expectedTime
+     */
+    public function testStopByPrecisionRoundsTime(string $time, int $precision, string $expectedTime): void
+    {
+        $this->setLastLog('200');
+        $timeTracker = $this->createTimeTracker($precision);
+        $log = $timeTracker->stop(new Time($time));
+        self::assertSame($expectedTime, (string)$log->stopTime, 'Expected time is rounded to ' . $expectedTime);
+    }
+
+    /**
+     * @dataProvider provideTimeForRoundByPrecision
+     * @param string $time
+     * @param int    $precision
+     * @param string $expectedTime
+     */
+    public function testUpdateStopByPrecisionRoundsTime(string $time, int $precision, string $expectedTime): void
+    {
+        $this->setLastLog('200');
+        $timeTracker = $this->createTimeTracker($precision);
+        $log = $timeTracker->updateStop(new Time($time));
+        self::assertSame($expectedTime, (string)$log->stopTime, 'Expected time is rounded to ' . $expectedTime);
+    }
+
+    public function provideTimeForRoundByPrecision(): array
+    {
+        return [
+            ['11:12', 5, '11:10'],
+            ['11:13', 5, '11:15'],
+        ];
+    }
+
     public function testUpdateStartNewLogWithEmptyParams(): void
     {
         $timeTracker = $this->createTimeTracker();
@@ -243,9 +305,10 @@ class TimeTrackerTest extends TestCase
     }
 
     /**
+     * @param int $precision
      * @return TimeTracker
      */
-    private function createTimeTracker(): TimeTracker
+    private function createTimeTracker(int $precision = 1): TimeTracker
     {
         /** @var LogHandler|MockObject $logHandler */
         $logHandler = $this->createMock(LogHandler::class);
@@ -256,7 +319,7 @@ class TimeTrackerTest extends TestCase
             ->method('getLogReverseIndex')
             ->willReturn($this->beforeLastLog);
 
-        return new TimeTracker($logHandler);
+        return new TimeTracker($logHandler, $precision);
     }
 
     private function setLastLog(string $time, string $task = '', string $stopTime = ''): void
