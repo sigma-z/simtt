@@ -22,9 +22,9 @@ class Start extends TimerCommand
         $this->setDescription('Starts a timer');
     }
 
-    protected function getMessageForActionPerformed(LogEntry $logEntry, InputInterface $input): string
+    protected function getMessageForActionPerformed(LogEntry $logEntry, bool $isPersisted, InputInterface $input): string
     {
-        $message = $this->isUpdate($input)
+        $message = $this->isUpdate($input) && $isPersisted
             ? 'Timer start updated to ' . $logEntry->startTime
             : 'Timer started at ' . $logEntry->startTime;
         if ($logEntry->task) {

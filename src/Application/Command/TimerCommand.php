@@ -23,7 +23,7 @@ abstract class TimerCommand extends Command
     /** @var TimeTracker */
     protected $timeTracker;
 
-    abstract protected function getMessageForActionPerformed(LogEntry $logEntry, InputInterface $input): string;
+    abstract protected function getMessageForActionPerformed(LogEntry $logEntry, bool $isPersisted, InputInterface $input): string;
 
     public function __construct(LogFile $logFile, TimeTracker $timeTracker)
     {
@@ -44,8 +44,9 @@ abstract class TimerCommand extends Command
     {
         try {
             $logEntry = $this->performAction($input);
+            $isPersisted = $logEntry->isPersisted();
             $this->logFile->saveLog($logEntry);
-            $message = $this->getMessageForActionPerformed($logEntry, $input);
+            $message = $this->getMessageForActionPerformed($logEntry, $isPersisted, $input);
             $output->writeln($message);
         }
         catch (\Exception $e) {
@@ -64,26 +65,20 @@ abstract class TimerCommand extends Command
         return null;
     }
 
-    /**
-     * @param InputInterface $input
-     * @return bool
-     */
     protected function isUpdate(InputInterface $input): bool
     {
         return strpos($input->getArgument('command'), '*') !== false;
     }
 
-    /**
-     * @param InputInterface $input
-     * @return LogEntry
-     */
     private function performAction(InputInterface $input): LogEntry
     {
         $time = $this->getTime($input);
         $taskName = $input->getArgument('taskTitle');
-        return $this->isUpdate($input)
-            ? $this->timeTracker->updateStop($time, $taskName)
-            : $this->timeTracker->stop($time, $taskName);
+        $command = static::$defaultName;
+        $callable = $this->isUpdate($input)
+            ? [$this->timeTracker, 'update' . $command]
+            : [$this->timeTracker, $command];
+        return $callable($time, $taskName);
     }
 
 }

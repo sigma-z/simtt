@@ -31,9 +31,15 @@ class StopTest extends TestCase
         parent::tearDown();
     }
 
-    public function testStopOnNoRunningTask(): void
+    public function testStopOnEmptyLog(): void
     {
         $output = $this->runCommand('stop 930');
+        self::assertSame('Error: No log entry found!', rtrim($output->fetch()));
+    }
+
+    public function testUpdateOnEmptyLog(): void
+    {
+        $output = $this->runCommand('stop* 930 ');
         self::assertSame('Error: No log entry found!', rtrim($output->fetch()));
     }
 
@@ -49,67 +55,58 @@ class StopTest extends TestCase
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 
-    //public function testStartUpdateStart(): void
-    //{
-    //    LogEntryCreator::setUpLogFileToday([
-    //        LogEntryCreator::createToString('900')
-    //    ]);
-    //    $output = $this->runCommand('start* 930');
-    //    self::assertSame('Timer start updated to 09:30', rtrim($output->fetch()));
-    //
-    //    $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
-    //    $logEntry = LogEntryCreator::create('9:30');
-    //    self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
-    //}
-    //
-    //public function testStartNewLog(): void
-    //{
-    //    $logEntryOne = LogEntryCreator::createToString('900');
-    //    LogEntryCreator::setUpLogFileToday([
-    //        $logEntryOne
-    //    ]);
-    //    $output = $this->runCommand('start 930');
-    //    self::assertSame('Timer started at 09:30', rtrim($output->fetch()));
-    //
-    //    $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
-    //    $logEntryTwo = (string)LogEntryCreator::create('9:30');
-    //    self::assertStringEqualsFile($logFile->getFile(),  $logEntryOne . "\n" . $logEntryTwo . "\n");
-    //}
-    //
-    //public function testStartWithTaskTitle(): void
-    //{
-    //    $output = $this->runCommand('start 930 task');
-    //    self::assertSame("Timer started at 09:30 for 'task'", rtrim($output->fetch()));
-    //
-    //    $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
-    //    $logEntry = LogEntryCreator::create('9:30', '', 'task');
-    //    self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
-    //}
-    //
-    //public function testStartUpdateWithTaskTitleWillBeOverwritten(): void
-    //{
-    //    LogEntryCreator::setUpLogFileToday([
-    //        LogEntryCreator::createToString('900', '', 'test task')
-    //    ]);
-    //    $output = $this->runCommand('start* 930 task');
-    //    self::assertSame("Timer start updated to 09:30 for 'task'", rtrim($output->fetch()));
-    //
-    //    $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
-    //    $logEntry = LogEntryCreator::create('9:30', '', 'task');
-    //    self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
-    //}
-    //
-    //public function testStartAddsEntry(): void
-    //{
-    //    $logEntryOne = LogEntryCreator::createToString('900', '1000');
-    //    LogEntryCreator::setUpLogFileToday([
-    //        $logEntryOne
-    //    ]);
-    //    $output = $this->runCommand('start 10:30');
-    //    self::assertSame('Timer started at 10:30', rtrim($output->fetch()));
-    //
-    //    $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
-    //    $logEntryTwo = LogEntryCreator::create('10:30');
-    //    self::assertStringEqualsFile($logFile->getFile(),  $logEntryOne . "\n" . $logEntryTwo . "\n");
-    //}
+    public function testStopBeforeStart(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('900')
+        ]);
+        $output = $this->runCommand('stop 830');
+        self::assertSame('Error: Stop time cannot be before start time!', rtrim($output->fetch()));
+    }
+
+    public function testStopOnStopped(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('1000', '1010')
+        ]);
+        $output = $this->runCommand('stop 1030');
+        self::assertSame("Error: Cannot stop a stopped timer, please use update stop 'stop*'", rtrim($output->fetch()));
+    }
+
+    public function testStopWithTaskTitle(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('1000', '', 'old task title')
+        ]);
+        $output = $this->runCommand('stop 1030 "new task title"');
+        self::assertSame("Timer stopped at 10:30 for 'new task title'", rtrim($output->fetch()));
+    }
+
+    public function testUpdateStop(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('1000', '1100')
+        ]);
+        $output = $this->runCommand('stop* 1030 ');
+        self::assertSame('Timer stop updated to 10:30', rtrim($output->fetch()));
+    }
+
+    public function testUpdateStopBeforeStart(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('1000', '1100')
+        ]);
+        $output = $this->runCommand('stop* 930 ');
+        self::assertSame('Error: Stop time cannot be before start time!', rtrim($output->fetch()));
+    }
+
+    public function testUpdateStopWithTaskTitle(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('1000', '1100', 'old task title')
+        ]);
+        $output = $this->runCommand('stop* 1030 "new task title"');
+        self::assertSame("Timer stop updated to 10:30 for 'new task title'", rtrim($output->fetch()));
+    }
+
 }

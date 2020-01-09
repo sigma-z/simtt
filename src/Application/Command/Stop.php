@@ -22,12 +22,11 @@ class Stop extends TimerCommand
         $this->setDescription('Stops a timer');
     }
 
-    protected function getMessageForActionPerformed(LogEntry $logEntry, InputInterface $input): string
+    protected function getMessageForActionPerformed(LogEntry $logEntry, bool $isPersisted, InputInterface $input): string
     {
-        $time = self::$defaultName === 'start' ? $logEntry->startTime : $logEntry->stopTime;
-        $message = $this->isUpdate($input)
-            ? 'Timer stop updated to ' . $time
-            : 'Timer stopped at ' . $time;
+        $message = $this->isUpdate($input) && $isPersisted
+            ? 'Timer stop updated to ' . $logEntry->stopTime
+            : 'Timer stopped at ' . $logEntry->stopTime;
         if ($logEntry->task) {
             $message .= " for '{$logEntry->task}'";
         }

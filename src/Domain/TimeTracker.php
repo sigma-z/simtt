@@ -33,10 +33,10 @@ class TimeTracker
         $logBefore = $this->logHandler->getLogReverseIndex(1);
         if ($logBefore) {
             if ($logBefore->stopTime && $logBefore->stopTime->isNewerThan($startTime)) {
-                throw new InvalidLogEntryException('Stop time of last lastLog is older than start time!');
+                throw new InvalidLogEntryException('Stop time of last log is older than start time!');
             }
             if ($logBefore->startTime->isNewerThan($startTime)) {
-                throw new InvalidLogEntryException('Start time of last lastLog is older than start time!');
+                throw new InvalidLogEntryException('Start time of last log is older than start time!');
             }
         }
 
@@ -45,7 +45,10 @@ class TimeTracker
         }
 
         $lastLog->startTime = $startTime;
-        $lastLog->task = $taskName;
+        if ($taskName) {
+            $lastLog->task = $taskName;
+        }
+
         return $lastLog;
     }
 
@@ -72,7 +75,9 @@ class TimeTracker
         }
 
         $log->stopTime = $stopTime;
-        $this->setLogTaskIfEmpty($log, $taskName);
+        if ($taskName) {
+            $log->task = $taskName;
+        }
 
         return $log;
     }
@@ -90,7 +95,9 @@ class TimeTracker
         }
 
         $log->stopTime = $stopTime;
-        $this->setLogTaskIfEmpty($log, $taskName);
+        if ($taskName) {
+            $log->task = $taskName;
+        }
 
         return $log;
     }
@@ -121,13 +128,6 @@ class TimeTracker
     private static function noLogEntryFoundException(): NoLogEntryFoundException
     {
         return new NoLogEntryFoundException('No log entry found!');
-    }
-
-    private function setLogTaskIfEmpty(LogEntry $log, string $taskName): void
-    {
-        if (!$log->task && $taskName) {
-            $log->task = $taskName;
-        }
     }
 
 }

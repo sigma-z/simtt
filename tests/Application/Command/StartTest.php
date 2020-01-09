@@ -41,6 +41,16 @@ class StartTest extends TestCase
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 
+    public function testUpdateStart(): void
+    {
+        $output = $this->runCommand('start* 930');
+        self::assertSame('Timer started at 09:30', rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntry = LogEntryCreator::create('9:30');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
+    }
+
     public function testStartUpdateStart(): void
     {
         LogEntryCreator::setUpLogFileToday([
@@ -57,9 +67,7 @@ class StartTest extends TestCase
     public function testStartNewLog(): void
     {
         $logEntryOne = LogEntryCreator::createToString('900');
-        LogEntryCreator::setUpLogFileToday([
-            $logEntryOne
-        ]);
+        LogEntryCreator::setUpLogFileToday([$logEntryOne]);
         $output = $this->runCommand('start 930');
         self::assertSame('Timer started at 09:30', rtrim($output->fetch()));
 
@@ -94,14 +102,54 @@ class StartTest extends TestCase
     public function testStartAddsEntry(): void
     {
         $logEntryOne = LogEntryCreator::createToString('900', '1000');
-        LogEntryCreator::setUpLogFileToday([
-            $logEntryOne
-        ]);
+        LogEntryCreator::setUpLogFileToday([$logEntryOne]);
         $output = $this->runCommand('start 10:30');
         self::assertSame('Timer started at 10:30', rtrim($output->fetch()));
 
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
         $logEntryTwo = LogEntryCreator::create('10:30');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntryOne . "\n" . $logEntryTwo . "\n");
+    }
+
+    public function testStartBeforeLastStop(): void
+    {
+        $logEntryOne = LogEntryCreator::createToString('900', '1000');
+        LogEntryCreator::setUpLogFileToday([$logEntryOne]);
+        $output = $this->runCommand('start 09:30');
+        self::assertSame('Error: Stop time of last log is newer than the new start time!', rtrim($output->fetch()));
+    }
+
+    public function testStartBeforeLastStart(): void
+    {
+        $logEntryOne = LogEntryCreator::createToString('900');
+        LogEntryCreator::setUpLogFileToday([$logEntryOne]);
+        $output = $this->runCommand('start 08:30');
+        self::assertSame('Error: Start time of last log is newer than the new start time!', rtrim($output->fetch()));
+    }
+
+    public function testUpdateStartBeforeLastStart(): void
+    {
+        $logEntryOne = LogEntryCreator::createToString('900');
+        $logEntryTwo = LogEntryCreator::createToString('1000');
+        LogEntryCreator::setUpLogFileToday([$logEntryOne, $logEntryTwo]);
+        $output = $this->runCommand('start* 08:30');
+        self::assertSame('Error: Start time of last log is older than start time!', rtrim($output->fetch()));
+    }
+
+    public function testUpdateStartBeforeLastStop(): void
+    {
+        $logEntryOne = LogEntryCreator::createToString('900', '1000');
+        $logEntryTwo = LogEntryCreator::createToString('1000');
+        LogEntryCreator::setUpLogFileToday([$logEntryOne, $logEntryTwo]);
+        $output = $this->runCommand('start* 9:30');
+        self::assertSame('Error: Stop time of last log is older than start time!', rtrim($output->fetch()));
+    }
+
+    public function testUpdateStartBeforeStop(): void
+    {
+        $logEntryOne = LogEntryCreator::createToString('900', '1000');
+        LogEntryCreator::setUpLogFileToday([$logEntryOne]);
+        $output = $this->runCommand('start* 10:30');
+        self::assertSame('Error: Stop time of last log is older than start time!', rtrim($output->fetch()));
     }
 }
