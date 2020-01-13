@@ -58,9 +58,12 @@ abstract class TimerCommand extends Command
 
     private function getTime(InputInterface $input): ?Time
     {
-        $startTime = $input->getArgument('time');
-        if ($startTime) {
-            return new Time($startTime);
+        $time = $input->getArgument('time');
+        if ($time) {
+            if ($this->isTime($time)) {
+                return new Time($time);
+            }
+            $input->setArgument('taskTitle', $time);
         }
         return null;
     }
@@ -79,6 +82,11 @@ abstract class TimerCommand extends Command
             ? [$this->timeTracker, 'update' . $command]
             : [$this->timeTracker, $command];
         return $callable($time, $taskName);
+    }
+
+    private function isTime(string $time): bool
+    {
+        return preg_match('/' . PatternProvider::getTimePattern() . '/', $time) !== 0;
     }
 
 }

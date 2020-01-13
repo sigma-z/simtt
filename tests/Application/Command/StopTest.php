@@ -72,6 +72,19 @@ class StopTest extends TestCase
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 
+    public function testStopNowWithTask(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('900')
+        ]);
+        $output = $this->runCommand('stop task');
+        self::assertSame("Timer stopped at 12:00 for 'task'", rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntry = LogEntryCreator::create('9:00', '12:00', 'task');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
+    }
+
     public function testStopBeforeStart(): void
     {
         LogEntryCreator::setUpLogFileToday([

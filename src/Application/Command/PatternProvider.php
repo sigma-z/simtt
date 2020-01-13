@@ -9,10 +9,16 @@ namespace Simtt\Application\Command;
 class PatternProvider
 {
 
+    public static function getTimePattern(): string
+    {
+        return '\d{1,2}:?\d{2}';
+    }
+
     public static function getPatterns(): array
     {
         $sp = '\s+';
-        $timePattern = "({$sp}\d{1,2}:?\d{2})?";
+        $timePattern = self::getTimePattern();
+        $timePattern = "({$sp}{$timePattern})?";
         $taskPattern = "({$sp}.+)?";
         $minusNum = "(-\d+)?";
         return [

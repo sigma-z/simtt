@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Test\Application\Command;
 
+use Simtt\Domain\Model\Time;
 use Simtt\Infrastructure\Service\LogFile;
 use Test\Helper\LogEntryCreator;
 use Test\Helper\VirtualFileSystem;
@@ -23,10 +24,12 @@ class StartTest extends TestCase
     {
         parent::setUp();
         VirtualFileSystem::setUpFileSystem();
+        Time::$now = '12:00';
     }
 
     protected function tearDown(): void
     {
+        Time::$now = 'now';
         VirtualFileSystem::tearDownFileSystem();
         parent::tearDown();
     }
@@ -38,6 +41,16 @@ class StartTest extends TestCase
 
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
         $logEntry = LogEntryCreator::create('9:30');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
+    }
+
+    public function testStartNow(): void
+    {
+        $output = $this->runCommand('start');
+        self::assertSame('Timer started at 12:00', rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntry = LogEntryCreator::create('12:00');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 
@@ -73,6 +86,30 @@ class StartTest extends TestCase
 
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
         $logEntryTwo = (string)LogEntryCreator::create('9:30');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntryOne . "\n" . $logEntryTwo . "\n");
+    }
+
+    public function testStartNewLogNow(): void
+    {
+        $logEntryOne = LogEntryCreator::createToString('900');
+        LogEntryCreator::setUpLogFileToday([$logEntryOne]);
+        $output = $this->runCommand('start');
+        self::assertSame('Timer started at 12:00', rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntryTwo = (string)LogEntryCreator::create('12:00');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntryOne . "\n" . $logEntryTwo . "\n");
+    }
+
+    public function testStartNewLogNowWithTask(): void
+    {
+        $logEntryOne = LogEntryCreator::createToString('900');
+        LogEntryCreator::setUpLogFileToday([$logEntryOne]);
+        $output = $this->runCommand('start "task"');
+        self::assertSame("Timer started at 12:00 for 'task'", rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntryTwo = (string)LogEntryCreator::create('12:00', '', 'task');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntryOne . "\n" . $logEntryTwo . "\n");
     }
 

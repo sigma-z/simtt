@@ -37,6 +37,7 @@ class ParserTest extends TestCase
             ['start 921', 'start', ['921', null]],
             ['start 2221', 'start', ['2221', null]],
             ['start Task title sample', 'start', [null, 'Task title sample']],
+            ['start Task', 'start', [null, 'Task']],
             ['start 921 Task title sample', 'start', ['921', 'Task title sample']],
             ['start 9:21 Task title sample', 'start', ['9:21', 'Task title sample']],
             ['  start 09:21 Task title sample ', 'start', ['09:21', 'Task title sample']],
