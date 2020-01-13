@@ -9,12 +9,14 @@ namespace Simtt\Domain\Model;
 class Time
 {
 
+    /** @var string */
+    public static $now = 'now';
+
     /** @var int */
     private $hour;
 
     /** @var int */
     private $minute;
-
 
     /**
      * @param string $time
@@ -52,7 +54,7 @@ class Time
 
     public static function now(): self
     {
-        $dateTime = new \DateTime('now');
+        $dateTime = new \DateTime(self::$now);
         $time = $dateTime->format('Hi');
         return new self($time);
     }

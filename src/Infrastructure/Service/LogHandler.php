@@ -14,9 +14,6 @@ class LogHandler
     /** @var LogFileFinder */
     private $logFileFinder;
 
-    /** @var null|LogEntry[] */
-    private $entries;
-
     public function __construct(LogFileFinder $logFileFinder)
     {
         $this->logFileFinder = $logFileFinder;
@@ -53,15 +50,8 @@ class LogHandler
      */
     private function getLogEntries(): array
     {
-        if ($this->entries === null) {
-            $logFile = LogFile::createTodayLogFile($this->logFileFinder->getPath());
-            $this->entries = $logFile->getEntries();
-        }
-        return $this->entries;
+        $logFile = LogFile::createTodayLogFile($this->logFileFinder->getPath());
+        return $logFile->getEntries();
     }
 
-    public function clear(): void
-    {
-        $this->entries = null;
-    }
 }

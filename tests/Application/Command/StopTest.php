@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Test\Application\Command;
 
+use Simtt\Domain\Model\Time;
 use Simtt\Infrastructure\Service\LogFile;
 use Test\Helper\LogEntryCreator;
 use Test\Helper\VirtualFileSystem;
@@ -23,10 +24,12 @@ class StopTest extends TestCase
     {
         parent::setUp();
         VirtualFileSystem::setUpFileSystem();
+        Time::$now = '12:00';
     }
 
     protected function tearDown(): void
     {
+        Time::$now = 'now';
         VirtualFileSystem::tearDownFileSystem();
         parent::tearDown();
     }
@@ -48,10 +51,24 @@ class StopTest extends TestCase
         LogEntryCreator::setUpLogFileToday([
             LogEntryCreator::createToString('900')
         ]);
-        $logEntry = LogEntryCreator::create('9:00', '9:30');
         $output = $this->runCommand('stop 930');
         self::assertSame('Timer stopped at 09:30', rtrim($output->fetch()));
+
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntry = LogEntryCreator::create('9:00', '9:30');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
+    }
+
+    public function testStopNow(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('900')
+        ]);
+        $output = $this->runCommand('stop');
+        self::assertSame('Timer stopped at 12:00', rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntry = LogEntryCreator::create('9:00', '12:00');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 
