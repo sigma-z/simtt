@@ -1,0 +1,6 @@
+{
+    "logDir": "./logs",
+    "precision": 1,
+    "showLogItems": 15,
+    "showTaskItems": 15
+}
