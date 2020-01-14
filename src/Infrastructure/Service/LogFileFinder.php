@@ -25,7 +25,7 @@ class LogFileFinder
 
     public function getLogFileForDate(\DateTime $dateTime): string
     {
-        $file = $dateTime->format('Y/m/Y-m-d') . '.log';
+        $file = $dateTime->format('Y/m/Y-m-d') . LogFile::FILE_EXT;
         return $this->path . '/' . $file;
     }
 
@@ -43,14 +43,9 @@ class LogFileFinder
         return $files;
     }
 
-    public function getCurrentLogFile(): string
-    {
-
-    }
-
     private function getLogFileIterator(): \RegexIterator
     {
-        $pattern = '/\d{4}-\d{2}-\d{2}\.log$/';
+        $pattern = '/\d{4}-\d{2}-\d{2}' . preg_quote(LogFile::FILE_EXT, '/') . '$/';
         $directoryIterator = new \RecursiveDirectoryIterator($this->path, \FilesystemIterator::SKIP_DOTS);
         $iteratorIterator = new \RecursiveIteratorIterator($directoryIterator);
         $filterIterator = new \CallbackFilterIterator($iteratorIterator, static function (\SplFileInfo $file) {

@@ -11,6 +11,8 @@ use Simtt\Domain\Model\LogEntry;
 class LogFile
 {
 
+    public const FILE_EXT = '.csv';
+
     /** @var string */
     private $file;
 
@@ -27,7 +29,7 @@ class LogFile
     {
         $date = (new \DateTime())->format('Y-m-d');
         [$year, $month, ] = explode('-', $date);
-        $file = "$logDir/$year/$month/$date.log";
+        $file = "$logDir/$year/$month/$date" . self::FILE_EXT;
         return new LogFile($file);
     }
 

@@ -5,6 +5,7 @@ namespace Test\Helper;
 
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
+use Simtt\Infrastructure\Service\LogFile;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
@@ -34,7 +35,7 @@ class LogEntryCreator
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
-        file_put_contents("$dir/$date.log", implode("\n", $entries) . "\n");
+        file_put_contents("$dir/$date" . LogFile::FILE_EXT, implode("\n", $entries) . "\n");
     }
 
     public static function setUpLogFileToday(array $entries): void
