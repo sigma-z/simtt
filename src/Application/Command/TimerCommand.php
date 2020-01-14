@@ -86,7 +86,7 @@ abstract class TimerCommand extends Command
 
     private function isTime(string $time): bool
     {
-        return preg_match('/' . PatternProvider::getTimePattern() . '/', $time) !== 0;
+        return PatternProvider::isTime($time);
     }
 
 }

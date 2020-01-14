@@ -59,6 +59,16 @@ class StopTest extends TestCase
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 
+    public function testStopRealNow(): void
+    {
+        Time::$now = 'now';
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('000')
+        ]);
+        $output = $this->runCommand('stop');
+        self::assertStringStartsWith('Timer stopped at ', $output->fetch());
+    }
+
     public function testStopNow(): void
     {
         LogEntryCreator::setUpLogFileToday([
@@ -77,11 +87,11 @@ class StopTest extends TestCase
         LogEntryCreator::setUpLogFileToday([
             LogEntryCreator::createToString('900')
         ]);
-        $output = $this->runCommand('stop task');
-        self::assertSame("Timer stopped at 12:00 for 'task'", rtrim($output->fetch()));
+        $output = $this->runCommand('stop "123|654"');
+        self::assertSame("Timer stopped at 12:00 for '123|654'", rtrim($output->fetch()));
 
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
-        $logEntry = LogEntryCreator::create('9:00', '12:00', 'task');
+        $logEntry = LogEntryCreator::create('9:00', '12:00', '123|654');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 

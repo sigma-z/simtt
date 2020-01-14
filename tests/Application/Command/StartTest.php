@@ -44,6 +44,13 @@ class StartTest extends TestCase
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 
+    public function testStartRealNow(): void
+    {
+        Time::$now = 'now';
+        $output = $this->runCommand('start');
+        self::assertStringStartsWith('Timer started at ', rtrim($output->fetch()));
+    }
+
     public function testStartNow(): void
     {
         $output = $this->runCommand('start');
@@ -51,6 +58,16 @@ class StartTest extends TestCase
 
         $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
         $logEntry = LogEntryCreator::create('12:00');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
+    }
+
+    public function testStartNowWithTask(): void
+    {
+        $output = $this->runCommand('start "123|654"');
+        self::assertSame("Timer started at 12:00 for '123|654'", rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntry = LogEntryCreator::create('12:00', '', '123|654');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 

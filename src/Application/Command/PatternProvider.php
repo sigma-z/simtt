@@ -14,6 +14,12 @@ class PatternProvider
         return '\d{1,2}:?\d{2}';
     }
 
+    public static function isTime(string $string): bool
+    {
+        $timePattern = self::getTimePattern();
+        return preg_match("/^{$timePattern}$/", trim($string), $m) !== 0;
+    }
+
     public static function getPatterns(): array
     {
         $sp = '\s+';
