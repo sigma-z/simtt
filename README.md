@@ -1,4 +1,4 @@
-# Simtt - Interactive Simple Command Line Time Tracker in PHP
+# Simtt - Interactive Simple Time Tracker for the CLI in PHP
 
 [![CI Status](https://github.com/sigma-z/simtt/workflows/Continuous%20Integration/badge.svg)](https://github.com/sigma-z/simtt/actions)
 
@@ -6,12 +6,22 @@ Read the full [documentation](https://github.com/sigma-z/simtt/blob/master/docs/
 
 ## Project status
 
+The project is inspired by [badcrocodile / cltt](https://github.com/badcrocodile/cltt).
+
+
+### Implemented features
+
 This is an early project state. At the moment the tool can do:
 - start a timer
 - update the start of a timer
 - stop a timer
 - update the stop of a timer
 - status whether a timer is running or not
+
+### Limitations
+
+- at the moment it is not possible to track times across days
+
 
 ## Quick command overview
 
