@@ -103,24 +103,3 @@ Examples:
 You can show the last 15 task titles (configurable with `config show-task-items <int>` - see [Configuration](#Configuration)).
 
 Usage `tasks`
-
-
-## Configuration
-
-Usage for reading a config value `config [config-name]`
-
-Usage for setting a config value `config [config-name] [config-value]`
-
-**log-dir**
-* `config log-dir` path where log files are stored. Default is './logs'
-
-**precision**
-* `config precision` precision for logging times. Default is 1.
-
-**show-log-items**
-* `config show-log-items` number of log items, that will be shown,
-  when `log` is called with out range-selection. Default is 15.
-
-**show-task-items**
-* `config show-task-items` number of tasks items, that will be shown,
-  when `tasks` is called. Default is 15.
