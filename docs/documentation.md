@@ -103,3 +103,10 @@ Examples:
 You can show the last 15 task titles (configurable with `config show-task-items <int>` - see [Configuration](#Configuration)).
 
 Usage `tasks`
+
+
+### Want to know about 'now'?
+
+You can see what 'now' is like in simtt (maybe different from current time because of your settings in the configuration - see precision):
+
+Usage `now`

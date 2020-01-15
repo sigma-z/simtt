@@ -19,6 +19,11 @@ class LogHandler
         $this->logFileFinder = $logFileFinder;
     }
 
+    public function getLogFileFinder(): LogFileFinder
+    {
+        return $this->logFileFinder;
+    }
+
     /**
      * @return LogEntry[]
      */

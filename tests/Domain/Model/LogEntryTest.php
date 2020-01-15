@@ -5,6 +5,7 @@ namespace Test\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
 use Simtt\Domain\Model\LogEntry;
+use Simtt\Domain\Model\Time;
 use Test\Helper\LogEntryCreator;
 
 /**
@@ -98,6 +99,36 @@ class LogEntryTest extends TestCase
             ['23:59', '0:00', '23:59'],
             ['0:00', '23:59', '23:59'],
             ['0:00', '', ''],
+        ];
+    }
+
+    /**
+     * @dataProvider provideGetDuration
+     * @param string $startTime
+     * @param string $stopTime
+     * @param string|null $alternativeStopTime
+     * @param string $expectedDuration
+     */
+    public function testGetDuration(string $startTime, string $stopTime, $alternativeStopTime, string $expectedDuration):void
+    {
+        $logEntry = new LogEntry(new Time($startTime));
+        if ($stopTime) {
+            $logEntry->stopTime = new Time($stopTime);
+        }
+        $alternativeStopTime = $alternativeStopTime ? new Time($alternativeStopTime) : null;
+        $duration = $logEntry->getDuration($alternativeStopTime);
+        self::assertSame($expectedDuration, $duration);
+    }
+
+    public function provideGetDuration(): array
+    {
+        return [
+            ['9:00', '10:00', null, '01:00'],
+            ['9:00', '10:00', '11:00', '01:00'],
+            ['9:00', '', '11:00', '02:00'],
+            ['9:59', '', '10:02', '00:03'],
+            ['9:59', '', '22:02', '12:03'],
+            ['9:59', '', null, ''],
         ];
     }
 

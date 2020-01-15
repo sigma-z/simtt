@@ -15,6 +15,8 @@ $containerBuilder = new ContainerBuilder();
 $containerBuilder->setParameter('currentLogFile', LogFile::createTodayLogFile($config->getLogDir()));
 $containerBuilder->setParameter('config.precision', $config->getPrecision());
 $containerBuilder->setParameter('config.logDir', $config->getLogDir());
+$containerBuilder->setParameter('config.showLogItems', $config->getShowLogItems());
+$containerBuilder->setParameter('config.showTaskItems', $config->getShowTaskItems());
 $containerBuilder->setParameter('parserPattern', PatternProvider::getPatterns());
 $containerBuilder->setParameter('prompter', \Simtt\Infrastructure\Prompter\Prompter::create());
 $loader = new YamlFileLoader($containerBuilder, new FileLocator(APP_ROOT . '/src/Infrastructure'));

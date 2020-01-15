@@ -118,4 +118,19 @@ class LogEntry
         $dateInterval = $this->startTime->diff($this->stopTime);
         return sprintf('%d:%02d', $dateInterval->h, $dateInterval->i);
     }
+
+    public function getDuration(?Time $alternativeStopTime): string
+    {
+        $stopTime = $this->stopTime ?: $alternativeStopTime;
+        if (!$stopTime) {
+            return '';
+        }
+        $hours = $stopTime->getHour() - $this->startTime->getHour();
+        $minutes = $stopTime->getMinute() - $this->startTime->getMinute();
+        if ($minutes < 0) {
+            $hours--;
+            $minutes = 60 + $minutes;
+        }
+        return sprintf('%02d:%02d', $hours, $minutes);
+    }
 }

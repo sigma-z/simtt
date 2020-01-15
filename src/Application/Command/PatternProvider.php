@@ -17,7 +17,18 @@ class PatternProvider
     public static function isTime(string $string): bool
     {
         $timePattern = self::getTimePattern();
-        return preg_match("/^{$timePattern}$/", trim($string), $m) !== 0;
+        return preg_match("/^{$timePattern}$/", trim($string)) !== 0;
+    }
+
+    public static function getSelectionRangePattern(): string
+    {
+        return "\d+-\d+|\d+|all";
+    }
+
+    public static function isSelectionRangePattern(string $string): bool
+    {
+        $pattern = self::getSelectionRangePattern();
+        return preg_match("/^({$pattern})$/", trim($string)) !== 0;
     }
 
     public static function getPatterns(): array
@@ -39,6 +50,7 @@ class PatternProvider
             'week' => "(week){$minusNum}({$sp}sum)?",
             'month' => "(month){$minusNum}({$sp}sum)?",
             'exit' => '(exit|quit|q)',
+            'now' => '(now)',
             //'config' => '(config)',
         ];
     }

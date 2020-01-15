@@ -24,4 +24,10 @@ services:
     status.cmd:
         class:      \Simtt\Application\Command\Status
         arguments:  ['@logHandler']
+    log.cmd:
+        class:      \Simtt\Application\Command\Log
+        arguments:  ['@logHandler', '%config.showLogItems%']
+    now.cmd:
+        class:      \Simtt\Application\Command\Now
+        arguments:  ['%config.precision%']
 

@@ -67,6 +67,7 @@ class ParserTest extends TestCase
             ['log 100-120 desc', 'log', ['100-120', 'desc']],
             ['log 100-120 asc', 'log', ['100-120', 'asc']],
             ['log 100 asc', 'log', ['100', 'asc']],
+            ['log asc', 'log', [null, 'asc']],
         ];
     }
 

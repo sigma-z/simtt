@@ -40,6 +40,7 @@ class LogFileFinder
         foreach ($iterator as $file) {
             $files[] = new LogFile($file->getPathname());
         }
+        sort($files);
         return $files;
     }
 

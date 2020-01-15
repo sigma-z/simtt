@@ -15,9 +15,8 @@ class Status extends Command
 {
 
     protected static $defaultName = 'status';
-    /**
-     * @var LogHandler
-     */
+
+    /** @var LogHandler */
     private $logHandler;
 
     public function __construct(LogHandler $logHandler)

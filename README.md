@@ -48,6 +48,10 @@ Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
 > shows status whether a task is running, or not.
 - [x] implemented
 
+`now`
+> shows current time (which can be different because of your configuration - see config precision)
+- [x] implemented
+
 `task[-n]`
 > updates a task text for a specified or currently running task. See also the documentation.
 - [ ] implemented
@@ -62,7 +66,7 @@ Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
 
 `log [range-selection<int>] [order-direction]`
 > shows the latest log entries by range and in the given order direction.
-- [ ] implemented
+- [x] (not yet fully) implemented
 
 `day [sum]`
 > shows the log entries of today. If "sum" is defined, it shows the log entries summarized.

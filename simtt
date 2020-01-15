@@ -31,4 +31,8 @@ $application->add($containerBuilder->get('start.cmd'));
 $application->add($containerBuilder->get('stop.cmd'));
 /** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
 $application->add($containerBuilder->get('status.cmd'));
+/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+$application->add($containerBuilder->get('log.cmd'));
+/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+$application->add($containerBuilder->get('now.cmd'));
 $application->run();

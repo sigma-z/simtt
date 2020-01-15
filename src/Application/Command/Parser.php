@@ -17,6 +17,10 @@ class Parser
         $this->patterns = $patterns;
     }
 
+    /**
+     * @param string $input
+     * @return bool|ParseResult
+     */
     public function parse(string $input)
     {
         foreach ($this->patterns as $pattern) {
