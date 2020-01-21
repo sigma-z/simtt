@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Simtt\Application\Command;
 
+use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
 use Simtt\Infrastructure\Service\LogFile;
 use Simtt\Infrastructure\Service\LogHandler;
@@ -51,7 +52,6 @@ class Log extends Command
         if ($selectionRange && !PatternProvider::isSelectionRangePattern($selectionRange)) {
             $input->setArgument('order-direction', $selectionRange);
         }
-        $orderDir = strtolower($input->getArgument('order-direction'));
         $logFileFinder = $this->logHandler->getLogFileFinder();
         $dateTime = new \DateTime();
         $logFile = $logFileFinder->getLogFileForDate($dateTime);
@@ -62,17 +62,12 @@ class Log extends Command
             return 0;
         }
 
-        /** @var int $indexOfFirstEntryOutOfRange */
-        $indexOfFirstEntryOutOfRange = $this->showLogItemsDefault > $numberOfEntries
-            ? $numberOfEntries
-            : $this->showLogItemsDefault;
-
-        $firstEntryOutOfRangeStartTime = isset($entries[$indexOfFirstEntryOutOfRange])
-            ? $entries[$indexOfFirstEntryOutOfRange]->startTime
-            : null;
+        $indexOfFirstEntryOutOfRange = $this->getIndexOfFirstEntryOutOfRange($numberOfEntries);
+        $firstEntryOutOfRangeStartTime = $this->getFirstEntryOutOfRangeStartTime($entries, $indexOfFirstEntryOutOfRange);
 
         $entries = array_slice($entries, 0, $indexOfFirstEntryOutOfRange);
         $rows = $this->getTableRows($entries, $firstEntryOutOfRangeStartTime);
+        $orderDir = strtolower($input->getArgument('order-direction'));
         if ($orderDir === self::DESC) {
             $rows = array_reverse($rows);
         }
@@ -107,6 +102,23 @@ class Log extends Command
             ];
         }
         return $rows;
+    }
+
+    /**
+     * @param LogEntry[] $entries
+     * @param int        $indexOfFirstEntryOutOfRange
+     * @return Time|null
+     */
+    private function getFirstEntryOutOfRangeStartTime(array $entries, int $indexOfFirstEntryOutOfRange): ?Time
+    {
+        return isset($entries[$indexOfFirstEntryOutOfRange])
+            ? $entries[$indexOfFirstEntryOutOfRange]->startTime
+            : null;
+    }
+
+    private function getIndexOfFirstEntryOutOfRange(int $numberOfEntries): int
+    {
+        return $this->showLogItemsDefault > $numberOfEntries ? $numberOfEntries : $this->showLogItemsDefault;
     }
 
 }
