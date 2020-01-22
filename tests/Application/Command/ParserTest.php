@@ -87,15 +87,15 @@ class ParserTest extends TestCase
     {
         return [
             ['day', 'day', [null, null]],
-            ['day-1', 'day', ['-1', null]],
-            ['day-1  sum', 'day', ['-1', 'sum']],
+            ['day-1', 'day', ['1', null]],
+            ['day-1  sum', 'day', ['1', 'sum']],
             ['day  sum', 'day', [null, 'sum']],
             ['week', 'week', [null, null]],
-            ['week-1  sum', 'week', ['-1', 'sum']],
+            ['week-1  sum', 'week', ['1', 'sum']],
             ['month', 'month', [null, null]],
-            ['month-1  sum', 'month', ['-1', 'sum']],
+            ['month-1  sum', 'month', ['1', 'sum']],
             ['comment', 'comment', [null]],
-            ['comment-5', 'comment', ['-5']],
+            ['comment-5', 'comment', ['5']],
         ];
     }
 

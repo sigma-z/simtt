@@ -104,31 +104,39 @@ class LogEntryTest extends TestCase
 
     /**
      * @dataProvider provideGetDuration
-     * @param string $startTime
-     * @param string $stopTime
+     * @param string      $startTime
+     * @param string      $stopTime
      * @param string|null $alternativeStopTime
-     * @param string $expectedDuration
+     * @param string      $expectedDuration
+     * @param int|null    $expectedDurationInMinutes
      */
-    public function testGetDuration(string $startTime, string $stopTime, $alternativeStopTime, string $expectedDuration):void
-    {
+    public function testGetDuration(
+        string $startTime,
+        string $stopTime,
+        $alternativeStopTime,
+        string $expectedDuration,
+        ?int $expectedDurationInMinutes
+    ): void {
         $logEntry = new LogEntry(new Time($startTime));
         if ($stopTime) {
             $logEntry->stopTime = new Time($stopTime);
         }
         $alternativeStopTime = $alternativeStopTime ? new Time($alternativeStopTime) : null;
         $duration = $logEntry->getDuration($alternativeStopTime);
+        $durationInMinutes = $logEntry->getDurationInMinutes($alternativeStopTime);
         self::assertSame($expectedDuration, $duration);
+        self::assertSame($expectedDurationInMinutes, $durationInMinutes);
     }
 
     public function provideGetDuration(): array
     {
         return [
-            ['9:00', '10:00', null, '01:00'],
-            ['9:00', '10:00', '11:00', '01:00'],
-            ['9:00', '', '11:00', '02:00'],
-            ['9:59', '', '10:02', '00:03'],
-            ['9:59', '', '22:02', '12:03'],
-            ['9:59', '', null, ''],
+            ['9:00', '10:00', null, '01:00', 60],
+            ['9:00', '10:00', '11:00', '01:00', 60],
+            ['9:00', '', '11:00', '02:00', 120],
+            ['9:59', '', '10:02', '00:03', 3],
+            ['9:59', '', '22:02', '12:03', 723],
+            ['9:59', '', null, '', null],
         ];
     }
 

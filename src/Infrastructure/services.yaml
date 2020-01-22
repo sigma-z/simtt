@@ -27,6 +27,11 @@ services:
     log.cmd:
         class:      \Simtt\Application\Command\Log
         arguments:  ['@logHandler', '%config.showLogItems%']
+    day.cmd:
+        class:      \Simtt\Application\Command\Day
+        arguments:  ['@logHandler']
+    yesterday.cmd:
+        class:      \Simtt\Application\Command\Yesterday
     now.cmd:
         class:      \Simtt\Application\Command\Now
         arguments:  ['%config.precision%']

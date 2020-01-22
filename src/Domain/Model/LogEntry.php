@@ -121,9 +121,20 @@ class LogEntry
 
     public function getDuration(?Time $alternativeStopTime): string
     {
+        $minutes = $this->getDurationInMinutes($alternativeStopTime);
+        if ($minutes === null) {
+            return '';
+        }
+        $hours = floor($minutes / 60);
+        $minutes -= ($hours * 60);
+        return sprintf('%02d:%02d', $hours, $minutes);
+    }
+
+    public function getDurationInMinutes(?Time $alternativeStopTime): ?int
+    {
         $stopTime = $this->stopTime ?: $alternativeStopTime;
         if (!$stopTime) {
-            return '';
+            return null;
         }
         $hours = $stopTime->getHour() - $this->startTime->getHour();
         $minutes = $stopTime->getMinute() - $this->startTime->getMinute();
@@ -131,6 +142,6 @@ class LogEntry
             $hours--;
             $minutes = 60 + $minutes;
         }
-        return sprintf('%02d:%02d', $hours, $minutes);
+        return $hours * 60 + $minutes;
     }
 }

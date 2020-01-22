@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Simtt\Application\Command;
 
+use Simtt\Application\Command\Helper\LogTable;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
 use Simtt\Infrastructure\Service\LogFile;
@@ -48,10 +49,8 @@ class Log extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $selectionRange = $input->getArgument('range-selection');
-        if ($selectionRange && !PatternProvider::isSelectionRangePattern($selectionRange)) {
-            $input->setArgument('order-direction', $selectionRange);
-        }
+        $this->processInputArguments($input);
+
         $logFileFinder = $this->logHandler->getLogFileFinder();
         $dateTime = new \DateTime();
         $logFile = $logFileFinder->getLogFileForDate($dateTime);
@@ -65,43 +64,13 @@ class Log extends Command
         $indexOfFirstEntryOutOfRange = $this->getIndexOfFirstEntryOutOfRange($numberOfEntries);
         $firstEntryOutOfRangeStartTime = $this->getFirstEntryOutOfRangeStartTime($entries, $indexOfFirstEntryOutOfRange);
 
-        $entries = array_slice($entries, 0, $indexOfFirstEntryOutOfRange);
-        $rows = $this->getTableRows($entries, $firstEntryOutOfRangeStartTime);
         $orderDir = strtolower($input->getArgument('order-direction'));
-        if ($orderDir === self::DESC) {
-            $rows = array_reverse($rows);
-        }
-        $this->createTable($rows, $output);
+        $entries = array_slice($entries, 0, $indexOfFirstEntryOutOfRange);
+        $logTableHelper = new LogTable(new Table($output), $firstEntryOutOfRangeStartTime, $orderDir === self::DESC);
+        $logTableHelper->processLogEntries($entries);
+        $logTableHelper->render();
 
         return 0;
-    }
-
-    /**
-     * @param array[]         $rows
-     * @param OutputInterface $output
-     */
-    private function createTable(array $rows, OutputInterface $output): void
-    {
-        $table = new Table($output);
-        $table->setHeaders(['Start', 'Stop', 'Duration', 'Task', 'Comment']);
-        $table->setRows($rows);
-        $table->render();
-    }
-
-    private function getTableRows(array $entries, ?Time $lastStopTime): array
-    {
-        $rows = [];
-        foreach ($entries as $index => $entry) {
-            $stopTime = isset($entries[$index + 1]) ? $entries[$index + 1]->startTime : $lastStopTime;
-            $rows[] = [
-                (string)$entry->startTime,
-                $stopTime ? (string)$stopTime : '',
-                $entry->getDuration($stopTime) ?: 'running ...',
-                $entry->task,
-                $entry->comment,
-            ];
-        }
-        return $rows;
     }
 
     /**
@@ -119,6 +88,14 @@ class Log extends Command
     private function getIndexOfFirstEntryOutOfRange(int $numberOfEntries): int
     {
         return $this->showLogItemsDefault > $numberOfEntries ? $numberOfEntries : $this->showLogItemsDefault;
+    }
+
+    private function processInputArguments(InputInterface $input): void
+    {
+        $selectionRange = $input->getArgument('range-selection');
+        if ($selectionRange && !PatternProvider::isSelectionRangePattern($selectionRange)) {
+            $input->setArgument('order-direction', $selectionRange);
+        }
     }
 
 }

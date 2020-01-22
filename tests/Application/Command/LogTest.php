@@ -9,6 +9,7 @@ namespace Test\Application\Command;
 
 use Helper\DIContainer;
 use Test\Helper\LogEntryCreator;
+use Test\Helper\TableRowsCellParser;
 use Test\Helper\VirtualFileSystem;
 
 class LogTest extends TestCase
@@ -108,13 +109,7 @@ class LogTest extends TestCase
 
     private function parseRowsCellData(string $content): array
     {
-        $rows = explode("\n", $content);
-        $rows = array_slice($rows, 3, count($rows) - 5);
-        $rowsData = [];
-        foreach ($rows as $row) {
-            $rowsData[] = array_map('trim', explode('|', trim($row, '|')));
-        }
-        return $rowsData;
+        return TableRowsCellParser::parse($content);
     }
 
 }

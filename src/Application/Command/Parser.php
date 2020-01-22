@@ -38,7 +38,7 @@ class Parser
             return false;
         }
 
-        preg_match("/$pattern/", trim($input), $matches, PREG_UNMATCHED_AS_NULL);
+        preg_match("/^$pattern/", trim($input), $matches, PREG_UNMATCHED_AS_NULL);
         if ($matches) {
             array_shift($matches);
         }

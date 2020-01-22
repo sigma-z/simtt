@@ -37,7 +37,7 @@ class PatternProvider
         $timePattern = self::getTimePattern();
         $timePattern = "({$sp}{$timePattern})?";
         $taskPattern = "({$sp}.+)?";
-        $minusNum = "(-\d+)?";
+        $minusNum = "-?(\d+)?";
         return [
             'start' => '(start\*?)' . $timePattern . $taskPattern,
             'stop' => '(stop\*?)' . $timePattern . $taskPattern,
@@ -47,6 +47,7 @@ class PatternProvider
             'comment' => "(comment){$minusNum}",
             'log' => "(log)({$sp}\d+-\d+|{$sp}\d+|{$sp}all)?({$sp}asc|{$sp}desc)?",
             'day' => "(day){$minusNum}({$sp}sum)?",
+            'yesterday' => "(yesterday)({$sp}sum)?",
             'week' => "(week){$minusNum}({$sp}sum)?",
             'month' => "(month){$minusNum}({$sp}sum)?",
             'exit' => '(exit|quit|q)',

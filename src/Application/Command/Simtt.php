@@ -48,7 +48,7 @@ class Simtt extends Command
         return 0;
     }
 
-    protected function promptCommand(): ParseResult
+    private function promptCommand(): ParseResult
     {
         do {
             $command = $this->prompter->prompt('> ');
@@ -57,13 +57,13 @@ class Simtt extends Command
         return $result;
     }
 
-    protected function getCommand(ParseResult $result): SymfonyCommand
+    private function getCommand(ParseResult $result): SymfonyCommand
     {
         /** @noinspection NullPointerExceptionInspection */
         return $this->getApplication()->find($result->getCommandName());
     }
 
-    protected function runInteractiveCommand(ParseResult $result, OutputInterface $output): bool
+    private function runInteractiveCommand(ParseResult $result, OutputInterface $output): bool
     {
         if ($result->isExitCommand()) {
             $output->writeln('Ok, bye bye.');
