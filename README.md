@@ -94,4 +94,4 @@ I wanted to learn some new technology.
 
 I wanted to build something that could be of use for others.
 
-I wanted to project to be developed by TDD and DDD.
+I wanted the project to be developed by TDD and DDD.
