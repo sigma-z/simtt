@@ -119,15 +119,30 @@ class LogEntry
         return sprintf('%d:%02d', $dateInterval->h, $dateInterval->i);
     }
 
+    public static function getTimeDuration(Time $timeStart, ?Time $timeStop): string
+    {
+        $minutes = self::getTimeDurationInMinutes($timeStart, $timeStop);
+        return self::formatDuration($minutes);
+    }
+
+    public static function getTimeDurationInMinutes(Time $timeStart, ?Time $timeStop): ?int
+    {
+        if (!$timeStop) {
+            return null;
+        }
+        $hours = $timeStop->getHour() - $timeStart->getHour();
+        $minutes = $timeStop->getMinute() - $timeStart->getMinute();
+        if ($minutes < 0) {
+            $hours--;
+            $minutes = 60 + $minutes;
+        }
+        return $hours * 60 + $minutes;
+    }
+
     public function getDuration(?Time $alternativeStopTime): string
     {
         $minutes = $this->getDurationInMinutes($alternativeStopTime);
-        if ($minutes === null) {
-            return '';
-        }
-        $hours = floor($minutes / 60);
-        $minutes -= ($hours * 60);
-        return sprintf('%02d:%02d', $hours, $minutes);
+        return self::formatDuration($minutes);
     }
 
     public function getDurationInMinutes(?Time $alternativeStopTime): ?int
@@ -143,5 +158,15 @@ class LogEntry
             $minutes = 60 + $minutes;
         }
         return $hours * 60 + $minutes;
+    }
+
+    private static function formatDuration(?int $minutes): string
+    {
+        if ($minutes === null) {
+            return '';
+        }
+        $hours = floor($minutes / 60);
+        $minutes -= ($hours * 60);
+        return sprintf('%02d:%02d', $hours, $minutes);
     }
 }

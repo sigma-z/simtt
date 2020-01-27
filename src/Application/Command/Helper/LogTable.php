@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Simtt\Application\Command\Helper;
 
+use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
 use Symfony\Component\Console\Helper\Table;
 
@@ -29,14 +30,30 @@ class LogTable
         $this->reverseOrder = $reverseOrder;
     }
 
+    /**
+     * @param LogEntry[] $logEntries
+     */
     public function processLogEntries(array $logEntries): void
     {
         $rows = [];
+        /** @var null|Time $stopTime */
+        $stopTime = null;
         foreach ($logEntries as $index => $entry) {
+            if ($stopTime !== null && $stopTime->isOlderThan($entry->startTime)) {
+                $rows[] = [
+                    (string)$stopTime,
+                    (string)$entry->startTime,
+                    LogEntry::getTimeDuration($stopTime, $entry->startTime),
+                    '-- no time logged --',
+                    ''
+                ];
+            }
+
             $stopTime = $entry->stopTime;
             if (!$stopTime) {
                 $stopTime = isset($logEntries[$index + 1]) ? $logEntries[$index + 1]->startTime : $this->lastStopTime;
             }
+
             $rows[] = [
                 (string)$entry->startTime,
                 $stopTime ? (string)$stopTime : '',

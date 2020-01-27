@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Simtt\Application\Command\Helper;
 
 use Simtt\Domain\Model\LogEntry;
+use Simtt\Domain\Model\Time;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
 
@@ -44,8 +45,25 @@ class LogAggregationTable
     {
         $rows = [];
         $totalDuration = 0;
+        /** @var null|Time $stopTime */
+        $stopTime = null;
         foreach ($logEntries as $index => $entry) {
-            $stopTime = isset($logEntries[$index + 1]) ? $logEntries[$index + 1]->startTime : null;
+            if ($stopTime !== null && $stopTime->isOlderThan($entry->startTime)) {
+                $id = '-- no time logged --';
+                $row = $rows[$id] ?? self::getEmptyRow();
+                $timeDurationInMinutes = LogEntry::getTimeDurationInMinutes($stopTime, $entry->startTime);
+                $row[self::DURATION] = isset($row[self::DURATION]) ? $row[self::DURATION] + $timeDurationInMinutes : $timeDurationInMinutes;
+                $row[self::COUNT]++;
+                $row[self::TASK] = $id;
+                $row[self::COMMENT] = '';
+                $rows[$id] = $row;
+            }
+
+            $stopTime = $entry->stopTime;
+            if (!$stopTime) {
+                $stopTime = isset($logEntries[$index + 1]) ? $logEntries[$index + 1]->startTime : null;
+            }
+
             $duration = $entry->getDurationInMinutes($stopTime);
             $totalDuration += $duration;
             $id = strtolower($entry->task);
