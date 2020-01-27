@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 define('APP_ROOT', __DIR__ . '/..');
 
-$config = ConfigLoader::load(APP_ROOT . '/config.json');
+$config = ConfigLoader::load(APP_ROOT . '/config.json', APP_ROOT);
 $containerBuilder = new ContainerBuilder();
 $containerBuilder->setParameter('currentLogFile', LogFile::createTodayLogFile($config->getLogDir()));
 $containerBuilder->setParameter('config.precision', $config->getPrecision());

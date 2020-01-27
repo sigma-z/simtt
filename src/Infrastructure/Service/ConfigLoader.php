@@ -10,7 +10,7 @@ use Simtt\Application\Config\Config;
  */
 class ConfigLoader
 {
-    public static function load(string $configFile): Config
+    public static function load(string $configFile, string $rootDir): Config
     {
         $configFile = self::getConfigFile($configFile);
         $data = [];
@@ -21,7 +21,7 @@ class ConfigLoader
                 $data = [];
             }
         }
-        return new Config($data);
+        return new Config($data, $rootDir);
     }
 
     private static function getConfigFile(string $configFile): string

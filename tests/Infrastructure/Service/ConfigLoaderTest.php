@@ -32,7 +32,7 @@ class ConfigLoaderTest extends TestCase
             'logDir' => VirtualFileSystem::LOG_DIR
         ];
         file_put_contents(VirtualFileSystem::SCHEME . 'config.json.dist', json_encode($configData));
-        $config = ConfigLoader::load(VirtualFileSystem::SCHEME . 'config.json');
+        $config = ConfigLoader::load(VirtualFileSystem::SCHEME . 'config.json', APP_ROOT);
         self::assertSame(VirtualFileSystem::LOG_DIR, $config->getLogDir());
     }
 
