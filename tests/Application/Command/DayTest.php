@@ -57,6 +57,26 @@ class DayTest extends TestCase
         ], $rowsData);
     }
 
+    public function testDayLogWithStopTime(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('900', '', 'task #1'),
+            LogEntryCreator::createToString('1000', '', 'task #2'),
+            LogEntryCreator::createToString('1050', '', 'task #1', 'comment'),
+            LogEntryCreator::createToString('1130', '1300', 'task #3'),
+        ]);
+
+        $output = $this->runCommand('day');
+        $content = $output->fetch();
+        $rowsData = TableRowsCellParser::parse($content);
+        self::assertSame([
+            ['09:00', '10:00', '01:00', 'task #1', ''],
+            ['10:00', '10:50', '00:50', 'task #2', ''],
+            ['10:50', '11:30', '00:40', 'task #1', 'comment'],
+            ['11:30', '13:00', '01:30', 'task #3', ''],
+        ], $rowsData);
+    }
+
     public function testDaySum(): void
     {
         LogEntryCreator::setUpLogFileToday([
@@ -77,6 +97,28 @@ class DayTest extends TestCase
 
         $sumData = TableRowsCellParser::parseSumRow($content);
         self::assertSame(['02:30', '4', 'Total time', ''], $sumData);
+    }
+
+    public function testDaySumWithStopTime(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('900', '', 'task #1'),
+            LogEntryCreator::createToString('1000', '', 'task #2'),
+            LogEntryCreator::createToString('1050', '', 'task #1', 'comment'),
+            LogEntryCreator::createToString('1130', '1300', 'task #3'),
+        ]);
+
+        $output = $this->runCommand('day sum');
+        $content = $output->fetch();
+        $rowsData = TableRowsCellParser::parse($content, true);
+        self::assertSame([
+            ['01:40', '2', 'task #1', 'comment'],
+            ['01:30', '1', 'task #3', ''],
+            ['00:50', '1', 'task #2', ''],
+        ], $rowsData);
+
+        $sumData = TableRowsCellParser::parseSumRow($content);
+        self::assertSame(['04:00', '4', 'Total time', ''], $sumData);
     }
 
     public function testYesterdayOnEmptyLog(): void

@@ -33,7 +33,10 @@ class LogTable
     {
         $rows = [];
         foreach ($logEntries as $index => $entry) {
-            $stopTime = isset($logEntries[$index + 1]) ? $logEntries[$index + 1]->startTime : $this->lastStopTime;
+            $stopTime = $entry->stopTime;
+            if (!$stopTime) {
+                $stopTime = isset($logEntries[$index + 1]) ? $logEntries[$index + 1]->startTime : $this->lastStopTime;
+            }
             $rows[] = [
                 (string)$entry->startTime,
                 $stopTime ? (string)$stopTime : '',
