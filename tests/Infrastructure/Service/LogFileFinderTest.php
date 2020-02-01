@@ -65,7 +65,7 @@ class LogFileFinderTest extends TestCase
     {
         $logFileFinder = new LogFileFinder(VirtualFileSystem::LOG_DIR);
         $date = new \DateTime('2013-07-01');
-        $actualFile = $logFileFinder->getLogFileForDate($date);
+        $actualFile = $logFileFinder->getLogFileForDate($date)->getFile();
         self::assertSame(VirtualFileSystem::LOG_DIR . '/2013/07/2013-07-01' . LogFile::FILE_EXT, $actualFile);
     }
 

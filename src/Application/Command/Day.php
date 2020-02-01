@@ -5,13 +5,11 @@ namespace Simtt\Application\Command;
 
 use Simtt\Application\Command\Helper\LogAggregationTable;
 use Simtt\Application\Command\Helper\LogTable;
-use Simtt\Infrastructure\Service\LogFile;
 use Simtt\Infrastructure\Service\LogHandler;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
@@ -47,7 +45,7 @@ class Day extends Command
         $logFileFinder = $this->logHandler->getLogFileFinder();
         $dateTime = $this->getDateTime($input->getArgument('offset'));
         $logFile = $logFileFinder->getLogFileForDate($dateTime);
-        $entries = (new LogFile($logFile))->getEntries();
+        $entries = $logFile->getEntries();
 
         if (!$entries) {
             $output->writeln('No entries found for ' . $this->getFormattedDate($dateTime));

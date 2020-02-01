@@ -18,8 +18,8 @@ Interactive command overview:
 `tasks`
 > shows a list of the latest time tracked tasks
 
-`log [range-selection<int>] [order-direction]`
-> shows the latest log entries by range and in the given order direction.
+`log [range-selection<int>]`
+> shows the latest log entries by range.
 
 `day [sum]`
 > shows the log entries of today. If "sum" is defined, it shows the log entries summarized.

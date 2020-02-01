@@ -4,11 +4,12 @@ declare(strict_types=1);
 namespace Simtt\Infrastructure\Service;
 
 use Simtt\Domain\Model\LogEntry;
+use Simtt\Domain\Model\LogFileInterface;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
-class LogFile
+class LogFile implements LogFileInterface
 {
 
     public const FILE_EXT = '.csv';

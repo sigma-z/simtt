@@ -9,26 +9,29 @@ namespace Test\Helper;
 class TableRowsCellParser
 {
 
-    public static function parse(string $content, bool $hasSumRow = false): array
+    public static function parse(string $content, int $onlyRowsWithNumberOfCells, bool $hasSumRow = false): array
     {
         $sumRow = $hasSumRow ? 2 : 0;
         $rows = explode("\n", $content);
         $rows = array_slice($rows, 3, count($rows) - 5 - $sumRow);    // header and closing line plus one for the offset
-        return self::splitRowsIntoCells($rows);
+        return self::splitRowsIntoCells($rows, $onlyRowsWithNumberOfCells);
     }
 
     public static function parseSumRow(string $content): array
     {
         $rows = explode("\n", $content);
         $rows = array_slice($rows, count($rows) - 3, 1);    // sum row
-        return current(self::splitRowsIntoCells($rows));
+        return current(self::splitRowsIntoCells($rows, 4));
     }
 
-    private static function splitRowsIntoCells(array $rows): array
+    private static function splitRowsIntoCells(array $rows, int $onlyRowsWithNumberOfCells): array
     {
         $rowsData = [];
         foreach ($rows as $row) {
-            $rowsData[] = array_map('trim', explode('|', trim($row, '|')));
+            $cells = explode('|', trim($row, '|'));
+            if (count($cells) === $onlyRowsWithNumberOfCells) {
+                $rowsData[] = array_map('trim', $cells);
+            }
         }
         return $rowsData;
     }

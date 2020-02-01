@@ -23,10 +23,10 @@ class LogFileFinder
         return end($logFiles) ?: null;
     }
 
-    public function getLogFileForDate(\DateTime $dateTime): string
+    public function getLogFileForDate(\DateTime $dateTime): LogFile
     {
         $file = $dateTime->format('Y/m/Y-m-d') . LogFile::FILE_EXT;
-        return $this->path . '/' . $file;
+        return new LogFile($this->path . '/' . $file);
     }
 
     /**

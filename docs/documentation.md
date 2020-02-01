@@ -75,12 +75,12 @@ Simtt can show log entries in a sequence, for a day, a week or a month
 
 ### Log
 
-Usage `log [range-selection<int>] [order-direction<asc|desc>]`
+Usage `log [range-selection<int>]`
 
 Examples:
 * `log` shows the last 15 entries (configurable with `config show-log-items <int>` - see [Configuration](#Configuration)).
-* `log all [asc|desc]` shows all log entries in ascending or descending order. 'desc' is the default value.
-* `log 100 [asc|desc]` shows the last 100 log entries by the given order.
+* `log all` shows all log entries.
+* `log 100` shows the last 100 log entries.
 * `log 100-120` shows the log entries from 100 to 120 (21 in total, if available).
 
 

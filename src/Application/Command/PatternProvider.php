@@ -20,17 +20,6 @@ class PatternProvider
         return preg_match("/^{$timePattern}$/", trim($string)) !== 0;
     }
 
-    public static function getSelectionRangePattern(): string
-    {
-        return "\d+-\d+|\d+|all";
-    }
-
-    public static function isSelectionRangePattern(string $string): bool
-    {
-        $pattern = self::getSelectionRangePattern();
-        return preg_match("/^({$pattern})$/", trim($string)) !== 0;
-    }
-
     public static function getPatterns(): array
     {
         $sp = '\s+';
@@ -45,7 +34,7 @@ class PatternProvider
             'tasks' => '(tasks)',
             'task' => "(task){$minusNum}",
             'comment' => "(comment){$minusNum}",
-            'log' => "(log)({$sp}\d+-\d+|{$sp}\d+|{$sp}all)?({$sp}asc|{$sp}desc)?",
+            'log' => "(log)({$sp}\d+-\d+|{$sp}\d+|{$sp}all)?",
             'day' => "(day){$minusNum}({$sp}sum)?",
             'yesterday' => "(yesterday)({$sp}sum)?",
             'week' => "(week){$minusNum}({$sp}sum)?",

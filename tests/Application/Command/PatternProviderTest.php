@@ -37,30 +37,4 @@ class PatternProviderTest extends TestCase
             ['123|654', false],
         ];
     }
-
-    /**
-     * @dataProvider provideIsSelectionRange
-     * @param string $selectionRange
-     * @param bool   $matches
-     */
-    public function testIsSelectionRange(string $selectionRange, bool $matches): void
-    {
-        self::assertSame($matches, PatternProvider::isSelectionRangePattern($selectionRange));
-    }
-
-    public function provideIsSelectionRange(): array
-    {
-        return [
-            ['', false],
-            ['1', true],
-            ['1111', true],
-            ['11-11', true],
-            ['1all', false],
-            ['1-all', false],
-            ['1-1-1', false],
-            ['all', true],
-            ['0-0', true],
-        ];
-    }
-
 }

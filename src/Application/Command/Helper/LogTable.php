@@ -6,6 +6,8 @@ namespace Simtt\Application\Command\Helper;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableCell;
+use Symfony\Component\Console\Helper\TableSeparator;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
@@ -38,6 +40,7 @@ class LogTable
         $rows = [];
         /** @var null|Time $stopTime */
         $stopTime = null;
+        $date = null;
         foreach ($logEntries as $index => $entry) {
             if ($stopTime !== null && $stopTime->isOlderThan($entry->startTime)) {
                 $rows[] = [
@@ -54,6 +57,14 @@ class LogTable
                 $stopTime = isset($logEntries[$index + 1]) ? $logEntries[$index + 1]->startTime : $this->lastStopTime;
             }
 
+            if ($date !== $entry->getDate()) {
+                if ($date !== null) {
+                    $rows[] = new TableSeparator();
+                }
+                $date = $entry->getDate();
+                $rows[] = [new TableCell('Date: ' .$date, ['colspan' => 5])];
+                $rows[] = new TableSeparator();
+            }
             $rows[] = [
                 (string)$entry->startTime,
                 $stopTime ? (string)$stopTime : '',

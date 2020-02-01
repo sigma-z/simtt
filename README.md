@@ -64,9 +64,9 @@ Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
 > shows a list of the latest time tracked tasks
 - [ ] implemented
 
-`log [range-selection<int>] [order-direction]`
-> shows the latest log entries by range and in the given order direction.
-- [x] (not yet fully) implemented
+`log [range-selection<int>]`
+> shows the latest log entries by range.
+- [x] implemented
 
 `day [sum]`
 > shows the log entries of today. If "sum" is defined, it shows the log entries summarized.

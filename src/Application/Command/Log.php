@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Simtt\Application\Command;
 
+use Simtt\Application\Command\Helper\ArraysRangeSelector;
+use Simtt\Application\Command\Helper\LogFileEntriesFetcher;
 use Simtt\Application\Command\Helper\LogTable;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
@@ -19,9 +21,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Log extends Command
 {
 
-    private const DESC = 'desc';
-    private const ASC = 'asc';
-
     protected static $defaultName = 'log';
 
     /** @var LogHandler */
@@ -29,6 +28,15 @@ class Log extends Command
 
     /** @var int */
     private $showLogItemsDefault;
+
+    /** @var int */
+    private $start = 1;
+
+    /** @var int */
+    private $end = 0;
+
+    /** @var Time|null */
+    private $stopTimeByFollowingEntry;
 
     public function __construct(LogHandler $logHandler, int $showLogItemsDefault)
     {
@@ -44,7 +52,6 @@ class Log extends Command
 
         $this->setDescription('Show logged time information');
         $this->addArgument('range-selection', InputArgument::OPTIONAL, 'selection or range of days');
-        $this->addArgument('order-direction', InputArgument::OPTIONAL, 'task title', self::ASC);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -52,50 +59,52 @@ class Log extends Command
         $this->processInputArguments($input);
 
         $logFileFinder = $this->logHandler->getLogFileFinder();
-        $dateTime = new \DateTime();
-        $logFile = $logFileFinder->getLogFileForDate($dateTime);
-        $entries = (new LogFile($logFile))->getEntries();
-        $numberOfEntries = count($entries);
+
+        $logFiles = $logFileFinder->getLogFiles();
+        $logEntries = $this->getLogEntries($logFiles);
+        $numberOfEntries = count($logEntries);
         if ($numberOfEntries === 0) {
             $output->writeln('No entries found');
             return 0;
         }
 
-        $indexOfFirstEntryOutOfRange = $this->getIndexOfFirstEntryOutOfRange($numberOfEntries);
-        $firstEntryOutOfRangeStartTime = $this->getFirstEntryOutOfRangeStartTime($entries, $indexOfFirstEntryOutOfRange);
-
-        $orderDir = strtolower($input->getArgument('order-direction'));
-        $entries = array_slice($entries, 0, $indexOfFirstEntryOutOfRange);
-        $logTableHelper = new LogTable(new Table($output), $firstEntryOutOfRangeStartTime, $orderDir === self::DESC);
-        $logTableHelper->processLogEntries($entries);
+        $logTableHelper = new LogTable(new Table($output), $this->stopTimeByFollowingEntry);
+        $logTableHelper->processLogEntries($logEntries);
         $logTableHelper->render();
 
         return 0;
     }
 
-    /**
-     * @param LogEntry[] $entries
-     * @param int        $indexOfFirstEntryOutOfRange
-     * @return Time|null
-     */
-    private function getFirstEntryOutOfRangeStartTime(array $entries, int $indexOfFirstEntryOutOfRange): ?Time
-    {
-        return isset($entries[$indexOfFirstEntryOutOfRange])
-            ? $entries[$indexOfFirstEntryOutOfRange]->startTime
-            : null;
-    }
-
-    private function getIndexOfFirstEntryOutOfRange(int $numberOfEntries): int
-    {
-        return $this->showLogItemsDefault > $numberOfEntries ? $numberOfEntries : $this->showLogItemsDefault;
-    }
-
     private function processInputArguments(InputInterface $input): void
     {
+        $this->end = $this->showLogItemsDefault;
         $selectionRange = $input->getArgument('range-selection');
-        if ($selectionRange && !PatternProvider::isSelectionRangePattern($selectionRange)) {
-            $input->setArgument('order-direction', $selectionRange);
+        if ($selectionRange) {
+            $selectionRangeParts = explode('-', $selectionRange, 2);
+            if (count($selectionRangeParts) === 2) {
+                [$this->start, $this->end] = $selectionRangeParts;
+            }
+            else {
+                $this->end = $selectionRange === 'all' ? 0 : $selectionRange;
+            }
         }
+    }
+
+    /**
+     * @param LogFile[] $logFiles
+     * @return LogEntry[]
+     */
+    private function getLogEntries(array $logFiles): array
+    {
+        $rangeSelector = new ArraysRangeSelector((int)$this->start, (int)$this->end + 1);
+        $elements = $rangeSelector->getElements(new LogFileEntriesFetcher($logFiles));
+
+        // getting stop time for the last element by retrieving start time of the last element out of range
+        if (count($elements) > $this->end - $this->start + 1) {
+            $firstEntryOutOfRange = array_pop($elements);
+            $this->stopTimeByFollowingEntry = $firstEntryOutOfRange->startTime;
+        }
+        return $elements;
     }
 
 }

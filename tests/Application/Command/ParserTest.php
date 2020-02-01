@@ -59,15 +59,11 @@ class ParserTest extends TestCase
     public function provideParseLog(): array
     {
         return [
-            ['log', 'log', [null, null]],
-            ['log 100', 'log', ['100', null]],
-            ['log all', 'log', ['all', null]],
-            ['log 100-100', 'log', ['100-100', null]],
-            ['log 100-120', 'log', ['100-120', null]],
-            ['log 100-120 desc', 'log', ['100-120', 'desc']],
-            ['log 100-120 asc', 'log', ['100-120', 'asc']],
-            ['log 100 asc', 'log', ['100', 'asc']],
-            ['log asc', 'log', [null, 'asc']],
+            ['log', 'log', [null]],
+            ['log 100', 'log', ['100']],
+            ['log all', 'log', ['all']],
+            ['log 100-100', 'log', ['100-100']],
+            ['log 100-120', 'log', ['100-120']],
         ];
     }
 

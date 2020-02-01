@@ -32,25 +32,21 @@ class LogEntry
         $this->task = $task;
     }
 
-    /**
-     * @return string|null
-     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @param string|null $id
-     */
+    public function getDate(): ?string
+    {
+        return $this->id ? substr($this->id, 0, 10) : null;
+    }
+
     public function setId(string $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return bool
-     */
     public function isPersisted(): bool
     {
         return !empty($this->id);

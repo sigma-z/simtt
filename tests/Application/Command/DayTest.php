@@ -48,7 +48,7 @@ class DayTest extends TestCase
 
         $output = $this->runCommand('day');
         $content = $output->fetch();
-        $rowsData = TableRowsCellParser::parse($content);
+        $rowsData = TableRowsCellParser::parse($content, 5);
         self::assertSame([
             ['09:00', '10:00', '01:00', 'task #1', ''],
             ['10:00', '10:50', '00:50', 'task #2', ''],
@@ -68,7 +68,7 @@ class DayTest extends TestCase
 
         $output = $this->runCommand('day');
         $content = $output->fetch();
-        $rowsData = TableRowsCellParser::parse($content);
+        $rowsData = TableRowsCellParser::parse($content, 5);
         self::assertSame([
             ['09:00', '10:00', '01:00', 'task #1', ''],
             ['10:00', '10:50', '00:50', 'task #2', ''],
@@ -89,7 +89,7 @@ class DayTest extends TestCase
 
         $output = $this->runCommand('day');
         $content = $output->fetch();
-        $rowsData = TableRowsCellParser::parse($content);
+        $rowsData = TableRowsCellParser::parse($content, 5);
         self::assertSame([
             ['09:00', '10:00', '01:00', 'task #1', ''],
             ['10:00', '10:30', '00:30', 'task #2', ''],
@@ -112,7 +112,7 @@ class DayTest extends TestCase
 
         $output = $this->runCommand('day sum');
         $content = $output->fetch();
-        $rowsData = TableRowsCellParser::parse($content, true);
+        $rowsData = TableRowsCellParser::parse($content, 4, true);
         self::assertSame([
             ['01:40', '2', 'task #1', 'comment'],
             ['00:50', '1', 'task #2', ''],
@@ -134,7 +134,7 @@ class DayTest extends TestCase
 
         $output = $this->runCommand('day sum');
         $content = $output->fetch();
-        $rowsData = TableRowsCellParser::parse($content, true);
+        $rowsData = TableRowsCellParser::parse($content, 4, true);
         self::assertSame([
             ['01:40', '2', 'task #1', 'comment'],
             ['01:30', '1', 'task #3', ''],
@@ -157,7 +157,7 @@ class DayTest extends TestCase
 
         $output = $this->runCommand('day sum');
         $content = $output->fetch();
-        $rowsData = TableRowsCellParser::parse($content, true);
+        $rowsData = TableRowsCellParser::parse($content, 4, true);
         self::assertSame([
             ['01:40', '2', 'task #1', 'comment'],
             ['01:00', '2', 'task #3', ''],
@@ -193,7 +193,7 @@ class DayTest extends TestCase
 
         $output = $this->runCommand('day 1');
         $content = $output->fetch();
-        $rowsData = TableRowsCellParser::parse($content);
+        $rowsData = TableRowsCellParser::parse($content, 5);
         self::assertSame([
             ['10:00', '11:10', '01:10', 'task #1', ''],
             ['11:10', '11:45', '00:35', 'task #2', ''],
@@ -217,7 +217,7 @@ class DayTest extends TestCase
 
         $output = $this->runCommand('day 1 sum');
         $content = $output->fetch();
-        $rowsData = TableRowsCellParser::parse($content, true);
+        $rowsData = TableRowsCellParser::parse($content, 4, true);
         self::assertSame([
             ['00:35', '1', 'task #2', ''],
             ['running ...', '2', 'task #1', ''],

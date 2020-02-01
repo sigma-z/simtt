@@ -23,7 +23,7 @@ class LogAggregationTableTest extends TestCase
         $table = new LogAggregationTable(new Table($output));
         $table->render();
 
-        $rowsData = TableRowsCellParser::parse($output->fetch());
+        $rowsData = TableRowsCellParser::parse($output->fetch(), 5);
         self::assertEmpty($rowsData);
     }
 
@@ -39,7 +39,7 @@ class LogAggregationTableTest extends TestCase
         ];
         $content = $output->fetch();
 
-        $rowsData = TableRowsCellParser::parse($content, true);
+        $rowsData = TableRowsCellParser::parse($content, 4, true);
         self::assertSame($expectedRowsData, $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
@@ -58,7 +58,7 @@ class LogAggregationTableTest extends TestCase
         ];
         $content = $output->fetch();
 
-        $rowsData = TableRowsCellParser::parse($content, true);
+        $rowsData = TableRowsCellParser::parse($content, 4, true);
         self::assertSame($expectedRowsData, $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
@@ -81,7 +81,7 @@ class LogAggregationTableTest extends TestCase
         ];
         $content = $output->fetch();
 
-        $rowsData = TableRowsCellParser::parse($content, true);
+        $rowsData = TableRowsCellParser::parse($content, 4, true);
         self::assertSame($expectedRowsData, $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
@@ -106,7 +106,7 @@ class LogAggregationTableTest extends TestCase
         ];
         $content = $output->fetch();
 
-        $rowsData = TableRowsCellParser::parse($content, true);
+        $rowsData = TableRowsCellParser::parse($content, 4, true);
         self::assertSame($expectedRowsData, $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
