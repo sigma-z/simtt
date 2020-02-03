@@ -47,24 +47,24 @@ Usage `status`
 
 You can add or update a task text.
 
-Usage `task[-n]`
+Usage `task [<int>offset]`
 
 When `task` is called, it sets a task text to the currently running task.
 If no task is being time tracked, it asks to set the task text to the last task.
 
-When `task-1` is called, it sets the task text to the last task.
+When `task 1` is called, it sets the task text to the last task.
 
 
 ## Comments
 
 You can add or update a comment text.
 
-Usage `comment[-n]`
+Usage `comment [<int>offset] <string>comment`
 
 When `comment` is called, it sets a comment to the currently running task.
 If no task is being time tracked, it asks to set the comment to the last task.
 
-When `comment-1` is called, it sets a comment to the last task.
+When `comment 1 <string>comment` is called, it sets a comment to the last task.
 
 
 ## Log & Summary
@@ -75,10 +75,10 @@ Simtt can show log entries in a sequence, for a day, a week or a month
 
 ### Log
 
-Usage `log [range-selection<int>]`
+Usage `log [<int>range-selection]`
 
 Examples:
-* `log` shows the last 15 entries (configurable with `config show-log-items <int>` - see [Configuration](#Configuration)).
+* `log` shows the last 15 entries (configurable - see [Configuration](#Configuration)).
 * `log all` shows all log entries.
 * `log 100` shows the last 100 log entries.
 * `log 100-120` shows the log entries from 100 to 120 (21 in total, if available).
@@ -86,21 +86,21 @@ Examples:
 
 ### Date log
 
-Usage `[day|yesterday|week|month][-n] [sum]`
+Usage `[day|yesterday|week|month] [<int>offset] [sum]`
 
 Examples:
 * `day` shows log entries of today.
 * `yesterday` shows log entries of yesterday.
-* `day-[num of days]` shows log entries of the day minus *'num of days'*, `day-2` would be the day before yesterday.
+* `day [num of days]` shows log entries of the day minus *'num of days'*, `day-2` would be the day before yesterday.
 * `day sum` shows summarized entries of today.
 * `week sum` shows summarized entries of the current week.
 * `month sum` shows summarized entries of the current month.
-* `month-1 sum` shows summarized entries of the last month.
+* `month 1 sum` shows summarized entries of the last month.
 
 
 ## Recent tasks
 
-You can show the last 15 task titles (configurable with `config show-task-items <int>` - see [Configuration](#Configuration)).
+You can show the last 15 task titles (configurable - see [Configuration](#Configuration)).
 
 Usage `tasks`
 

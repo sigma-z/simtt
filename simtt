@@ -32,6 +32,8 @@ $application->add($containerBuilder->get('stop.cmd'));
 /** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
 $application->add($containerBuilder->get('status.cmd'));
 /** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+$application->add($containerBuilder->get('comment.cmd'));
+/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
 $application->add($containerBuilder->get('log.cmd'));
 /** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
 $application->add($containerBuilder->get('day.cmd'));

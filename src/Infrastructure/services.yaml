@@ -27,6 +27,9 @@ services:
     log.cmd:
         class:      \Simtt\Application\Command\Log
         arguments:  ['@logHandler', '%config.showLogItems%']
+    comment.cmd:
+        class:      \Simtt\Application\Command\Comment
+        arguments:  ['@logHandler']
     day.cmd:
         class:      \Simtt\Application\Command\Day
         arguments:  ['@logHandler']
