@@ -47,7 +47,7 @@ Usage `status`
 
 You can add or update a task text.
 
-Usage `task [<int>offset]`
+Usage `task[-n]`
 
 When `task` is called, it sets a task text to the currently running task.
 If no task is being time tracked, it asks to set the task text to the last task.
@@ -59,12 +59,12 @@ When `task 1` is called, it sets the task text to the last task.
 
 You can add or update a comment text.
 
-Usage `comment [<int>offset] <string>comment`
+Usage `comment[-n] [<string>comment]`
 
 When `comment` is called, it sets a comment to the currently running task.
 If no task is being time tracked, it asks to set the comment to the last task.
 
-When `comment 1 <string>comment` is called, it sets a comment to the last task.
+When `comment-1 [<string>comment]` is called, it sets a comment to the last task.
 
 
 ## Log & Summary
@@ -86,16 +86,16 @@ Examples:
 
 ### Date log
 
-Usage `[day|yesterday|week|month] [<int>offset] [sum]`
+Usage `[day|yesterday|week|month][-n] [sum]`
 
 Examples:
 * `day` shows log entries of today.
 * `yesterday` shows log entries of yesterday.
-* `day [num of days]` shows log entries of the day minus *'num of days'*, `day-2` would be the day before yesterday.
+* `day[-num of days]` shows log entries of the day minus *'num of days'*, `day-2` would be the day before yesterday.
 * `day sum` shows summarized entries of today.
 * `week sum` shows summarized entries of the current week.
 * `month sum` shows summarized entries of the current month.
-* `month 1 sum` shows summarized entries of the last month.
+* `month-1 sum` shows summarized entries of the last month.
 
 
 ## Recent tasks

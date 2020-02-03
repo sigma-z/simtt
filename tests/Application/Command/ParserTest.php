@@ -90,8 +90,10 @@ class ParserTest extends TestCase
             ['week-1  sum', 'week', ['1', 'sum']],
             ['month', 'month', [null, null]],
             ['month-1  sum', 'month', ['1', 'sum']],
-            ['comment', 'comment', [null]],
-            ['comment-5', 'comment', ['5']],
+            ['comment', 'comment', [null, null]],
+            ['comment "test"', 'comment', [null, '"test"']],
+            ['comment-5', 'comment', ['5', null]],
+            ['comment-5 "test"', 'comment', ['5', '"test"']],
         ];
     }
 

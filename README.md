@@ -52,11 +52,11 @@ Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
 > shows current time (which can be different because of your configuration - see config precision)
 - [x] implemented
 
-`task [offset]`
+`task[-offset]`
 > updates a task text for a specified or currently running task. See also the documentation.
 - [ ] implemented
 
-`comment [offset] <string>comment`
+`comment[-offset] [<string>comment]`
 > updates a comment for a specified or currently running task. See also the documentation.
 - [x] implemented
 
@@ -72,11 +72,11 @@ Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
 > shows the log entries of today. If "sum" is defined, it shows the log entries summarized.
 - [x] implemented
 
-`day 1 [sum]` or `yesterday [sum]`
+`day-1 [sum]` or `yesterday [sum]`
 > shows the log entries of yesterday. If "sum" is defined, it shows the log entries summarized.
 - [x] implemented
 
-`day n [sum]`
+`day-n [sum]`
 > shows the log entries for n-days before today. If "sum" is defined, it shows the log entries summarized.
 - [x] implemented
 

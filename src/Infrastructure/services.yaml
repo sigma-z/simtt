@@ -29,7 +29,7 @@ services:
         arguments:  ['@logHandler', '%config.showLogItems%']
     comment.cmd:
         class:      \Simtt\Application\Command\Comment
-        arguments:  ['@logHandler']
+        arguments:  ['@logHandler', '%prompter%']
     day.cmd:
         class:      \Simtt\Application\Command\Day
         arguments:  ['@logHandler']

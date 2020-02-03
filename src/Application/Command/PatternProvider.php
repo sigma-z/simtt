@@ -26,6 +26,7 @@ class PatternProvider
         $timePattern = self::getTimePattern();
         $timePattern = "({$sp}{$timePattern})?";
         $taskPattern = "({$sp}.+)?";
+        $commentPattern = "({$sp}.+)?";
         $minusNum = "-?(\d+)?";
         return [
             'start' => '(start\*?)' . $timePattern . $taskPattern,
@@ -33,7 +34,7 @@ class PatternProvider
             'status' => '(status)',
             'tasks' => '(tasks)',
             'task' => "(task){$minusNum}",
-            'comment' => "(comment){$minusNum}",
+            'comment' => "(comment){$minusNum}{$commentPattern}",
             'log' => "(log)({$sp}\d+-\d+|{$sp}\d+|{$sp}all)?",
             'day' => "(day){$minusNum}({$sp}sum)?",
             'yesterday' => "(yesterday)({$sp}sum)?",

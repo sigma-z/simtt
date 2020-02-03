@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Simtt\Application\Command;
 
+use Simtt\Infrastructure\Prompter\Prompter;
 use Simtt\Infrastructure\Service\LogHandler;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,11 +20,15 @@ class Comment extends Command
     /** @var LogHandler */
     private $logHandler;
 
-    public function __construct(LogHandler $logHandler)
+    /** @var Prompter */
+    private $prompter;
+
+    public function __construct(LogHandler $logHandler, Prompter $prompter)
     {
         parent::__construct();
 
         $this->logHandler = $logHandler;
+        $this->prompter = $prompter;
     }
 
     protected function configure(): void
@@ -57,6 +62,10 @@ class Comment extends Command
         }
 
         $comment = $input->getArgument('comment');
+        if ($comment === null) {
+            $comment = $this->prompter->prompt('comment> ');
+        }
+
         /** @var int $index */
         $index = $numberOfEntries - $offset - 1;
         $logEntry = $entries[$index];
