@@ -47,12 +47,12 @@ Usage `status`
 
 You can add or update a task text.
 
-Usage `task[-n]`
+Usage `task[-n] [<string>task-name]`
 
 When `task` is called, it sets a task text to the currently running task.
 If no task is being time tracked, it asks to set the task text to the last task.
 
-When `task 1` is called, it sets the task text to the last task.
+When `task 1 [<string>task-name]` is called, it sets the task text to the last task.
 
 
 ## Comments

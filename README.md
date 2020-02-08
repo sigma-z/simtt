@@ -52,9 +52,9 @@ Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
 > shows current time (which can be different because of your configuration - see config precision)
 - [x] implemented
 
-`task[-offset]`
+`task[-offset] [<string>task-name]`
 > updates a task text for a specified or currently running task. See also the documentation.
-- [ ] implemented
+- [x] implemented
 
 `comment[-offset] [<string>comment]`
 > updates a comment for a specified or currently running task. See also the documentation.
