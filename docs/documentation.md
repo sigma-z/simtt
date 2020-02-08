@@ -22,8 +22,8 @@ $> simtt [options|command]
 
 * `start` starts timer NOW for an anonymous task.
 * `start [<time>hhmm|hh:mm]` starts a timer for an anonymous task at a given start time.
-* `start [task-title]` starts timer NOW for a named task.
-* `start [<time>hhmm|hh:mm] [task-title]` starts a timer a named task at a given start time.
+* `start [task-name]` starts timer NOW for a named task.
+* `start [<time>hhmm|hh:mm] [task-name]` starts a timer a named task at a given start time.
 * `start* [<time>hhmm|hh:mm]` Updates the timer start of the last entry
 
 
@@ -31,8 +31,8 @@ $> simtt [options|command]
 
 * `stop` stops running timer NOW.
 * `stop [<time>hhmm|hh:mm]` stops a running timer at a given stop time.
-* `stop [task-title]` stops timer NOW for a named task (overwrites old name, if has been defined at the timer start).
-* `stop [<time>hhmm|hh:mm] [task-title]` stops a timer a named task (overwrites old name, if has been defined at the timer start) at a given stop time.
+* `stop [task-name]` stops timer NOW for a named task (overwrites old name, if has been defined at the timer start).
+* `stop [<time>hhmm|hh:mm] [task-name]` stops a timer a named task (overwrites old name, if has been defined at the timer start) at a given stop time.
 * `stop* [<time>hhmm|hh:mm]` Updates the timer stop of the last entry
 
 
@@ -100,7 +100,7 @@ Examples:
 
 ## Recent tasks
 
-You can show the last 15 task titles (configurable - see [Configuration](#Configuration)).
+You can show the last 15 task names (configurable - see [Configuration](#Configuration)).
 
 Usage `tasks`
 

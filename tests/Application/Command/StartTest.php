@@ -130,7 +130,7 @@ class StartTest extends TestCase
         self::assertStringEqualsFile($logFile->getFile(),  $logEntryOne . "\n" . $logEntryTwo . "\n");
     }
 
-    public function testStartWithTaskTitle(): void
+    public function testStartWithTaskName(): void
     {
         $output = $this->runCommand('start 930 task');
         self::assertSame("Timer started at 09:30 for 'task'", rtrim($output->fetch()));
@@ -140,7 +140,7 @@ class StartTest extends TestCase
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
 
-    public function testStartUpdateWithTaskTitleWillBeOverwritten(): void
+    public function testStartUpdateWithTaskNameWillBeOverwritten(): void
     {
         LogEntryCreator::setUpLogFileToday([
             LogEntryCreator::createToString('900', '', 'test task')

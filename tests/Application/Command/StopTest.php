@@ -113,7 +113,7 @@ class StopTest extends TestCase
         self::assertSame("Error: Cannot stop a stopped timer, please use update stop 'stop*'", rtrim($output->fetch()));
     }
 
-    public function testStopWithTaskTitle(): void
+    public function testStopWithTaskName(): void
     {
         LogEntryCreator::setUpLogFileToday([
             LogEntryCreator::createToString('1000', '', 'old task title')
@@ -140,7 +140,7 @@ class StopTest extends TestCase
         self::assertSame('Error: Stop time cannot be before start time!', rtrim($output->fetch()));
     }
 
-    public function testUpdateStopWithTaskTitle(): void
+    public function testUpdateStopWithTaskName(): void
     {
         LogEntryCreator::setUpLogFileToday([
             LogEntryCreator::createToString('1000', '1100', 'old task title')

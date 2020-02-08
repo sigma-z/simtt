@@ -37,7 +37,7 @@ abstract class TimerCommand extends Command
         parent::configure();
 
         $this->addArgument('time', InputArgument::OPTIONAL, 'time format: hh:mm or hhmm');
-        $this->addArgument('taskTitle', InputArgument::OPTIONAL, 'task title', '');
+        $this->addArgument('taskName', InputArgument::OPTIONAL, 'task name', '');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -63,7 +63,7 @@ abstract class TimerCommand extends Command
             if ($this->isTime($time)) {
                 return new Time($time);
             }
-            $input->setArgument('taskTitle', $time);
+            $input->setArgument('taskName', $time);
         }
         return null;
     }
@@ -76,7 +76,7 @@ abstract class TimerCommand extends Command
     private function performAction(InputInterface $input): LogEntry
     {
         $time = $this->getTime($input);
-        $taskName = $input->getArgument('taskTitle');
+        $taskName = $input->getArgument('taskName');
         $command = static::$defaultName;
         $callable = $this->isUpdate($input)
             ? [$this->timeTracker, 'update' . $command]

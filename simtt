@@ -20,25 +20,27 @@ $simttInteractive = ($_SERVER['argv'][1] ?? null) === '-i';
 $application = new Application('Simtt', SIMTT_VERSION);
 if ($simttInteractive) {
     unset($_SERVER['argv'][1]);
-    /** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+    /** @noinspection PhpUnhandledExceptionInspection */
     $application->add($containerBuilder->get('simtt.cmd'));
     $application->setDefaultCommand('Simtt');
 }
 
-/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+/** @noinspection PhpUnhandledExceptionInspection */
 $application->add($containerBuilder->get('start.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+/** @noinspection PhpUnhandledExceptionInspection */
 $application->add($containerBuilder->get('stop.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+/** @noinspection PhpUnhandledExceptionInspection */
 $application->add($containerBuilder->get('status.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+/** @noinspection PhpUnhandledExceptionInspection */
+$application->add($containerBuilder->get('task.cmd'));
+/** @noinspection PhpUnhandledExceptionInspection */
 $application->add($containerBuilder->get('comment.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+/** @noinspection PhpUnhandledExceptionInspection */
 $application->add($containerBuilder->get('log.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+/** @noinspection PhpUnhandledExceptionInspection */
 $application->add($containerBuilder->get('day.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+/** @noinspection PhpUnhandledExceptionInspection */
 $application->add($containerBuilder->get('yesterday.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection,PhpParamsInspection */
+/** @noinspection PhpUnhandledExceptionInspection */
 $application->add($containerBuilder->get('now.cmd'));
 $application->run();

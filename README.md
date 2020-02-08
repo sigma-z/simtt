@@ -28,20 +28,20 @@ This is an early project state. At the moment the tool can do:
 Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
  You then can run a lot of commands directly by typing and pressing `<enter>`:
 
-`start [time<hhmm|hh:mm>] [task-title]`
-> starts a timer at a given time for a named task. Note: time and task title can be left blank.
+`start [time<hhmm|hh:mm>] [task-name]`
+> starts a timer at a given time for a named task. Note: time and task name can be left blank.
 - [x] implemented
 
-`start* [time<hhmm|hh:mm>] [task-title]`
-> updates the start of last log entry. Note: time and task title can be left blank.
+`start* [time<hhmm|hh:mm>] [task-name]`
+> updates the start of last log entry. Note: time and task name can be left blank.
 - [x] implemented
 
-`stop [time<hhmm|hh:mm>] [task-title]`
-> stops a timer at a given time for a named task. Note: time and task title can be left blank, a given task name will overwrite the task name given at the start.
+`stop [time<hhmm|hh:mm>] [task-name]`
+> stops a timer at a given time for a named task. Note: time and task name can be left blank, a given task name will overwrite the task name given at the start.
 - [x] implemented
 
-`stop* [time<hhmm|hh:mm>] [task-title]`
-> updates the stopping time of last log entry. Note: time and task title can be left blank.
+`stop* [time<hhmm|hh:mm>] [task-name]`
+> updates the stopping time of last log entry. Note: time and task name can be left blank.
 - [x] implemented
 
 `status`

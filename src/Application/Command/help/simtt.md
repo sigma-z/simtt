@@ -1,16 +1,16 @@
 Interactive command overview:
 
-`start [<time>hhmm|hh:mm] [task-title]`
-> starts a timer at a given time for a named task. Note: time and task title can be left blank.
+`start [<time>hhmm|hh:mm] [task-name]`
+> starts a timer at a given time for a named task. Note: time and task name can be left blank.
 
-`start* [<time>hhmm|hh:mm] [task-title]`
-> updates the start time for a timer at a given time for a named task. Note: time and task title can be left blank.
+`start* [<time>hhmm|hh:mm] [task-name]`
+> updates the start time for a timer at a given time for a named task. Note: time and task name can be left blank.
 
-`stop [<time>hhmm|hh:mm] [task-title]`
-> stops a timer at a given time for a named task. Note: time and task title can be left blank, a given task name will overwrite the task name given at the start.
+`stop [<time>hhmm|hh:mm] [task-name]`
+> stops a timer at a given time for a named task. Note: time and task name can be left blank, a given task name will overwrite the task name given at the start.
 
-`stop [<time>hhmm|hh:mm] [task-title]`
-> updates the stop time for a timer at a given time for a named task. Note: time and task title can be left blank, a given task name will overwrite the task name given at the start.
+`stop [<time>hhmm|hh:mm] [task-name]`
+> updates the stop time for a timer at a given time for a named task. Note: time and task name can be left blank, a given task name will overwrite the task name given at the start.
 
 `status`
 > shows status whether a task is running, or not.

@@ -1,41 +1,44 @@
 services:
     timeTracker:
-        class:      \Simtt\Domain\TimeTracker
+        class:      Simtt\Domain\TimeTracker
         arguments:  ['@logHandler', '%config.precision%']
     logHandler:
-        class:      \Simtt\Infrastructure\Service\LogHandler
+        class:      Simtt\Infrastructure\Service\LogHandler
         arguments:  ['@logFileFinder']
     logFileFinder:
-        class:      \Simtt\Infrastructure\Service\LogFileFinder
+        class:      Simtt\Infrastructure\Service\LogFileFinder
         arguments:  ['%config.logDir%']
     parser:
-        class:      \Simtt\Application\Command\Parser
+        class:      Simtt\Application\Command\Parser
         arguments:  ['%parserPattern%']
 
     simtt.cmd:
-        class:      \Simtt\Application\Command\Simtt
+        class:      Simtt\Application\Command\Simtt
         arguments:  ['@parser', '%prompter%']
     start.cmd:
-        class:      \Simtt\Application\Command\Start
+        class:      Simtt\Application\Command\Start
         arguments:  ['%currentLogFile%', '@timeTracker']
     stop.cmd:
-        class:      \Simtt\Application\Command\Stop
+        class:      Simtt\Application\Command\Stop
         arguments:  ['%currentLogFile%', '@timeTracker']
     status.cmd:
-        class:      \Simtt\Application\Command\Status
+        class:      Simtt\Application\Command\Status
         arguments:  ['@logHandler']
     log.cmd:
-        class:      \Simtt\Application\Command\Log
+        class:      Simtt\Application\Command\Log
         arguments:  ['@logHandler', '%config.showLogItems%']
+    task.cmd:
+        class:      Simtt\Application\Command\Task
+        arguments:  ['@logHandler', '%prompter%']
     comment.cmd:
-        class:      \Simtt\Application\Command\Comment
+        class:      Simtt\Application\Command\Comment
         arguments:  ['@logHandler', '%prompter%']
     day.cmd:
-        class:      \Simtt\Application\Command\Day
+        class:      Simtt\Application\Command\Day
         arguments:  ['@logHandler']
     yesterday.cmd:
-        class:      \Simtt\Application\Command\Yesterday
+        class:      Simtt\Application\Command\Yesterday
     now.cmd:
-        class:      \Simtt\Application\Command\Now
+        class:      Simtt\Application\Command\Now
         arguments:  ['%config.precision%']
 
