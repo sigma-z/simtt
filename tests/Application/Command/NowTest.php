@@ -19,7 +19,7 @@ class NowTest extends TestCase
     public function testNow(): void
     {
         $output = $this->runCommand('now');
-        self::assertRegExp('/^NOW: \d{2}:\d{2}\n$/', $output->fetch());
+        self::assertRegExp('/^NOW: \d{4}-\d{2}-\d{2} \d{2}:\d{2}\n$/', $output->fetch());
     }
 
 }

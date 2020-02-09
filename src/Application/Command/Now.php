@@ -34,7 +34,7 @@ class Now extends Command
     {
         $time = Time::now();
         $time->roundBy($this->precision);
-        $output->writeln('NOW: ' . $time);
+        $output->writeln('NOW: ' . (date('Y-m-d')) . ' ' . $time);
         return 0;
     }
 }

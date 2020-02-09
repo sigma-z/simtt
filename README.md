@@ -4,12 +4,27 @@
 
 Read the full [documentation](https://github.com/sigma-z/simtt/blob/master/docs/documentation.md)
 
-## Project status
-
-The project is inspired by [badcrocodile / cltt](https://github.com/badcrocodile/cltt).
+The project was inspired by [badcrocodile/cltt](https://github.com/badcrocodile/cltt).
 
 
-### Implemented features
+# Getting started
+
+## Start timer and Status
+
+![Start timer and Status](https://github.com/sigma-z/simtt/raw/master/docs/assets/start_timer_and_status.gif)
+
+
+## What have I done today?
+
+![day and day sum](https://github.com/sigma-z/simtt/raw/master/docs/assets/day_and_day_sum.gif)
+
+
+## What did I do yesterday?
+
+![yesterday and yesterday sum](https://github.com/sigma-z/simtt/raw/master/docs/assets/yesterday_and_yesterday_sum.gif)
+
+
+## Implemented features
 
 This is an early project state. At the moment the tool can do:
 - start a timer
@@ -18,12 +33,13 @@ This is an early project state. At the moment the tool can do:
 - update the stop of a timer
 - status whether a timer is running or not
 
-### Limitations
 
-- at the moment it is not possible to track times across days
+## Limitations
+
+- it is not possible to track times across days
 
 
-## Quick command overview
+## Quick feature overview
 
 Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
  You then can run a lot of commands directly by typing and pressing `<enter>`:
@@ -84,14 +100,15 @@ You can do the same type of output for `week` and `month`.
 - [ ] week implemented
 - [ ] month implemented
 
+
 ## Motivation
 
 I wanted an easy time tracker for my tasks.
 
-I wanted the tool not using a database for easy editing the log files.
+I wanted the tool not using a database for easy editing the log files. (badcrocodile/cltt is using an SQLite database)
 
 I wanted to learn some new technology.
 
-I wanted to build something that could be of use for others.
+I wanted to build something that would help others.
 
-I wanted the project to be developed by TDD and DDD.
+I wanted the project to be developed using TDD and DDD.

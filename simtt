@@ -10,10 +10,9 @@ require __DIR__ . '/src/bootstrap.php';
 
 use Symfony\Component\Console\Application;
 
-define('SIMTT_VERSION', '0.0.1');
+define('SIMTT_VERSION', '1.0.0');
 
-echo 'A simple interactive time tracker in PHP by Steffen Zeidler';
-echo "\nNOTE: This is an early project state. Therefore the tool can't do much at the moment.\n\n";
+echo 'Simtt - the simple interactive time tracker in PHP by Steffen Zeidler' . "\n";
 
 $simttInteractive = ($_SERVER['argv'][1] ?? null) === '-i';
 

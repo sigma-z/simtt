@@ -16,6 +16,24 @@ Running Simmt interactively means the command line script will execute
 $> simtt [options|command]
 ```
 
+
+## Screencast tutorials
+
+### Start timer and Status
+
+![Start timer and Status](https://github.com/sigma-z/simtt/raw/master/docs/assets/start_timer_and_status.gif)
+
+
+### What have I done today?
+
+![day and day sum](https://github.com/sigma-z/simtt/raw/master/docs/assets/day_and_day_sum.gif)
+
+
+### What did I do yesterday?
+
+![yesterday and yesterday sum](https://github.com/sigma-z/simtt/raw/master/docs/assets/yesterday_and_yesterday_sum.gif)
+
+
 ## How to track time
 
 ### Start timer
