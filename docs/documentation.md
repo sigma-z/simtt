@@ -128,3 +128,16 @@ Usage `tasks`
 You can see what 'now' is like in simtt (maybe different from current time because of your settings in the configuration - see precision):
 
 Usage `now`
+
+
+## Motivation
+
+I wanted an easy time tracker for my tasks.
+
+I wanted the tool not using a database for easy editing the log files. (badcrocodile/cltt is using an SQLite database)
+
+I wanted to learn some new technology.
+
+I wanted to build something that would help others.
+
+I wanted the project to be developed using TDD and DDD.

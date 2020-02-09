@@ -100,15 +100,3 @@ You can do the same type of output for `week` and `month`.
 - [ ] week implemented
 - [ ] month implemented
 
-
-## Motivation
-
-I wanted an easy time tracker for my tasks.
-
-I wanted the tool not using a database for easy editing the log files. (badcrocodile/cltt is using an SQLite database)
-
-I wanted to learn some new technology.
-
-I wanted to build something that would help others.
-
-I wanted the project to be developed using TDD and DDD.
