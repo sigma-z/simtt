@@ -47,6 +47,8 @@ class LogAggregationTable
         $totalDuration = 0;
         /** @var null|Time $stopTime */
         $stopTime = null;
+        $startTime = null;
+
         foreach ($logEntries as $index => $entry) {
             if ($stopTime !== null && $stopTime->isOlderThan($entry->startTime)) {
                 $id = '-- no time logged --';
@@ -62,6 +64,10 @@ class LogAggregationTable
             $stopTime = $entry->stopTime;
             if (!$stopTime) {
                 $stopTime = isset($logEntries[$index + 1]) ? $logEntries[$index + 1]->startTime : null;
+            }
+
+            if ($startTime === null) {
+                $startTime = $entry->startTime;
             }
 
             $duration = $entry->getDurationInMinutes($stopTime);
@@ -92,6 +98,7 @@ class LogAggregationTable
             self::getDurationAsString($totalDuration),
             count($logEntries),
             'Total time',
+            'Logged from ' . $startTime . ' to ' . ($stopTime ?: '?')
         ];
 
         $rows[] = new TableSeparator();

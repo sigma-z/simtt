@@ -120,7 +120,7 @@ class DayTest extends TestCase
         ], $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
-        self::assertSame(['02:30', '4', 'Total time', ''], $sumData);
+        self::assertSame(['02:30', '4', 'Total time', 'Logged from 09:00 to ?'], $sumData);
     }
 
     public function testDaySumWithStopTime(): void
@@ -142,7 +142,7 @@ class DayTest extends TestCase
         ], $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
-        self::assertSame(['04:00', '4', 'Total time', ''], $sumData);
+        self::assertSame(['04:00', '4', 'Total time', 'Logged from 09:00 to 13:00'], $sumData);
     }
 
     public function testDaySumWithGaps(): void
@@ -166,9 +166,8 @@ class DayTest extends TestCase
         ], $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
-        self::assertSame(['03:10', '5', 'Total time', ''], $sumData);
+        self::assertSame(['03:10', '5', 'Total time', 'Logged from 09:00 to 13:00'], $sumData);
     }
-
 
     public function testYesterdayOnEmptyLog(): void
     {
@@ -224,6 +223,6 @@ class DayTest extends TestCase
         ], $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
-        self::assertSame(['01:45', '3', 'Total time', ''], $sumData);
+        self::assertSame(['01:45', '3', 'Total time', 'Logged from 10:00 to ?'], $sumData);
     }
 }

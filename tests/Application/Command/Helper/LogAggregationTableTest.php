@@ -43,7 +43,7 @@ class LogAggregationTableTest extends TestCase
         self::assertSame($expectedRowsData, $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
-        self::assertSame(['01:00', '1', 'Total time', ''], $sumData);
+        self::assertSame(['01:00', '1', 'Total time', 'Logged from 09:00 to 10:00'], $sumData);
     }
 
     public function testOneEntryWithNoDuration(): void
@@ -62,7 +62,7 @@ class LogAggregationTableTest extends TestCase
         self::assertSame($expectedRowsData, $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
-        self::assertSame(['00:00', '1', 'Total time', ''], $sumData);
+        self::assertSame(['00:00', '1', 'Total time', 'Logged from 09:00 to 09:00'], $sumData);
     }
 
     public function testAggregationWithTaskRunning(): void
@@ -85,7 +85,7 @@ class LogAggregationTableTest extends TestCase
         self::assertSame($expectedRowsData, $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
-        self::assertSame(['01:00', '2', 'Total time', ''], $sumData);
+        self::assertSame(['01:00', '2', 'Total time', 'Logged from 09:00 to ?'], $sumData);
     }
 
     public function testAggregation(): void
@@ -110,6 +110,6 @@ class LogAggregationTableTest extends TestCase
         self::assertSame($expectedRowsData, $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
-        self::assertSame(['04:00', '3', 'Total time', ''], $sumData);
+        self::assertSame(['04:00', '3', 'Total time', 'Logged from 09:00 to 13:00'], $sumData);
     }
 }
