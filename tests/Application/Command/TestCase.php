@@ -24,21 +24,22 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function runCommand(string $stringInput): BufferedOutput
     {
-        return $this->_runCommand($stringInput . ' -n');
+        return $this->_runCommand($stringInput, false);
     }
 
     protected function runCommandInInteractiveMode(string $stringInput): BufferedOutput
     {
-        return $this->_runCommand($stringInput);
+        return $this->_runCommand($stringInput, true);
     }
 
-    protected function _runCommand(string $stringInput): BufferedOutput
+    protected function _runCommand(string $stringInput, bool $interactive): BufferedOutput
     {
         $application = new Application('Simtt');
         $application->setAutoExit(false);
         /** @noinspection PhpParamsInspection */
         $application->add(DIContainer::$container->get($this->getCommandShortName()));
         $input = new StringInput($stringInput);
+        $input->setInteractive($interactive);
         $output = new BufferedOutput();
         $application->run($input, $output);
         return $output;
