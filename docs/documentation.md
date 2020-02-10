@@ -1,3 +1,9 @@
+# Installation
+
+`$ composer require sigma-z/simtt`
+`$ ./vendor/bin/simtt --version`
+
+
 # How it works
 
 The simple time tracker (Simtt) can be used interactively

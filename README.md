@@ -1,5 +1,7 @@
 # Simtt - Interactive Simple Time Tracker for the CLI in PHP
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/sigma-z/simtt.svg?style=flat-square)](https://packagist.org/packages/sigma-z/simtt)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg?style=flat-square)](https://php.net/)
 [![CI Status](https://github.com/sigma-z/simtt/workflows/Continuous%20Integration/badge.svg)](https://github.com/sigma-z/simtt/actions)
 
 Read the full [documentation](https://github.com/sigma-z/simtt/blob/master/docs/documentation.md)
@@ -7,21 +9,27 @@ Read the full [documentation](https://github.com/sigma-z/simtt/blob/master/docs/
 The project was inspired by [badcrocodile/cltt](https://github.com/badcrocodile/cltt).
 
 
-# Getting started
+## Getting started
 
-## Start timer and Status
+### Start timer and Status
 
 ![Start timer and Status](https://github.com/sigma-z/simtt/raw/master/docs/assets/start_timer_and_status.gif)
 
 
-## What have I done today?
+### What have I done today?
 
 ![day and day sum](https://github.com/sigma-z/simtt/raw/master/docs/assets/day_and_day_sum.gif)
 
 
-## What did I do yesterday?
+### What did I do yesterday?
 
 ![yesterday and yesterday sum](https://github.com/sigma-z/simtt/raw/master/docs/assets/yesterday_and_yesterday_sum.gif)
+
+
+## Installation
+
+`$ composer require sigma-z/simtt`
+`$ ./vendor/bin/simtt --version`
 
 
 ## Implemented features
@@ -78,7 +86,7 @@ Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
 
 `tasks`
 > shows a list of the latest time tracked tasks
-- [ ] implemented
+- [ ] implemented, scheduled for version 1.0.1
 
 `log [range-selection<int>]`
 > shows the latest log entries by range.
@@ -97,6 +105,6 @@ Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
 - [x] implemented
 
 You can do the same type of output for `week` and `month`.
-- [ ] week implemented
-- [ ] month implemented
+- [ ] week implemented, scheduled for version 1.0.2
+- [ ] month implemented, scheduled for version 1.0.3
 

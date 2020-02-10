@@ -2,6 +2,11 @@
     "name": "sigma-z/simtt",
     "description": "Interactive Simple Command Line Time Tracker in PHP",
     "type": "project",
+    "keywords": [
+        "time tracker",
+        "cli timer",
+        "work timer"
+    ],
     "require-dev": {
         "roave/security-advisories": "dev-master",
         "phpunit/phpunit": "^8",
@@ -16,7 +21,14 @@
             "email": "sigma_z@sigma-scripts.de"
         }
     ],
+    "support": {
+        "issues": "https://github.com/sigma-z/simtt/issues"
+    },
+    "bin": [
+        "simtt"
+    ],
     "require": {
+        "php": "^7.2",
         "symfony/dependency-injection": "^5.0",
         "symfony/config": "^5.0",
         "symfony/yaml": "^5.0",
