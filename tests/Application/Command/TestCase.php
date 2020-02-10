@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Test\Application\Command;
 
 use Helper\DIContainer;
-use Symfony\Component\Console\Application;
+use Mock\SymfonyApplicationMock;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -34,7 +34,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function _runCommand(string $stringInput, bool $interactive): BufferedOutput
     {
-        $application = new Application('Simtt');
+        $application = new SymfonyApplicationMock('Simtt');
         $application->setAutoExit(false);
         /** @noinspection PhpParamsInspection */
         $application->add(DIContainer::$container->get($this->getCommandShortName()));
