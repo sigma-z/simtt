@@ -5,8 +5,14 @@ declare(strict_types=1);
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
-require __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/src/bootstrap.php';
+
+foreach ([__DIR__ . '/vendor/autoload.php', __DIR__ . '/../../autoload.php'] as $autoloadFile) {
+    if (file_exists($autoloadFile)) {
+        require_once $autoloadFile;
+        break;
+    }
+}
+require_once __DIR__ . '/src/bootstrap.php';
 
 use Symfony\Component\Console\Application;
 
