@@ -6,6 +6,7 @@ namespace Simtt\Application\Command;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
 use Simtt\Domain\TimeTracker;
+use Simtt\Infrastructure\Prompter\Prompter;
 use Simtt\Infrastructure\Service\LogFile;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,18 +19,22 @@ abstract class TimerCommand extends Command
 {
 
     /** @var LogFile */
-    protected $logFile;
+    private $logFile;
 
     /** @var TimeTracker */
-    protected $timeTracker;
+    private $timeTracker;
+
+    /** @var Prompter */
+    private $prompter;
 
     abstract protected function getMessageForActionPerformed(LogEntry $logEntry, bool $isPersisted, InputInterface $input): string;
 
-    public function __construct(LogFile $logFile, TimeTracker $timeTracker)
+    public function __construct(LogFile $logFile, TimeTracker $timeTracker, Prompter $prompter)
     {
         parent::__construct();
         $this->logFile = $logFile;
         $this->timeTracker = $timeTracker;
+        $this->prompter = $prompter;
     }
 
     protected function configure(): void
@@ -76,17 +81,43 @@ abstract class TimerCommand extends Command
     private function performAction(InputInterface $input): LogEntry
     {
         $time = $this->getTime($input);
-        $taskName = $input->getArgument('taskName');
+        $taskName = $this->shouldPromptForTask($input)
+            ? $this->prompter->prompt('task> ')
+            : $input->getArgument('taskName');
+        $comment = $this->shouldPromptForComment($input)
+            ? $this->prompter->prompt('comment> ')
+            : '';
         $command = static::$defaultName;
         $callable = $this->isUpdate($input)
             ? [$this->timeTracker, 'update' . $command]
             : [$this->timeTracker, $command];
-        return $callable($time, $taskName);
+        return $callable($time, $taskName, $comment);
     }
 
     private function isTime(string $time): bool
     {
         return PatternProvider::isTime($time);
+    }
+
+    private function shouldPromptForTask(InputInterface $input): bool
+    {
+        if (!$input->isInteractive()) {
+            return false;
+        }
+        $taskName = $input->getArgument('taskName');
+        if ($taskName === '') {
+            if (static::$defaultName === 'stop' || $this->isUpdate($input)) {
+                $lastLog = $this->timeTracker->getLogHandler()->getLastLog();
+                return $lastLog && $lastLog->task === '';
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private function shouldPromptForComment(InputInterface $input): bool
+    {
+        return $input->isInteractive();
     }
 
 }

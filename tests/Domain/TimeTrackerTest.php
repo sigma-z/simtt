@@ -9,8 +9,8 @@ namespace Test\Domain;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Simtt\Domain\Exception\NoLogEntryFoundException;
 use Simtt\Domain\Exception\InvalidLogEntryException;
+use Simtt\Domain\Exception\NoLogEntryFoundException;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
 use Simtt\Domain\TimeTracker;
@@ -271,37 +271,6 @@ class TimeTrackerTest extends TestCase
         $this->setLastLog('900');
         $timeTracker = $this->createTimeTracker();
         $timeTracker->updateStop(new Time('845'));
-    }
-
-    public function testTaskThrowsException(): void
-    {
-        $this->expectException(NoLogEntryFoundException::class);
-        $timeTracker = $this->createTimeTracker();
-        $timeTracker->task('task');
-    }
-
-    public function testTaskLastLog(): void
-    {
-        $this->setLastLog('900', '9:45');
-        $timeTracker = $this->createTimeTracker();
-        $log = $timeTracker->task('Test task');
-        self::assertSame('Test task', $log->task);
-        self::assertSame($this->lastLog, $log);
-    }
-
-    public function testCommentThrowsException(): void
-    {
-        $this->expectException(NoLogEntryFoundException::class);
-        $timeTracker = $this->createTimeTracker();
-        $timeTracker->comment('This a comment');
-    }
-
-    public function testCommentLastLog(): void
-    {
-        $this->setLastLog('900', '9:45');
-        $timeTracker = $this->createTimeTracker();
-        $log = $timeTracker->comment('Test comment');
-        self::assertSame('Test comment', $log->comment);
     }
 
     /**

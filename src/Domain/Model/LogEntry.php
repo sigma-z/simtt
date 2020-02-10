@@ -26,10 +26,11 @@ class LogEntry
     /** @var string */
     public $comment = '';
 
-    public function __construct(Time $startTime, string $task = '')
+    public function __construct(Time $startTime, string $task = '', string $comment = '')
     {
         $this->startTime = $startTime;
         $this->task = $task;
+        $this->comment = $comment;
     }
 
     public function getId(): ?string

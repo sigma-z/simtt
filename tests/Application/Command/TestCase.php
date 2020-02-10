@@ -24,6 +24,16 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function runCommand(string $stringInput): BufferedOutput
     {
+        return $this->_runCommand($stringInput . ' -n');
+    }
+
+    protected function runCommandInInteractiveMode(string $stringInput): BufferedOutput
+    {
+        return $this->_runCommand($stringInput);
+    }
+
+    protected function _runCommand(string $stringInput): BufferedOutput
+    {
         $application = new Application('Simtt');
         $application->setAutoExit(false);
         /** @noinspection PhpParamsInspection */
@@ -33,5 +43,4 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $application->run($input, $output);
         return $output;
     }
-
 }

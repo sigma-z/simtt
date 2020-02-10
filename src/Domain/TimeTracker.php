@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Simtt\Domain;
 
-use Simtt\Domain\Exception\NoLogEntryFoundException;
 use Simtt\Domain\Exception\InvalidLogEntryException;
+use Simtt\Domain\Exception\NoLogEntryFoundException;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
 use Simtt\Infrastructure\Service\LogHandler;
@@ -27,7 +27,12 @@ class TimeTracker
         $this->precision = $precision;
     }
 
-    public function updateStart(Time $startTime = null, string $taskName = ''): LogEntry
+    public function getLogHandler(): LogHandler
+    {
+        return $this->logHandler;
+    }
+
+    public function updateStart(Time $startTime = null, string $taskName = '', string $comment = ''): LogEntry
     {
         $lastLog = $this->logHandler->getLastLog();
         $startTime = $startTime ?: Time::now();
@@ -50,14 +55,17 @@ class TimeTracker
         }
 
         $lastLog->startTime = $startTime;
-        if ($taskName) {
+        if ($taskName !== '') {
             $lastLog->task = $taskName;
+        }
+        if ($comment !== '') {
+            $lastLog->comment = $comment;
         }
 
         return $lastLog;
     }
 
-    public function start(Time $startTime = null, string $taskName = ''): LogEntry
+    public function start(Time $startTime = null, string $taskName = '', string $comment = ''): LogEntry
     {
         $lastLog = $this->logHandler->getLastLog();
         $startTime = $startTime ?: Time::now();
@@ -68,60 +76,22 @@ class TimeTracker
         if ($lastLog && $lastLog->startTime->isNewerThan($startTime)) {
             throw new InvalidLogEntryException('Start time of last log is newer than the new start time!');
         }
-        return new LogEntry($startTime, $taskName);
+        return new LogEntry($startTime, $taskName, $comment);
     }
 
-    public function updateStop(Time $stopTime = null, string $taskName = ''): LogEntry
+    public function updateStop(Time $stopTime = null, string $taskName = '', string $comment = ''): LogEntry
     {
         $log = $this->getLogEntryOrThrowNotFoundException();
-
-        $stopTime = $stopTime ?: Time::now();
-        $stopTime->roundBy($this->precision);
-        if ($log->startTime->isNewerThan($stopTime)) {
-            throw new InvalidLogEntryException('Stop time cannot be before start time!');
-        }
-
-        $log->stopTime = $stopTime;
-        if ($taskName) {
-            $log->task = $taskName;
-        }
-
-        return $log;
+        return $this->stopTimer($log, $stopTime, $taskName, $comment);
     }
 
-    public function stop(Time $stopTime = null, string $taskName = ''): LogEntry
+    public function stop(Time $stopTime = null, string $taskName = '', string $comment = ''): LogEntry
     {
         $log = $this->getLogEntryOrThrowNotFoundException();
         if ($log->stopTime) {
             throw new InvalidLogEntryException("Cannot stop a stopped timer, please use update stop 'stop*'");
         }
-
-        $stopTime = $stopTime ?: Time::now();
-        $stopTime->roundBy($this->precision);
-        if ($log->startTime->isNewerThan($stopTime)) {
-            throw new InvalidLogEntryException('Stop time cannot be before start time!');
-        }
-
-        $log->stopTime = $stopTime;
-        if ($taskName) {
-            $log->task = $taskName;
-        }
-
-        return $log;
-    }
-
-    public function task(string $task): LogEntry
-    {
-        $log = $this->getLogEntryOrThrowNotFoundException();
-        $log->task = $task;
-        return $log;
-    }
-
-    public function comment(string $comment): LogEntry
-    {
-        $log = $this->getLogEntryOrThrowNotFoundException();
-        $log->comment = $comment;
-        return $log;
+        return $this->stopTimer($log, $stopTime, $taskName, $comment);
     }
 
     private function getLogEntryOrThrowNotFoundException(): LogEntry
@@ -138,4 +108,21 @@ class TimeTracker
         return new NoLogEntryFoundException('No log entry found!');
     }
 
+    private function stopTimer(LogEntry $log, ?Time $stopTime, string $taskName, string $comment): LogEntry
+    {
+        $stopTime = $stopTime ?: Time::now();
+        $stopTime->roundBy($this->precision);
+        if ($log->startTime->isNewerThan($stopTime)) {
+            throw new InvalidLogEntryException('Stop time cannot be before start time!');
+        }
+
+        $log->stopTime = $stopTime;
+        if ($taskName !== '') {
+            $log->task = $taskName;
+        }
+        if ($comment !== '') {
+            $log->comment = $comment;
+        }
+        return $log;
+    }
 }

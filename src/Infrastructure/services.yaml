@@ -17,10 +17,10 @@ services:
         arguments:  ['@parser', '%prompter%']
     start.cmd:
         class:      Simtt\Application\Command\Start
-        arguments:  ['%currentLogFile%', '@timeTracker']
+        arguments:  ['%currentLogFile%', '@timeTracker', '%prompter%']
     stop.cmd:
         class:      Simtt\Application\Command\Stop
-        arguments:  ['%currentLogFile%', '@timeTracker']
+        arguments:  ['%currentLogFile%', '@timeTracker', '%prompter%']
     status.cmd:
         class:      Simtt\Application\Command\Status
         arguments:  ['@logHandler']

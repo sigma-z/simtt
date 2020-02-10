@@ -7,7 +7,9 @@ declare(strict_types=1);
 
 namespace Test\Application\Command;
 
+use Helper\DIContainer;
 use Simtt\Domain\Model\Time;
+use Simtt\Infrastructure\Prompter\Prompter;
 use Simtt\Infrastructure\Service\LogFile;
 use Test\Helper\LogEntryCreator;
 use Test\Helper\VirtualFileSystem;
@@ -149,4 +151,108 @@ class StopTest extends TestCase
         self::assertSame("Timer stop updated to 10:30 for 'new task title'", rtrim($output->fetch()));
     }
 
+    public function testStopInInteractiveMode(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('900')
+        ]);
+
+        $prompterMock = $this->getMockBuilder(Prompter::class)->disableOriginalConstructor()->getMock();
+        $prompterMock->method('prompt')
+            ->willReturnCallback(static function(string $promptText) {
+                return rtrim($promptText, '> ');
+            });
+        DIContainer::$container->setParameter('prompter', $prompterMock);
+
+        $output = $this->runCommandInInteractiveMode('stop 930');
+        self::assertSame("Timer stopped at 09:30 for 'task'", rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntry = LogEntryCreator::create('9:00', '9:30', 'task', 'comment');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
+    }
+
+    public function testStopWithTaskInInteractiveMode(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('900', '', 'test task')
+        ]);
+
+        $prompterMock = $this->getMockBuilder(Prompter::class)->disableOriginalConstructor()->getMock();
+        $prompterMock->method('prompt')
+            ->willReturnCallback(static function(string $promptText) {
+                return rtrim($promptText, '> ');
+            });
+        DIContainer::$container->setParameter('prompter', $prompterMock);
+
+        $output = $this->runCommandInInteractiveMode('stop 930 task123');
+        self::assertSame("Timer stopped at 09:30 for 'task123'", rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntry = LogEntryCreator::create('9:00', '9:30', 'task123', 'comment');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
+    }
+
+    public function testUpdateStopInInteractiveMode(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('900', '915')
+        ]);
+
+        $prompterMock = $this->getMockBuilder(Prompter::class)->disableOriginalConstructor()->getMock();
+        $prompterMock->method('prompt')
+            ->willReturnCallback(static function(string $promptText) {
+                return rtrim($promptText, '> ');
+            });
+        DIContainer::$container->setParameter('prompter', $prompterMock);
+
+        $output = $this->runCommandInInteractiveMode('stop* 930');
+        self::assertSame("Timer stop updated to 09:30 for 'task'", rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntry = LogEntryCreator::create('9:00', '9:30', 'task', 'comment');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
+    }
+
+    public function testUpdateStopWithTaskSetInInteractiveMode(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('900', '9:15', 'test task')
+        ]);
+
+        $prompterMock = $this->getMockBuilder(Prompter::class)->disableOriginalConstructor()->getMock();
+        $prompterMock->method('prompt')
+            ->willReturnCallback(static function(string $promptText) {
+                return rtrim($promptText, '> ');
+            });
+        DIContainer::$container->setParameter('prompter', $prompterMock);
+
+        $output = $this->runCommandInInteractiveMode('stop* 930');
+        self::assertSame("Timer stop updated to 09:30 for 'test task'", rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntry = LogEntryCreator::create('9:00', '9:30', 'test task', 'comment');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
+    }
+
+    public function testUpdateStopWithTaskInInteractiveMode(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('900', '915', 'test task')
+        ]);
+
+        $prompterMock = $this->getMockBuilder(Prompter::class)->disableOriginalConstructor()->getMock();
+        $prompterMock->method('prompt')
+            ->willReturnCallback(static function(string $promptText) {
+                return rtrim($promptText, '> ');
+            });
+        DIContainer::$container->setParameter('prompter', $prompterMock);
+
+        $output = $this->runCommandInInteractiveMode('stop* 930 task123');
+        self::assertSame("Timer stop updated to 09:30 for 'task123'", rtrim($output->fetch()));
+
+        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logEntry = LogEntryCreator::create('9:00', '9:30', 'task123', 'comment');
+        self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
+    }
 }
