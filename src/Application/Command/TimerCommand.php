@@ -117,7 +117,7 @@ abstract class TimerCommand extends Command
 
     private function shouldPromptForComment(InputInterface $input): bool
     {
-        var_dump($input->isInteractive());
+        var_dump(getenv('SHELL_INTERACTIVE'));
         return $input->isInteractive();
     }
 
