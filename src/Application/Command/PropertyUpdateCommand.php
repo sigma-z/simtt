@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Simtt\Application\Command;
 
+use Simtt\Application\Prompter\PrompterInterface;
+use Simtt\Domain\LogHandlerInterface;
 use Simtt\Domain\Model\LogEntry;
-use Simtt\Infrastructure\Prompter\Prompter;
-use Simtt\Infrastructure\Service\LogFile;
-use Simtt\Infrastructure\Service\LogHandler;
+use Simtt\Domain\Model\LogFileInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -16,17 +16,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class PropertyUpdateCommand extends Command
 {
 
-    /** @var LogHandler */
+    /** @var LogHandlerInterface */
     protected $logHandler;
 
-    /** @var Prompter */
+    /** @var PrompterInterface */
     protected $prompter;
 
     abstract protected function processInputArguments(InputInterface $input): void;
 
     abstract protected function getMessageForActionPerformed(LogEntry $logEntry): string;
 
-    public function __construct(LogHandler $logHandler, Prompter $prompter)
+    public function __construct(LogHandlerInterface $logHandler, PrompterInterface $prompter)
     {
         parent::__construct();
 
@@ -63,7 +63,7 @@ abstract class PropertyUpdateCommand extends Command
         return 0;
     }
 
-    private function getLogFile(): LogFile
+    private function getLogFile(): LogFileInterface
     {
         $logFileFinder = $this->logHandler->getLogFileFinder();
         $dateTime = new \DateTime();

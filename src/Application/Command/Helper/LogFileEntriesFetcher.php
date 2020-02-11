@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Simtt\Application\Command\Helper;
 
 use Simtt\Domain\Model\LogEntry;
-use Simtt\Infrastructure\Service\LogFile;
+use Simtt\Domain\Model\LogFileInterface;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
@@ -12,11 +12,11 @@ use Simtt\Infrastructure\Service\LogFile;
 class LogFileEntriesFetcher
 {
 
-    /** @var LogFile[] */
+    /** @var LogFileInterface[] */
     private $logFiles;
 
     /**
-     * @param LogFile[] $logFiles
+     * @param LogFileInterface[] $logFiles
      */
     public function __construct(array $logFiles)
     {

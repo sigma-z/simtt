@@ -3,3 +3,4 @@
 .phpunit.result.cache
 logs/*
 config.json
+.deptrac.cache

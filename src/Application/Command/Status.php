@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Simtt\Application\Command;
 
+use Simtt\Domain\LogHandlerInterface;
 use Simtt\Domain\Model\LogEntry;
-use Simtt\Infrastructure\Service\LogHandler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -16,10 +16,10 @@ class Status extends Command
 
     protected static $defaultName = 'status';
 
-    /** @var LogHandler */
+    /** @var LogHandlerInterface */
     private $logHandler;
 
-    public function __construct(LogHandler $logHandler)
+    public function __construct(LogHandlerInterface $logHandler)
     {
         parent::__construct();
 

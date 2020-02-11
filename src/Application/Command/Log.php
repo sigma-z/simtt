@@ -6,10 +6,10 @@ namespace Simtt\Application\Command;
 use Simtt\Application\Command\Helper\ArraysRangeSelector;
 use Simtt\Application\Command\Helper\LogFileEntriesFetcher;
 use Simtt\Application\Command\Helper\LogTable;
+use Simtt\Domain\LogHandlerInterface;
 use Simtt\Domain\Model\LogEntry;
+use Simtt\Domain\Model\LogFileInterface;
 use Simtt\Domain\Model\Time;
-use Simtt\Infrastructure\Service\LogFile;
-use Simtt\Infrastructure\Service\LogHandler;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,7 +23,7 @@ class Log extends Command
 
     protected static $defaultName = 'log';
 
-    /** @var LogHandler */
+    /** @var LogHandlerInterface */
     private $logHandler;
 
     /** @var int */
@@ -38,7 +38,7 @@ class Log extends Command
     /** @var Time|null */
     private $stopTimeByFollowingEntry;
 
-    public function __construct(LogHandler $logHandler, int $showLogItemsDefault)
+    public function __construct(LogHandlerInterface $logHandler, int $showLogItemsDefault)
     {
         parent::__construct();
 
@@ -91,7 +91,7 @@ class Log extends Command
     }
 
     /**
-     * @param LogFile[] $logFiles
+     * @param LogFileInterface[] $logFiles
      * @return LogEntry[]
      */
     private function getLogEntries(array $logFiles): array

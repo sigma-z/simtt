@@ -7,7 +7,6 @@ use Simtt\Domain\Exception\InvalidLogEntryException;
 use Simtt\Domain\Exception\NoLogEntryFoundException;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
-use Simtt\Infrastructure\Service\LogHandler;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
@@ -15,19 +14,19 @@ use Simtt\Infrastructure\Service\LogHandler;
 class TimeTracker
 {
 
-    /** @var LogHandler */
+    /** @var LogHandlerInterface */
     private $logHandler;
 
     /** @var int */
     private $precision;
 
-    public function __construct(LogHandler $logHandler, int $precision = 1)
+    public function __construct(LogHandlerInterface $logHandler, int $precision = 1)
     {
         $this->logHandler = $logHandler;
         $this->precision = $precision;
     }
 
-    public function getLogHandler(): LogHandler
+    public function getLogHandler(): LogHandlerInterface
     {
         return $this->logHandler;
     }

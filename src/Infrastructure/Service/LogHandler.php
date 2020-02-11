@@ -3,23 +3,25 @@ declare(strict_types=1);
 
 namespace Simtt\Infrastructure\Service;
 
+use Simtt\Domain\LogFileFinderInterface;
+use Simtt\Domain\LogHandlerInterface;
 use Simtt\Domain\Model\LogEntry;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
-class LogHandler
+class LogHandler implements LogHandlerInterface
 {
 
-    /** @var LogFileFinder */
+    /** @var LogFileFinderInterface */
     private $logFileFinder;
 
-    public function __construct(LogFileFinder $logFileFinder)
+    public function __construct(LogFileFinderInterface $logFileFinder)
     {
         $this->logFileFinder = $logFileFinder;
     }
 
-    public function getLogFileFinder(): LogFileFinder
+    public function getLogFileFinder(): LogFileFinderInterface
     {
         return $this->logFileFinder;
     }
@@ -43,7 +45,7 @@ class LogHandler
         return end($entries) ?: null;
     }
 
-    public function getLogReverseIndex(int $reverseIndex)
+    public function getLogReverseIndex(int $reverseIndex): ?LogEntry
     {
         $entries = $this->getLogEntries();
         $index = (int)(count($entries) - (abs($reverseIndex) + 1));

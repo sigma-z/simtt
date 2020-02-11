@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace Simtt\Infrastructure\Prompter;
 
+use Simtt\Application\Prompter\PrompterInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
-class Prompter
+class Prompter implements PrompterInterface
 {
 
     /** @var resource */
@@ -36,9 +37,6 @@ class Prompter
         return new self($stream);
     }
 
-    /**
-     * @param OutputInterface $output
-     */
     public function setOutput(OutputInterface $output): void
     {
         $this->output = $output;
@@ -55,5 +53,4 @@ class Prompter
     {
         return $this->prompt($message . "\n");
     }
-
 }

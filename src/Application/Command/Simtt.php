@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Simtt\Application\Command;
 
-use Simtt\Infrastructure\Prompter\Prompter;
+use Simtt\Application\Prompter\PrompterInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,13 +16,13 @@ class Simtt extends Command
 
     protected static $defaultName = 'simtt';
 
-    /** @var Prompter */
+    /** @var PrompterInterface */
     private $prompter;
 
     /** @var Parser */
     private $parser;
 
-    public function __construct(Parser $parser, Prompter $prompter)
+    public function __construct(Parser $parser, PrompterInterface $prompter)
     {
         parent::__construct();
 

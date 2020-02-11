@@ -5,7 +5,7 @@ namespace Simtt\Application\Command;
 
 use Simtt\Application\Command\Helper\LogAggregationTable;
 use Simtt\Application\Command\Helper\LogTable;
-use Simtt\Infrastructure\Service\LogHandler;
+use Simtt\Domain\LogHandlerInterface;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,10 +19,10 @@ class Day extends Command
 
     protected static $defaultName = 'day';
 
-    /** @var LogHandler */
+    /** @var LogHandlerInterface */
     private $logHandler;
 
-    public function __construct(LogHandler $logHandler)
+    public function __construct(LogHandlerInterface $logHandler)
     {
         parent::__construct();
 

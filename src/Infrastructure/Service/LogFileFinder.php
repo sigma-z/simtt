@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace Simtt\Infrastructure\Service;
 
+use Simtt\Domain\LogFileFinderInterface;
+use Simtt\Domain\Model\LogFileInterface;
+
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
-class LogFileFinder
+class LogFileFinder implements LogFileFinderInterface
 {
 
     /** @var string */
@@ -17,20 +20,20 @@ class LogFileFinder
         $this->path = $path;
     }
 
-    public function getLastLogFile(): ?LogFile
+    public function getLastLogFile(): ?LogFileInterface
     {
         $logFiles = $this->getLogFiles();
         return end($logFiles) ?: null;
     }
 
-    public function getLogFileForDate(\DateTime $dateTime): LogFile
+    public function getLogFileForDate(\DateTime $dateTime): LogFileInterface
     {
         $file = $dateTime->format('Y/m/Y-m-d') . LogFile::FILE_EXT;
         return new LogFile($this->path . '/' . $file);
     }
 
     /**
-     * @return LogFile[]
+     * @return LogFileInterface[]
      */
     public function getLogFiles(): array
     {

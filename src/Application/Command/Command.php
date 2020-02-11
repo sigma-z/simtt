@@ -19,5 +19,4 @@ abstract class Command extends SymfonyCommand
 
         parent::configure();
     }
-
 }

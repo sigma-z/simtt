@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Simtt\Application\Command;
 
+use Simtt\Application\Prompter\PrompterInterface;
 use Simtt\Domain\Model\LogEntry;
+use Simtt\Domain\Model\LogFileInterface;
 use Simtt\Domain\Model\Time;
 use Simtt\Domain\TimeTracker;
-use Simtt\Infrastructure\Prompter\Prompter;
-use Simtt\Infrastructure\Service\LogFile;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,18 +18,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class TimerCommand extends Command
 {
 
-    /** @var LogFile */
+    /** @var LogFileInterface */
     private $logFile;
 
     /** @var TimeTracker */
     private $timeTracker;
 
-    /** @var Prompter */
+    /** @var PrompterInterface */
     private $prompter;
 
     abstract protected function getMessageForActionPerformed(LogEntry $logEntry, bool $isPersisted, InputInterface $input): string;
 
-    public function __construct(LogFile $logFile, TimeTracker $timeTracker, Prompter $prompter)
+    public function __construct(LogFileInterface $logFile, TimeTracker $timeTracker, PrompterInterface $prompter)
     {
         parent::__construct();
         $this->logFile = $logFile;
