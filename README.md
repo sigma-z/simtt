@@ -28,8 +28,15 @@ The project was inspired by [badcrocodile/cltt](https://github.com/badcrocodile/
 
 ## Installation
 
-`$ composer require sigma-z/simtt`
-`$ ./vendor/bin/simtt --version`
+`$ composer create-project sigma-z/simtt`
+
+**Linux/MacOS**
+
+`$ ./simtt --version`
+
+**Windows**
+
+`$ php simtt --version`
 
 
 ## Implemented features

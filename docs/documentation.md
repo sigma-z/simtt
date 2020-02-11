@@ -1,7 +1,14 @@
 # Installation
 
-`$ composer require sigma-z/simtt`
-`$ ./vendor/bin/simtt --version`
+`$ composer create-project sigma-z/simtt`
+
+**Linux/MacOS**
+
+`$ ./simtt --version`
+
+**Windows**
+
+`$ php simtt --version`
 
 
 # How it works
