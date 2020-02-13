@@ -47,6 +47,7 @@ abstract class TimerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->prompter->setOutput($output);
         try {
             $logEntry = $this->performAction($input);
             $isPersisted = $logEntry->isPersisted();
