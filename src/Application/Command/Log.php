@@ -82,7 +82,7 @@ class Log extends Command
         if ($selectionRange) {
             $selectionRangeParts = explode('-', $selectionRange, 2);
             if (count($selectionRangeParts) === 2) {
-                [$this->start, $this->end] = $selectionRangeParts;
+                [$this->start, $this->end] = array_map('intval', $selectionRangeParts);
             }
             else {
                 $this->end = $selectionRange === 'all' ? 0 : $selectionRange;
@@ -96,11 +96,12 @@ class Log extends Command
      */
     private function getLogEntries(array $logFiles): array
     {
-        $rangeSelector = new ArraysRangeSelector((int)$this->start, (int)$this->end + 1);
+        $end = $this->end ? $this->end + 1 : 1000;
+        $rangeSelector = new ArraysRangeSelector($this->start, $end);
         $elements = $rangeSelector->getElements(new LogFileEntriesFetcher($logFiles));
 
         // getting stop time for the last element by retrieving start time of the last element out of range
-        if (count($elements) > $this->end - $this->start + 1) {
+        if (count($elements) > $end - $this->start) {
             $firstEntryOutOfRange = array_pop($elements);
             $this->stopTimeByFollowingEntry = $firstEntryOutOfRange->startTime;
         }

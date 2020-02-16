@@ -137,9 +137,35 @@ class LogTest extends TestCase
         self::assertSame($expectedRowsData, $rowsData);
     }
 
+    public function testLogAll(): void
+    {
+        LogEntryCreator::setUpLogFileYesterday([
+            LogEntryCreator::createToString('900', '', 'task #1'),
+            LogEntryCreator::createToString('1000', '11:50', 'task #2'),
+        ]);
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('900', '', 'task #1'),
+            LogEntryCreator::createToString('1000', '', 'task #2'),
+            LogEntryCreator::createToString('1050', '', 'task #1', 'comment'),
+            LogEntryCreator::createToString('1130', '12:00', 'task #3'),
+        ]);
+        $expectedRowsData = [
+            ['09:00', '10:00', '01:00', 'task #1', ''],
+            ['10:00', '10:50', '00:50', 'task #2', ''],
+            ['10:50', '11:30', '00:40', 'task #1', 'comment'],
+            ['11:30', '12:00', '00:30', 'task #3', ''],
+            ['09:00', '10:00', '01:00', 'task #1', ''],
+            ['10:00', '11:50', '01:50', 'task #2', ''],
+        ];
+
+        $output = $this->runCommand('log all');
+        $content = $output->fetch();
+        $rowsData = $this->parseRowsCellData($content);
+        self::assertSame($expectedRowsData, $rowsData);
+    }
+
     private function parseRowsCellData(string $content): array
     {
         return TableRowsCellParser::parse($content, 5);
     }
-
 }
