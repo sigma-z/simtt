@@ -48,4 +48,6 @@ $application->add($containerBuilder->get('day.cmd'));
 $application->add($containerBuilder->get('yesterday.cmd'));
 /** @noinspection PhpUnhandledExceptionInspection */
 $application->add($containerBuilder->get('now.cmd'));
+/** @noinspection PhpUnhandledExceptionInspection */
+$application->add($containerBuilder->get('tasks.cmd'));
 $application->run();

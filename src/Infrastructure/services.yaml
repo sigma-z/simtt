@@ -27,6 +27,9 @@ services:
     log.cmd:
         class:      Simtt\Application\Command\Log
         arguments:  ['@logHandler', '%config.showLogItems%']
+    tasks.cmd:
+        class:      Simtt\Application\Command\Tasks
+        arguments:  ['@logHandler', '%config.showTaskItems%']
     task.cmd:
         class:      Simtt\Application\Command\Task
         arguments:  ['@logHandler', '%prompter%']
