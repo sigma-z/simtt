@@ -33,7 +33,7 @@ class TimeTracker
 
     public function updateStart(Time $startTime = null, string $taskName = '', string $comment = ''): LogEntry
     {
-        $lastLog = $this->logHandler->getLastLog();
+        $lastLog = $this->getLastLogEntry();
         $startTime = $startTime ?: Time::now();
         $startTime->roundBy($this->precision);
         if ($lastLog && $lastLog->stopTime && $lastLog->stopTime->isOlderThan($startTime)) {
@@ -66,7 +66,7 @@ class TimeTracker
 
     public function start(Time $startTime = null, string $taskName = '', string $comment = ''): LogEntry
     {
-        $lastLog = $this->logHandler->getLastLog();
+        $lastLog = $this->getLastLogEntry();
         $startTime = $startTime ?: Time::now();
         $startTime->roundBy($this->precision);
         if ($lastLog && $lastLog->stopTime && $lastLog->stopTime->isNewerThan($startTime)) {
@@ -123,5 +123,10 @@ class TimeTracker
             $log->comment = $comment;
         }
         return $log;
+    }
+
+    public function getLastLogEntry(): ?LogEntry
+    {
+        return $this->logHandler->getLastLog();
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
  * @date   14.01.20
  */
 
-namespace Application\Command;
+namespace Test\Application\Command;
 
 use PHPUnit\Framework\TestCase;
 use Simtt\Application\Command\PatternProvider;

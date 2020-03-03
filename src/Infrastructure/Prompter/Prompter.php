@@ -53,4 +53,9 @@ class Prompter implements PrompterInterface
     {
         return $this->prompt($message . "\n");
     }
+
+    public function getOutput(): OutputInterface
+    {
+        return $this->output;
+    }
 }

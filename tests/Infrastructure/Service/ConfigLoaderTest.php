@@ -5,7 +5,7 @@ declare(strict_types=1);
  * @date   24.12.19
  */
 
-namespace Infrastructure\Service;
+namespace Test\Infrastructure\Service;
 
 use PHPUnit\Framework\TestCase;
 use Simtt\Infrastructure\Service\ConfigLoader;

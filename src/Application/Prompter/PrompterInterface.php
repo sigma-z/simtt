@@ -12,4 +12,6 @@ interface PrompterInterface
     public function prompt(string $message = ''): string;
 
     public function promptLn(string $message = ''): string;
+
+    public function getOutput(): OutputInterface;
 }

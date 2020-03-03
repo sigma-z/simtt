@@ -4,10 +4,13 @@ declare(strict_types=1);
 namespace Simtt\Application\Command;
 
 use Simtt\Application\Prompter\PrompterInterface;
+use Simtt\Domain\LogFileFinderInterface;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\LogFileInterface;
+use Simtt\Domain\Model\RecentTask;
 use Simtt\Domain\Model\Time;
 use Simtt\Domain\TimeTracker;
+use Simtt\Infrastructure\Service\RecentTaskList;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,6 +24,9 @@ abstract class TimerCommand extends Command
     /** @var LogFileInterface */
     private $logFile;
 
+    /** @var RecentTaskList */
+    private $recentTaskList;
+
     /** @var TimeTracker */
     private $timeTracker;
 
@@ -29,12 +35,17 @@ abstract class TimerCommand extends Command
 
     abstract protected function getMessageForActionPerformed(LogEntry $logEntry, bool $isPersisted, InputInterface $input): string;
 
-    public function __construct(LogFileInterface $logFile, TimeTracker $timeTracker, PrompterInterface $prompter)
-    {
+    public function __construct(
+        LogFileFinderInterface $logFileFinder,
+        TimeTracker $timeTracker,
+        RecentTaskList $recentTaskList,
+        PrompterInterface $prompter
+    ) {
         parent::__construct();
-        $this->logFile = $logFile;
+        $this->logFile = $logFileFinder->getLogFileForDate(new \DateTime());
         $this->timeTracker = $timeTracker;
         $this->prompter = $prompter;
+        $this->recentTaskList = $recentTaskList;
     }
 
     protected function configure(): void
@@ -82,12 +93,8 @@ abstract class TimerCommand extends Command
     private function performAction(InputInterface $input): LogEntry
     {
         $time = $this->getTime($input);
-        $taskName = $this->shouldPromptForTask($input)
-            ? $this->prompter->prompt('task> ')
-            : $input->getArgument('taskName');
-        $comment = $this->shouldPromptForComment($input)
-            ? $this->prompter->prompt('comment> ')
-            : '';
+        $taskName = $this->readTask($input);
+        $comment = $this->readComment($input);
         $command = static::$defaultName;
         $callable = $this->isUpdate($input)
             ? [$this->timeTracker, 'update' . $command]
@@ -108,7 +115,7 @@ abstract class TimerCommand extends Command
         $taskName = $input->getArgument('taskName');
         if ($taskName === '') {
             if (static::$defaultName === 'stop' || $this->isUpdate($input)) {
-                $lastLog = $this->timeTracker->getLogHandler()->getLastLog();
+                $lastLog = $this->timeTracker->getLastLogEntry();
                 return $lastLog && $lastLog->task === '';
             }
             return true;
@@ -118,7 +125,58 @@ abstract class TimerCommand extends Command
 
     private function shouldPromptForComment(InputInterface $input): bool
     {
-        return $input->isInteractive();
+        if (!$input->isInteractive()) {
+            return false;
+        }
+        if (static::$defaultName === 'stop' || $this->isUpdate($input)) {
+            $lastLog = $this->timeTracker->getLastLogEntry();
+            return $lastLog && $lastLog->comment === '';
+        }
+        return true;
     }
 
+    /**
+     * @param InputInterface $input
+     * @return string|string[]|null
+     */
+    private function readTask(InputInterface $input)
+    {
+        if ($this->shouldPromptForTask($input)) {
+            $tasks = $this->writeRecentTasks();
+            $taskName = $this->prompter->prompt('task> ');
+            if (strpos($taskName, '#') === 0) {
+                /** @var int|string $index */
+                $index = substr($taskName, 1);
+                if (isset($tasks[$index])) {
+                    $taskName = $tasks[$index]->getTask();
+                }
+            }
+        }
+        else {
+            $taskName = $input->getArgument('taskName');
+        }
+        return $taskName;
+    }
+
+    /**
+     * @return RecentTask[]
+     */
+    private function writeRecentTasks(): array
+    {
+        $tasks = $this->recentTaskList->getTasks();
+        $output = $this->prompter->getOutput();
+        $length = strlen((string)count($tasks));
+        foreach ($tasks as $index => $task) {
+            $indexFormatted = "#$index" . str_repeat(' ', $length - strlen((string)$index));
+            $output->writeln($indexFormatted . ' ' . $task->getTask());
+        }
+        return $tasks;
+    }
+
+    private function readComment(InputInterface $input): string
+    {
+        return $this->shouldPromptForComment($input)
+            ? $this->prompter->prompt('comment> ')
+            : '';
+    }
 }
