@@ -16,7 +16,7 @@ require_once __DIR__ . '/src/bootstrap.php';
 
 use Symfony\Component\Console\Application;
 
-define('SIMTT_VERSION', '1.0.0');
+define('SIMTT_VERSION', '1.0.1');
 
 echo 'Simtt: the simple interactive time tracker in PHP by Steffen Zeidler' . "\n";
 
