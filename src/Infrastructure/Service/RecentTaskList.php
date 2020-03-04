@@ -31,6 +31,7 @@ class RecentTaskList
     public function getTasks(): array
     {
         $logFiles = $this->logFileFinder->getLogFiles();
+        $logFiles = array_reverse($logFiles);
         $tasks = $this->readTasks($logFiles);
         usort($tasks, [$this, 'sort']);
         return array_values($tasks);

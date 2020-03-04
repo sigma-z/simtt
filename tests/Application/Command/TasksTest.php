@@ -69,22 +69,21 @@ class TasksTest extends TestCase
         LogEntryCreator::setUpLogFileYesterday([
             LogEntryCreator::createToString('900', '', 'task #1'),
             LogEntryCreator::createToString('1000', '11:50', 'task #2'),
+            LogEntryCreator::createToString('1200', '', 'task #1'),
         ]);
         LogEntryCreator::setUpLogFileToday([
             LogEntryCreator::createToString('900', '', 'task #5'),
-            LogEntryCreator::createToString('1000', '', 'task #2'),
             LogEntryCreator::createToString('1050', '', 'task #5', 'comment'),
             LogEntryCreator::createToString('1130', '12:00', 'task #3'),
             LogEntryCreator::createToString('1330', '', 'task #4'),
             LogEntryCreator::createToString('1500', '', 'task #5'),
-            LogEntryCreator::createToString('1600', '', 'task #1'),
             LogEntryCreator::createToString('1630', '', ''),
         ]);
         $expectedRowsData = [
             ['#1', 'task #5', '3'],
             ['#2', 'task #1', '2'],
-            ['#3', 'task #2', '2'],
-            ['#4', 'task #3', '1'],
+            ['#3', 'task #3', '1'],
+            ['#4', 'task #4', '1'],
         ];
         DIContainer::$container->setParameter('config.showTaskItems', 4);
         DIContainer::$container->reset();

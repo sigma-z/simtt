@@ -58,15 +58,14 @@ class RecentTaskListTest extends TestCase
         LogEntryCreator::setUpLogFileYesterday([
             LogEntryCreator::createToString('900', '', 'task #1'),
             LogEntryCreator::createToString('1000', '11:50', 'task #2'),
+            LogEntryCreator::createToString('1200', '', 'task #1'),
         ]);
         LogEntryCreator::setUpLogFileToday([
             LogEntryCreator::createToString('900', '', 'task #5'),
-            LogEntryCreator::createToString('1000', '', 'task #2'),
             LogEntryCreator::createToString('1050', '', 'task #5', 'comment'),
             LogEntryCreator::createToString('1130', '12:00', 'task #3'),
             LogEntryCreator::createToString('1330', '', 'task #4'),
             LogEntryCreator::createToString('1500', '', 'task #5'),
-            LogEntryCreator::createToString('1600', '', 'task #1'),
             LogEntryCreator::createToString('1630', '', ''),
         ]);
 
@@ -76,8 +75,8 @@ class RecentTaskListTest extends TestCase
         self::assertCount(4, $recentTasks);
         self::assertRecentTask('task #5', 3, $recentTasks[0]);
         self::assertRecentTask('task #1', 2, $recentTasks[1]);
-        self::assertRecentTask('task #2', 2, $recentTasks[2]);
-        self::assertRecentTask('task #3', 1, $recentTasks[3]);
+        self::assertRecentTask('task #3', 1, $recentTasks[2]);
+        self::assertRecentTask('task #4', 1, $recentTasks[3]);
     }
 
     private static function assertRecentTask(string $task, int $count, RecentTask $recentTask): void

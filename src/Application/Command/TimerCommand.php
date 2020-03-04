@@ -147,8 +147,8 @@ abstract class TimerCommand extends Command
             if (strpos($taskName, '#') === 0) {
                 /** @var int|string $index */
                 $index = substr($taskName, 1);
-                if (isset($tasks[$index])) {
-                    $taskName = $tasks[$index]->getTask();
+                if (isset($tasks[$index - 1])) {
+                    $taskName = $tasks[$index - 1]->getTask();
                 }
             }
         }
@@ -167,7 +167,8 @@ abstract class TimerCommand extends Command
         $output = $this->prompter->getOutput();
         $length = strlen((string)count($tasks));
         foreach ($tasks as $index => $task) {
-            $indexFormatted = "#$index" . str_repeat(' ', $length - strlen((string)$index));
+            $pos = (string)($index + 1);
+            $indexFormatted = "#$pos" . str_repeat(' ', $length - strlen($pos));
             $output->writeln($indexFormatted . ' ' . $task->getTask());
         }
         return $tasks;
