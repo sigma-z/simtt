@@ -45,6 +45,8 @@ $application->add($containerBuilder->get('log.cmd'));
 /** @noinspection PhpUnhandledExceptionInspection */
 $application->add($containerBuilder->get('day.cmd'));
 /** @noinspection PhpUnhandledExceptionInspection */
+$application->add($containerBuilder->get('week.cmd'));
+/** @noinspection PhpUnhandledExceptionInspection */
 $application->add($containerBuilder->get('yesterday.cmd'));
 /** @noinspection PhpUnhandledExceptionInspection */
 $application->add($containerBuilder->get('now.cmd'));

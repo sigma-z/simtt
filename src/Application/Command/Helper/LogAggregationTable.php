@@ -45,9 +45,11 @@ class LogAggregationTable
     {
         $rows = [];
         $totalDuration = 0;
+        $startDate = null;
+        $startTime = null;
         /** @var null|Time $stopTime */
         $stopTime = null;
-        $startTime = null;
+        $stopDate = null;
 
         foreach ($logEntries as $index => $entry) {
             if ($stopTime !== null && $stopTime->isOlderThan($entry->startTime)) {
@@ -62,11 +64,13 @@ class LogAggregationTable
             }
 
             $stopTime = $entry->stopTime;
+            $stopDate = $entry->getDate();
             if (!$stopTime) {
                 $stopTime = isset($logEntries[$index + 1]) ? $logEntries[$index + 1]->startTime : null;
             }
 
             if ($startTime === null) {
+                $startDate = $entry->getDate();
                 $startTime = $entry->startTime;
             }
 
@@ -98,7 +102,7 @@ class LogAggregationTable
             self::getDurationAsString($totalDuration),
             count($logEntries),
             'Total time',
-            'Logged from ' . $startTime . ' to ' . ($stopTime ?: '?')
+            self::getLoggedRange($startDate, $startTime, $stopDate, $stopTime)
         ];
 
         $rows[] = new TableSeparator();
@@ -123,4 +127,24 @@ class LogAggregationTable
         return $b[self::DURATION] <=> $a[self::DURATION];
     }
 
+    /**
+     * @param string|null $startDate
+     * @param Time|null   $startTime
+     * @param string|null $stopDate
+     * @param Time|null   $stopTime
+     * @return string
+     */
+    private static function getLoggedRange(?string $startDate, ?Time $startTime, ?string $stopDate, ?Time $stopTime): string
+    {
+        if ($startDate === $stopDate) {
+            $start = $startTime;
+            $stop = $stopTime;
+        }
+        else {
+            $start = "$startDate $startTime";
+            $stop = "$stopDate $stopTime";
+        }
+
+        return "Logged from $start to " . ($stop ?: '?');
+    }
 }
