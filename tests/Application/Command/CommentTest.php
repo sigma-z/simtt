@@ -38,6 +38,17 @@ class CommentTest extends TestCase
         self::assertSame('No entries found for today', rtrim($output->fetch()));
     }
 
+    public function testCommentSimple(): void
+    {
+        LogEntryCreator::setUpLogFileToday([
+            LogEntryCreator::createToString('900', '', 'task #1'),
+            LogEntryCreator::createToString('1000', '', 'task #2'),
+        ]);
+
+        $output = $this->runCommand('comment "Comment"');
+        self::assertSame("Comment 'Comment' updated for log started at 10:00 for 'task #2'", rtrim($output->fetch()));
+    }
+
     public function testCommentOutOfRange(): void
     {
         LogEntryCreator::setUpLogFileToday([

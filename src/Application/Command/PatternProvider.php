@@ -25,16 +25,15 @@ class PatternProvider
         $sp = '\s+';
         $timePattern = self::getTimePattern();
         $timePattern = "({$sp}{$timePattern})?";
-        $taskPattern = "({$sp}.+)?";
-        $commentPattern = "({$sp}.+)?";
+        $stringPattern = "({$sp}.+)?";
         $minusNum = "-?(\d+)?";
         return [
-            'start' => '(start\*?)' . $timePattern . $taskPattern,
-            'stop' => '(stop\*?)' . $timePattern . $taskPattern,
+            'start' => '(start\*?)' . $timePattern . $stringPattern,
+            'stop' => '(stop\*?)' . $timePattern . $stringPattern,
             'status' => '(status)',
             'tasks' => '(tasks)',
-            'task' => "(task){$minusNum}",
-            'comment' => "(comment){$minusNum}{$commentPattern}",
+            'task' => "(task){$minusNum}{$stringPattern}",
+            'comment' => "(comment){$minusNum}{$stringPattern}",
             'log' => "(log)({$sp}\d+-\d+|{$sp}\d+|{$sp}all)?",
             'day' => "(day){$minusNum}({$sp}sum)?",
             'yesterday' => "(yesterday)({$sp}sum)?",
