@@ -45,6 +45,9 @@ services:
     week.cmd:
         class:      Simtt\Application\Command\Week
         arguments:  ['@logHandler']
+    month.cmd:
+        class:      Simtt\Application\Command\Month
+        arguments:  ['@logHandler']
     yesterday.cmd:
         class:      Simtt\Application\Command\Yesterday
     now.cmd:

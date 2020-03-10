@@ -8,17 +8,17 @@ use Symfony\Component\Console\Input\InputArgument;
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
-class Week extends StatsCommand
+class Month extends StatsCommand
 {
 
-    protected static $defaultName = 'week';
+    protected static $defaultName = 'month';
 
     protected function configure(): void
     {
         parent::configure();
 
-        $this->setDescription('Show logged time information for the given week');
-        $this->addArgument('offset', InputArgument::OPTIONAL, 'offset from current week');
+        $this->setDescription('Show logged time information for the given month');
+        $this->addArgument('offset', InputArgument::OPTIONAL, 'offset from current month');
         $this->addArgument('sum', InputArgument::OPTIONAL, 'flag to show the summarize');
     }
 
@@ -26,19 +26,20 @@ class Week extends StatsCommand
     {
         $startDate = $this->getDateTime($offset);
         $endDate = clone($startDate);
-        $endDate->add(new \DateInterval('P7D'));
+        $daysOfMonth = $startDate->format('t');
+        $endDate->add(new \DateInterval("P{$daysOfMonth}D"));
         return new \DatePeriod($startDate, new \DateInterval('P1D'), $endDate);
     }
 
     private function getDateTime($offset): \DateTime
     {
         $dateTime = new \DateTime();
-        if ($dateTime->format('w') !== '1') {
-            $dateTime->modify('last monday');
+        if ($dateTime->format('d') !== '1') {
+            $dateTime->modify('first day of');
         }
 
         if (is_numeric($offset)) {
-            $dateTime->sub(new \DateInterval("P{$offset}W"));
+            $dateTime->sub(new \DateInterval("P{$offset}M"));
         }
         return $dateTime;
     }
