@@ -5,6 +5,7 @@ namespace Simtt\Application\Command;
 
 use Simtt\Domain\LogHandlerInterface;
 use Simtt\Domain\Model\LogEntry;
+use Simtt\Domain\Model\Time;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -48,7 +49,9 @@ class Status extends Command
     private function outputLogEntryStatus(LogEntry $logEntry, OutputInterface $output): void
     {
         if ($logEntry->stopTime === null) {
-            $output->writeln('STATUS: Timer started at ' . $logEntry->startTime);
+            $dateInterval = $logEntry->startTime->diff(new Time(date('H:i')));
+            $timeRange = sprintf('%d:%02d', $dateInterval->h, $dateInterval->i);
+            $output->writeln("STATUS: Timer started at $logEntry->startTime (running for $timeRange)");
         }
         else {
             $timeRange = $logEntry->startTime . ' - ' . $logEntry->stopTime;

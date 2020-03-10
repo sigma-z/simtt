@@ -43,6 +43,7 @@ class StatusTest extends TestCase
         ]);
         $output = $this->runCommand('status');
         $content = $output->fetch();
+        $content = preg_replace('/running for \d+:\d+/', 'running for 00:00', $content);
         self::assertSame($expectedContent, $content);
     }
 
@@ -50,27 +51,27 @@ class StatusTest extends TestCase
     {
         return [
             [
-                'expectedContent' => "STATUS: Timer started at 09:30\n"
+                'expectedContent' => "STATUS: Timer started at 09:30 (running for 00:00)\n"
                     . "Task: task\n"
                     . "Comment: comment\n",
                 'task' => 'task',
                 'comment' => 'comment'
             ],
             [
-                'expectedContent' => "STATUS: Timer started at 09:30\n"
+                'expectedContent' => "STATUS: Timer started at 09:30 (running for 00:00)\n"
                     . "Task: -\n"
                     . "Comment: comment\n",
                 'task' => '',
                 'comment' => 'comment'
             ],
             [
-                'expectedContent' => "STATUS: Timer started at 09:30\n"
+                'expectedContent' => "STATUS: Timer started at 09:30 (running for 00:00)\n"
                     . "Task: task\n",
                 'task' => 'task',
                 'comment' => ''
             ],
             [
-                'expectedContent' => "STATUS: Timer started at 09:30\n"
+                'expectedContent' => "STATUS: Timer started at 09:30 (running for 00:00)\n"
                     . "Task: -\n",
                 'task' => '',
                 'comment' => ''
