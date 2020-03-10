@@ -112,6 +112,6 @@ Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
 - [x] implemented
 
 You can do the same type of output for `week` and `month`.
-- [ ] week implemented, scheduled for version 1.0.2
-- [ ] month implemented, scheduled for version 1.0.3
+- [ ] week implemented, scheduled for version 1.1.0
+- [ ] month implemented, scheduled for version 1.2.0
 
