@@ -13,17 +13,34 @@ services:
         arguments:  ['%parserPattern%']
     recentTaskList:
         class:      Simtt\Infrastructure\Service\RecentTaskList
-        arguments:  ['@logFileFinder', '%config.showTaskItems%']
+        arguments:  ['@logFileFinder']
+    recentTasksPrinter:
+        class:      Simtt\Infrastructure\Service\RecentTasksPrinter
+        arguments:  ['@recentTaskList', '%config.showTaskItems%']
+    taskPrompter:
+        class:      Simtt\Infrastructure\Service\TaskPrompter
 
     simtt.cmd:
         class:      Simtt\Application\Command\Simtt
         arguments:  ['@parser', '%prompter%']
     start.cmd:
         class:      Simtt\Application\Command\Start
-        arguments:  ['@logFileFinder', '@timeTracker', '@recentTaskList', '%prompter%']
+        arguments:  [
+            '@logFileFinder',
+            '@timeTracker',
+            '@recentTasksPrinter',
+            '@taskPrompter',
+            '%prompter%',
+        ]
     stop.cmd:
         class:      Simtt\Application\Command\Stop
-        arguments:  ['@logFileFinder', '@timeTracker', '@recentTaskList', '%prompter%']
+        arguments:  [
+            '@logFileFinder',
+            '@timeTracker',
+            '@recentTasksPrinter',
+            '@taskPrompter',
+            '%prompter%',
+        ]
     status.cmd:
         class:      Simtt\Application\Command\Status
         arguments:  ['@logHandler']
@@ -35,7 +52,7 @@ services:
         arguments:  ['@recentTaskList', '%config.showTaskItems%']
     task.cmd:
         class:      Simtt\Application\Command\Task
-        arguments:  ['@logHandler', '%prompter%']
+        arguments:  ['@logHandler', '%prompter%', '@recentTasksPrinter', '@taskPrompter']
     comment.cmd:
         class:      Simtt\Application\Command\Comment
         arguments:  ['@logHandler', '%prompter%']

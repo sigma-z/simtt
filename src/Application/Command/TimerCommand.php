@@ -4,13 +4,14 @@ declare(strict_types=1);
 namespace Simtt\Application\Command;
 
 use Simtt\Application\Prompter\PrompterInterface;
+use Simtt\Application\Task\RecentTasksPrinterInterface;
+use Simtt\Application\Task\TaskPrompterInterface;
 use Simtt\Domain\LogFileFinderInterface;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\LogFileInterface;
 use Simtt\Domain\Model\RecentTask;
 use Simtt\Domain\Model\Time;
 use Simtt\Domain\TimeTracker;
-use Simtt\Infrastructure\Service\RecentTaskList;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,11 +25,14 @@ abstract class TimerCommand extends Command
     /** @var LogFileInterface */
     private $logFile;
 
-    /** @var RecentTaskList */
-    private $recentTaskList;
-
     /** @var TimeTracker */
     private $timeTracker;
+
+    /** @var RecentTasksPrinterInterface */
+    private $recentTasksPrinter;
+
+    /** @var TaskPrompterInterface */
+    private $taskPrompter;
 
     /** @var PrompterInterface */
     private $prompter;
@@ -38,14 +42,16 @@ abstract class TimerCommand extends Command
     public function __construct(
         LogFileFinderInterface $logFileFinder,
         TimeTracker $timeTracker,
-        RecentTaskList $recentTaskList,
+        RecentTasksPrinterInterface $recentTasksPrinter,
+        TaskPrompterInterface $taskPrompter,
         PrompterInterface $prompter
     ) {
         parent::__construct();
         $this->logFile = $logFileFinder->getLogFileForDate(new \DateTime());
         $this->timeTracker = $timeTracker;
         $this->prompter = $prompter;
-        $this->recentTaskList = $recentTaskList;
+        $this->recentTasksPrinter = $recentTasksPrinter;
+        $this->taskPrompter = $taskPrompter;
     }
 
     protected function configure(): void
@@ -137,20 +143,13 @@ abstract class TimerCommand extends Command
 
     /**
      * @param InputInterface $input
-     * @return string|string[]|null
+     * @return string
      */
-    private function readTask(InputInterface $input)
+    private function readTask(InputInterface $input): string
     {
         if ($this->shouldPromptForTask($input)) {
             $tasks = $this->writeRecentTasks();
-            $taskName = $this->prompter->prompt('task> ');
-            if (strpos($taskName, '#') === 0) {
-                /** @var int|string $index */
-                $index = substr($taskName, 1);
-                if (isset($tasks[$index - 1])) {
-                    $taskName = $tasks[$index - 1]->getTask();
-                }
-            }
+            $taskName = $this->taskPrompter->promptTask($tasks, $this->prompter);
         }
         else {
             $taskName = $input->getArgument('taskName');
@@ -163,15 +162,7 @@ abstract class TimerCommand extends Command
      */
     private function writeRecentTasks(): array
     {
-        $tasks = $this->recentTaskList->getTasks();
-        $output = $this->prompter->getOutput();
-        $length = strlen((string)count($tasks));
-        foreach ($tasks as $index => $task) {
-            $pos = (string)($index + 1);
-            $indexFormatted = "#$pos" . str_repeat(' ', $length - strlen($pos));
-            $output->writeln($indexFormatted . ' ' . $task->getTask());
-        }
-        return $tasks;
+        return $this->recentTasksPrinter->outputTasks($this->prompter->getOutput());
     }
 
     private function readComment(InputInterface $input): string

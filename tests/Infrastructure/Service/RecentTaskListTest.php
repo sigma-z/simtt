@@ -31,8 +31,8 @@ class RecentTaskListTest extends TestCase
 
     public function testEmpty(): void
     {
-        $recentTaskList = new RecentTaskList(DIContainer::$container->get('logFileFinder'), 2);
-        $recentTasks = $recentTaskList->getTasks();
+        $recentTaskList = new RecentTaskList(DIContainer::$container->get('logFileFinder'));
+        $recentTasks = $recentTaskList->getTasks(2);
         self::assertCount(0, $recentTasks);
     }
 
@@ -45,8 +45,8 @@ class RecentTaskListTest extends TestCase
             LogEntryCreator::createToString('1130', '', 'task #3'),
         ]);
 
-        $recentTaskList = new RecentTaskList(DIContainer::$container->get('logFileFinder'), 2);
-        $recentTasks = $recentTaskList->getTasks();
+        $recentTaskList = new RecentTaskList(DIContainer::$container->get('logFileFinder'));
+        $recentTasks = $recentTaskList->getTasks(2);
 
         self::assertCount(2, $recentTasks);
         self::assertRecentTask('task #1', 2, $recentTasks[0]);
@@ -69,8 +69,8 @@ class RecentTaskListTest extends TestCase
             LogEntryCreator::createToString('1630', '', ''),
         ]);
 
-        $recentTaskList = new RecentTaskList(DIContainer::$container->get('logFileFinder'), 4);
-        $recentTasks = $recentTaskList->getTasks();
+        $recentTaskList = new RecentTaskList(DIContainer::$container->get('logFileFinder'));
+        $recentTasks = $recentTaskList->getTasks(4);
 
         self::assertCount(4, $recentTasks);
         self::assertRecentTask('task #5', 3, $recentTasks[0]);

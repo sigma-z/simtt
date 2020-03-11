@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace Simtt\Application\Command;
 
-use Simtt\Infrastructure\Service\RecentTaskList;
+use Simtt\Application\Task\RecentTaskListInterface;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -16,13 +17,13 @@ class Tasks extends Command
 
     protected static $defaultName = 'tasks';
 
-    /** @var RecentTaskList */
+    /** @var RecentTaskListInterface */
     private $recentTaskList;
 
     /** @var int */
     private $showTasksDefault;
 
-    public function __construct(RecentTaskList $recentTaskList, int $showTasksDefault)
+    public function __construct(RecentTaskListInterface $recentTaskList, int $showTasksDefault)
     {
         parent::__construct();
 
@@ -35,11 +36,13 @@ class Tasks extends Command
         parent::configure();
 
         $this->setDescription('Lists recent logged tasks');
+        $this->addArgument('num', InputArgument::OPTIONAL, 'number of entries to show', $this->showTasksDefault);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $tasks = $this->recentTaskList->getTasks();
+        $num = (int)$input->getArgument('num') ?: $this->showTasksDefault;
+        $tasks = $this->recentTaskList->getTasks($num);
         if (count($tasks) === 0) {
             $output->writeln('No entries found');
             return 0;
@@ -48,7 +51,7 @@ class Tasks extends Command
         $table = new Table($output);
         $table->setHeaders(['#', 'Task', 'Count']);
         foreach ($tasks as $index => $recentTask) {
-            if ($index >= $this->showTasksDefault) {
+            if ($index >= $num) {
                 break;
             }
             $tableRow = $this->getTableRow($index + 1, $recentTask->getTask(), $recentTask->getCount());

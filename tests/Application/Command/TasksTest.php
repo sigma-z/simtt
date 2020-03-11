@@ -66,6 +66,41 @@ class TasksTest extends TestCase
 
     public function testLogAcrossDays(): void
     {
+        $this->provideAcrossDaysLogFiles();
+
+        $expectedRowsData = [
+            ['#1', 'task #5', '3'],
+            ['#2', 'task #1', '2'],
+            ['#3', 'task #3', '1'],
+            ['#4', 'task #4', '1'],
+        ];
+        DIContainer::$container->setParameter('config.showTaskItems', 4);
+        DIContainer::$container->reset();
+        $output = $this->runCommand('tasks');
+        $content = $output->fetch();
+        $rowsData = TableRowsCellParser::parse($content, 3);
+        self::assertSame($expectedRowsData, $rowsData);
+    }
+
+    public function testLogAcrossDaysMaximum(): void
+    {
+        $this->provideAcrossDaysLogFiles();
+
+        $expectedRowsData = [
+            ['#1', 'task #5', '3'],
+            ['#2', 'task #1', '2'],
+            ['#3', 'task #2', '1'],
+            ['#4', 'task #3', '1'],
+            ['#5', 'task #4', '1'],
+        ];
+        $output = $this->runCommand('tasks 100');
+        $content = $output->fetch();
+        $rowsData = TableRowsCellParser::parse($content, 3);
+        self::assertSame($expectedRowsData, $rowsData);
+    }
+
+    private function provideAcrossDaysLogFiles(): void
+    {
         LogEntryCreator::setUpLogFileYesterday([
             LogEntryCreator::createToString('900', '', 'task #1'),
             LogEntryCreator::createToString('1000', '11:50', 'task #2'),
@@ -79,17 +114,5 @@ class TasksTest extends TestCase
             LogEntryCreator::createToString('1500', '', 'task #5'),
             LogEntryCreator::createToString('1630', '', ''),
         ]);
-        $expectedRowsData = [
-            ['#1', 'task #5', '3'],
-            ['#2', 'task #1', '2'],
-            ['#3', 'task #3', '1'],
-            ['#4', 'task #4', '1'],
-        ];
-        DIContainer::$container->setParameter('config.showTaskItems', 4);
-        DIContainer::$container->reset();
-        $output = $this->runCommand('tasks');
-        $content = $output->fetch();
-        $rowsData = TableRowsCellParser::parse($content, 3);
-        self::assertSame($expectedRowsData, $rowsData);
     }
 }
