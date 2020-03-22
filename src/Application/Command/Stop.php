@@ -19,7 +19,7 @@ class Stop extends TimerCommand
         parent::configure();
 
         $this->setAliases(['stop*']);
-        $this->setDescription('Stops a timer');
+        $this->setDescription('Stops the timer');
     }
 
     protected function getMessageForActionPerformed(LogEntry $logEntry, bool $isPersisted, InputInterface $input): string

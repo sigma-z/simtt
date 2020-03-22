@@ -67,6 +67,12 @@ $> simtt [options|command]
 * `stop* [<time>hhmm|hh:mm]` Updates the timer stop of the last entry
 
 
+### Continue timer
+
+* `continue` continues last stopped task
+* `continue [<time>hhmm|hh:mm]` continues last stopped task for a given start time
+
+
 ### Status of the timer
 
 You can show the status to see, if time is currently tracked for a task.

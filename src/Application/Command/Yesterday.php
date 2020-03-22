@@ -21,7 +21,7 @@ class Yesterday extends Command
     {
         parent::configure();
 
-        $this->setDescription('Show logged time information for yesterday');
+        $this->setDescription('Shows logged time information for yesterday');
         $this->addArgument('sum', InputArgument::OPTIONAL, 'flag to show the summarize');
     }
 

@@ -172,7 +172,7 @@ class StartTest extends TestCase
         $logEntryOne = LogEntryCreator::createToString('900', '1000');
         LogEntryCreator::setUpLogFileToday([$logEntryOne]);
         $output = $this->runCommand('start 09:30');
-        self::assertSame('Error: Stop time of last log is newer than the new start time!', rtrim($output->fetch()));
+        self::assertSame('Error: Stop time of last log is newer than the new start time.', rtrim($output->fetch()));
     }
 
     public function testStartBeforeLastStart(): void
@@ -180,7 +180,7 @@ class StartTest extends TestCase
         $logEntryOne = LogEntryCreator::createToString('900');
         LogEntryCreator::setUpLogFileToday([$logEntryOne]);
         $output = $this->runCommand('start 08:30');
-        self::assertSame('Error: Start time of last log is newer than the new start time!', rtrim($output->fetch()));
+        self::assertSame('Error: Start time of last log is newer than the new start time.', rtrim($output->fetch()));
     }
 
     public function testUpdateStartBeforeLastStart(): void
@@ -189,7 +189,7 @@ class StartTest extends TestCase
         $logEntryTwo = LogEntryCreator::createToString('1000');
         LogEntryCreator::setUpLogFileToday([$logEntryOne, $logEntryTwo]);
         $output = $this->runCommand('start* 08:30');
-        self::assertSame('Error: Start time of last log is older than start time!', rtrim($output->fetch()));
+        self::assertSame('Error: Start time of last log is older than start time.', rtrim($output->fetch()));
     }
 
     public function testUpdateStartBeforeLastStop(): void
@@ -198,7 +198,7 @@ class StartTest extends TestCase
         $logEntryTwo = LogEntryCreator::createToString('1000');
         LogEntryCreator::setUpLogFileToday([$logEntryOne, $logEntryTwo]);
         $output = $this->runCommand('start* 9:30');
-        self::assertSame('Error: Stop time of last log is older than start time!', rtrim($output->fetch()));
+        self::assertSame('Error: Stop time of last log is older than start time.', rtrim($output->fetch()));
     }
 
     public function testUpdateStartBeforeStop(): void
@@ -206,7 +206,7 @@ class StartTest extends TestCase
         $logEntryOne = LogEntryCreator::createToString('900', '1000');
         LogEntryCreator::setUpLogFileToday([$logEntryOne]);
         $output = $this->runCommand('start* 10:30');
-        self::assertSame('Error: Stop time of last log is older than start time!', rtrim($output->fetch()));
+        self::assertSame('Error: Stop time of last log is older than start time.', rtrim($output->fetch()));
     }
 
     public function testStartInInteractiveMode(): void

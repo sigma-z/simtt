@@ -19,7 +19,7 @@ class Start extends TimerCommand
         parent::configure();
 
         $this->setAliases(['start*']);
-        $this->setDescription('Starts a timer');
+        $this->setDescription('Starts the timer');
     }
 
     protected function getMessageForActionPerformed(LogEntry $logEntry, bool $isPersisted, InputInterface $input): string

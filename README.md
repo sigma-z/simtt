@@ -75,6 +75,10 @@ Usage `./simtt -i` to run the Simple Time Tracker in interactive mode.
 > updates the stopping time of last log entry. Note: time and task name can be left blank.
 - [x] implemented
 
+`continue [time<hhmm|hh:mm>]`
+> continues last stopped task for a given time.
+- [x] implemented
+
 `status`
 > shows status whether a task is running, or not.
 - [x] implemented

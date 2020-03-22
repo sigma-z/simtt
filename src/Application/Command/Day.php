@@ -17,7 +17,7 @@ class Day extends StatsCommand
     {
         parent::configure();
 
-        $this->setDescription('Show logged time information for the given day');
+        $this->setDescription('Shows logged time information for the given day');
         $this->addArgument('offset', InputArgument::OPTIONAL, 'offset from today');
         $this->addArgument('sum', InputArgument::OPTIONAL, 'flag to show the summarize');
     }

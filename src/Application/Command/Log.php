@@ -50,7 +50,7 @@ class Log extends Command
     {
         parent::configure();
 
-        $this->setDescription('Show logged time information');
+        $this->setDescription('Shows logged time information');
         $this->addArgument('range-selection', InputArgument::OPTIONAL, 'selection or range of days');
     }
 

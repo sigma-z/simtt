@@ -37,15 +37,15 @@ class TimeTracker
         $startTime = $startTime ?: Time::now();
         $startTime->roundBy($this->precision);
         if ($lastLog && $lastLog->stopTime && $lastLog->stopTime->isOlderThan($startTime)) {
-            throw new InvalidLogEntryException('Stop time of last log is older than start time!');
+            throw new InvalidLogEntryException('Stop time of last log is older than start time.');
         }
         $logBefore = $this->logHandler->getLogReverseIndex(1);
         if ($logBefore) {
             if ($logBefore->stopTime && $logBefore->stopTime->isNewerThan($startTime)) {
-                throw new InvalidLogEntryException('Stop time of last log is older than start time!');
+                throw new InvalidLogEntryException('Stop time of last log is older than start time.');
             }
             if ($logBefore->startTime->isNewerThan($startTime)) {
-                throw new InvalidLogEntryException('Start time of last log is older than start time!');
+                throw new InvalidLogEntryException('Start time of last log is older than start time.');
             }
         }
 
@@ -70,10 +70,10 @@ class TimeTracker
         $startTime = $startTime ?: Time::now();
         $startTime->roundBy($this->precision);
         if ($lastLog && $lastLog->stopTime && $lastLog->stopTime->isNewerThan($startTime)) {
-            throw new InvalidLogEntryException('Stop time of last log is newer than the new start time!');
+            throw new InvalidLogEntryException('Stop time of last log is newer than the new start time.');
         }
         if ($lastLog && $lastLog->startTime->isNewerThan($startTime)) {
-            throw new InvalidLogEntryException('Start time of last log is newer than the new start time!');
+            throw new InvalidLogEntryException('Start time of last log is newer than the new start time.');
         }
         return new LogEntry($startTime, $taskName, $comment);
     }
@@ -91,6 +91,15 @@ class TimeTracker
             throw new InvalidLogEntryException("Cannot stop a stopped timer, please use update stop 'stop*'");
         }
         return $this->stopTimer($log, $stopTime, $taskName, $comment);
+    }
+
+    public function continueTimer(Time $startTime = null): LogEntry
+    {
+        $lastLog = $this->getLastLogEntry();
+        if (!$lastLog || !$lastLog->stopTime) {
+            throw new InvalidLogEntryException('Could not find a stopped timer to continue.');
+        }
+        return $this->start($startTime, $lastLog->task, $lastLog->comment);
     }
 
     private function getLogEntryOrThrowNotFoundException(): LogEntry

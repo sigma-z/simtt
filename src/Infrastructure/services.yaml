@@ -44,6 +44,9 @@ services:
     status.cmd:
         class:      Simtt\Application\Command\Status
         arguments:  ['@logHandler']
+    continue.cmd:
+        class:      Simtt\Application\Command\ContinueCommand
+        arguments:  ['@timeTracker', '@logFileFinder']
     log.cmd:
         class:      Simtt\Application\Command\Log
         arguments:  ['@logHandler', '%config.showLogItems%']

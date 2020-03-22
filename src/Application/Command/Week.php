@@ -17,7 +17,7 @@ class Week extends StatsCommand
     {
         parent::configure();
 
-        $this->setDescription('Show logged time information for the given week');
+        $this->setDescription('Shows logged time information for the given week');
         $this->addArgument('offset', InputArgument::OPTIONAL, 'offset from current week');
         $this->addArgument('sum', InputArgument::OPTIONAL, 'flag to show the summarize');
     }

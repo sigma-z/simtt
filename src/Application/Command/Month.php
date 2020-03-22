@@ -17,7 +17,7 @@ class Month extends StatsCommand
     {
         parent::configure();
 
-        $this->setDescription('Show logged time information for the given month');
+        $this->setDescription('Shows logged time information for the given month');
         $this->addArgument('offset', InputArgument::OPTIONAL, 'offset from current month');
         $this->addArgument('sum', InputArgument::OPTIONAL, 'flag to show the summarize');
     }
