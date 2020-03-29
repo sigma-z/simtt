@@ -10,6 +10,7 @@ use Simtt\Domain\LogHandlerInterface;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\LogFileInterface;
 use Simtt\Domain\Model\Time;
+use Simtt\Infrastructure\Service\Clock\Clock;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,6 +27,9 @@ class Log extends Command
     /** @var LogHandlerInterface */
     private $logHandler;
 
+    /** @var Clock */
+    private $clock;
+
     /** @var int */
     private $showLogItemsDefault;
 
@@ -38,11 +42,12 @@ class Log extends Command
     /** @var Time|null */
     private $stopTimeByFollowingEntry;
 
-    public function __construct(LogHandlerInterface $logHandler, int $showLogItemsDefault)
+    public function __construct(LogHandlerInterface $logHandler, Clock $clock, int $showLogItemsDefault)
     {
         parent::__construct();
 
         $this->logHandler = $logHandler;
+        $this->clock = $clock;
         $this->showLogItemsDefault = $showLogItemsDefault;
     }
 
@@ -68,7 +73,7 @@ class Log extends Command
             return 0;
         }
 
-        $logTableHelper = new LogTable(new Table($output), $this->stopTimeByFollowingEntry);
+        $logTableHelper = new LogTable(new Table($output), $this->clock, $this->stopTimeByFollowingEntry);
         $logTableHelper->processLogEntries($logEntries);
         $logTableHelper->render();
 

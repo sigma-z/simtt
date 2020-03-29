@@ -6,6 +6,7 @@ namespace Simtt\Application\Command;
 use Simtt\Application\Command\Helper\LogAggregationTable;
 use Simtt\Application\Command\Helper\LogTable;
 use Simtt\Domain\LogHandlerInterface;
+use Simtt\Infrastructure\Service\Clock\Clock;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,13 +20,17 @@ abstract class StatsCommand extends Command
     /** @var LogHandlerInterface */
     protected $logHandler;
 
+    /** @var Clock */
+    private $clock;
+
     abstract protected function getDatePeriod($offset): \DatePeriod;
 
-    public function __construct(LogHandlerInterface $logHandler)
+    public function __construct(LogHandlerInterface $logHandler, Clock $clock)
     {
         parent::__construct();
 
         $this->logHandler = $logHandler;
+        $this->clock = $clock;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -47,7 +52,7 @@ abstract class StatsCommand extends Command
             return 0;
         }
 
-        $this->renderTables($input, $output, $entries);
+        $this->renderTable($input, $output, $entries);
         return 0;
     }
 
@@ -78,7 +83,7 @@ abstract class StatsCommand extends Command
      * @param OutputInterface $output
      * @param array           $entries
      */
-    protected function renderTables(InputInterface $input, OutputInterface $output, array $entries): void
+    protected function renderTable(InputInterface $input, OutputInterface $output, array $entries): void
     {
         if ($input->getArgument('sum') === 'sum') {
             $logAggTable = new LogAggregationTable(new Table($output));
@@ -86,7 +91,7 @@ abstract class StatsCommand extends Command
             $logAggTable->render();
         }
         else {
-            $logTable = new LogTable(new Table($output));
+            $logTable = new LogTable(new Table($output), $this->clock);
             $logTable->processLogEntries($entries);
             $logTable->render();
         }

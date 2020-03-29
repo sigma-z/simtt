@@ -56,7 +56,8 @@ class LogAggregationTable
                 $id = '-- no time logged --';
                 $row = $rows[$id] ?? self::getEmptyRow();
                 $timeDurationInMinutes = LogEntry::getTimeDurationInMinutes($stopTime, $entry->startTime);
-                $row[self::DURATION] = isset($row[self::DURATION]) ? $row[self::DURATION] + $timeDurationInMinutes : $timeDurationInMinutes;
+                $duration = isset($row[self::DURATION]) ? $row[self::DURATION] + $timeDurationInMinutes : $timeDurationInMinutes;
+                $row[self::DURATION] = $duration;
                 $row[self::COUNT]++;
                 $row[self::TASK] = $id;
                 $row[self::COMMENT] = '';

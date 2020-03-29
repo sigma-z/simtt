@@ -14,6 +14,7 @@ use Simtt\Domain\Exception\NoLogEntryFoundException;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
 use Simtt\Domain\TimeTracker;
+use Simtt\Infrastructure\Service\Clock\FixedClock;
 use Simtt\Infrastructure\Service\LogHandler;
 use Test\Helper\LogEntryCreator;
 
@@ -288,7 +289,8 @@ class TimeTrackerTest extends TestCase
             ->method('getLogReverseIndex')
             ->willReturn($this->beforeLastLog);
 
-        return new TimeTracker($logHandler, $precision);
+        $clock = new FixedClock(new \DateTime('20:00:00'));
+        return new TimeTracker($logHandler, $clock, $precision);
     }
 
     private function setLastLog(string $time, string $task = '', string $stopTime = ''): void

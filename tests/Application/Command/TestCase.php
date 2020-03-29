@@ -22,6 +22,12 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         parent::setUp();
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        DIContainer::$container->reset();
+    }
+
     protected function runCommand(string $stringInput): BufferedOutput
     {
         return $this->_runCommand($stringInput, false);

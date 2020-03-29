@@ -8,8 +8,17 @@ declare(strict_types=1);
 namespace Test\Application\Command;
 
 
+use Helper\DIContainer;
+use Simtt\Infrastructure\Service\Clock\FixedClock;
+
 class NowTest extends TestCase
 {
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        DIContainer::$container->set('clock', new FixedClock(new \DateTime('2020-03-20 12:00:00')));
+    }
 
     protected function getCommandShortName(): string
     {
@@ -19,7 +28,7 @@ class NowTest extends TestCase
     public function testNow(): void
     {
         $output = $this->runCommand('now');
-        self::assertRegExp('/^NOW: \d{4}-\d{2}-\d{2} \d{2}:\d{2}\n$/', $output->fetch());
+        self::assertSame('NOW: 2020-03-20 12:00', rtrim($output->fetch()));
     }
 
 }

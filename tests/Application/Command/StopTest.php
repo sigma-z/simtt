@@ -10,6 +10,7 @@ namespace Test\Application\Command;
 use Helper\DIContainer;
 use Simtt\Domain\Model\Time;
 use Simtt\Infrastructure\Prompter\Prompter;
+use Simtt\Infrastructure\Service\Clock\FixedClock;
 use Simtt\Infrastructure\Service\LogFile;
 use Test\Helper\LogEntryCreator;
 use Test\Helper\VirtualFileSystem;
@@ -26,12 +27,11 @@ class StopTest extends TestCase
     {
         parent::setUp();
         VirtualFileSystem::setUpFileSystem();
-        Time::$now = '12:00';
+        DIContainer::$container->set('clock', new FixedClock(new \DateTime('12:00:00')));
     }
 
     protected function tearDown(): void
     {
-        Time::$now = 'now';
         VirtualFileSystem::tearDownFileSystem();
         parent::tearDown();
     }

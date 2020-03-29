@@ -8,8 +8,8 @@ declare(strict_types=1);
 namespace Test\Application\Command;
 
 use Helper\DIContainer;
-use Simtt\Domain\Model\Time;
 use Simtt\Infrastructure\Prompter\Prompter;
+use Simtt\Infrastructure\Service\Clock\FixedClock;
 use Simtt\Infrastructure\Service\LogFile;
 use Test\Helper\LogEntryCreator;
 use Test\Helper\VirtualFileSystem;
@@ -26,12 +26,11 @@ class StartTest extends TestCase
     {
         parent::setUp();
         VirtualFileSystem::setUpFileSystem();
-        Time::$now = '12:00';
+        DIContainer::$container->set('clock', new FixedClock(new \DateTime('12:00:00')));
     }
 
     protected function tearDown(): void
     {
-        Time::$now = 'now';
         VirtualFileSystem::tearDownFileSystem();
         parent::tearDown();
     }
@@ -48,7 +47,6 @@ class StartTest extends TestCase
 
     public function testStartRealNow(): void
     {
-        Time::$now = 'now';
         $output = $this->runCommand('start');
         self::assertStringStartsWith('Timer started at ', rtrim($output->fetch()));
     }

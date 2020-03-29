@@ -7,6 +7,7 @@ use Simtt\Domain\Exception\InvalidLogEntryException;
 use Simtt\Domain\Exception\NoLogEntryFoundException;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
+use Simtt\Infrastructure\Service\Clock\Clock;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
@@ -17,12 +18,16 @@ class TimeTracker
     /** @var LogHandlerInterface */
     private $logHandler;
 
+    /** @var Clock */
+    private $clock;
+
     /** @var int */
     private $precision;
 
-    public function __construct(LogHandlerInterface $logHandler, int $precision = 1)
+    public function __construct(LogHandlerInterface $logHandler, Clock $clock, int $precision = 1)
     {
         $this->logHandler = $logHandler;
+        $this->clock = $clock;
         $this->precision = $precision;
     }
 
@@ -34,7 +39,7 @@ class TimeTracker
     public function updateStart(Time $startTime = null, string $taskName = '', string $comment = ''): LogEntry
     {
         $lastLog = $this->getLastLogEntry();
-        $startTime = $startTime ?: Time::now();
+        $startTime = $startTime ?: Time::now($this->clock);
         $startTime->roundBy($this->precision);
         if ($lastLog && $lastLog->stopTime && $lastLog->stopTime->isOlderThan($startTime)) {
             throw new InvalidLogEntryException('Stop time of last log is older than start time.');
@@ -67,7 +72,7 @@ class TimeTracker
     public function start(Time $startTime = null, string $taskName = '', string $comment = ''): LogEntry
     {
         $lastLog = $this->getLastLogEntry();
-        $startTime = $startTime ?: Time::now();
+        $startTime = $startTime ?: Time::now($this->clock);
         $startTime->roundBy($this->precision);
         if ($lastLog && $lastLog->stopTime && $lastLog->stopTime->isNewerThan($startTime)) {
             throw new InvalidLogEntryException('Stop time of last log is newer than the new start time.');
@@ -118,7 +123,7 @@ class TimeTracker
 
     private function stopTimer(LogEntry $log, ?Time $stopTime, string $taskName, string $comment): LogEntry
     {
-        $stopTime = $stopTime ?: Time::now();
+        $stopTime = $stopTime ?: Time::now($this->clock);
         $stopTime->roundBy($this->precision);
         if ($log->startTime->isNewerThan($stopTime)) {
             throw new InvalidLogEntryException('Stop time cannot be before start time!');

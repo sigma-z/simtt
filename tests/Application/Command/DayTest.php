@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Test\Application\Command;
 
+use Helper\DIContainer;
+use Simtt\Infrastructure\Service\Clock\FixedClock;
 use Test\Helper\LogEntryCreator;
 use Test\Helper\TableRowsCellParser;
 use Test\Helper\VirtualFileSystem;
@@ -23,6 +25,7 @@ class DayTest extends TestCase
     {
         parent::setUp();
         VirtualFileSystem::setUpFileSystem();
+        DIContainer::$container->set('clock', new FixedClock(new \DateTime('12:00:00')));
     }
 
     protected function tearDown(): void
@@ -53,7 +56,7 @@ class DayTest extends TestCase
             ['09:00', '10:00', '01:00', 'task #1', ''],
             ['10:00', '10:50', '00:50', 'task #2', ''],
             ['10:50', '11:30', '00:40', 'task #1', 'comment'],
-            ['11:30', '', 'running ...', 'task #3', ''],
+            ['11:30', '', '00:30 (running)', 'task #3', ''],
         ], $rowsData);
     }
 

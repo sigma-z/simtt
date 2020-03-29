@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Simtt\Domain\Model;
 
+use Simtt\Infrastructure\Service\Clock\Clock;
+
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
  */
@@ -52,11 +54,9 @@ class Time
         return $this->minute;
     }
 
-    public static function now(): self
+    public static function now(Clock $clock): self
     {
-        $dateTime = new \DateTime(self::$now);
-        $time = $dateTime->format('Hi');
-        return new self($time);
+        return new self($clock->getTime());
     }
 
     public function compare(Time $time): int

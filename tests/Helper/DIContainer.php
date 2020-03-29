@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Helper;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
  * @author Steffen Zeidler <sigma_z@sigma-scripts.de>
@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class DIContainer
 {
 
-    /** @var ContainerBuilder */
+    /** @var Container */
     public static $container;
 
 }

@@ -1,7 +1,9 @@
 services:
+    clock:
+        class:      Simtt\Infrastructure\Service\Clock\SystemClock
     timeTracker:
         class:      Simtt\Domain\TimeTracker
-        arguments:  ['@logHandler', '%config.precision%']
+        arguments:  ['@logHandler', '@clock', '%config.precision%']
     logHandler:
         class:      Simtt\Infrastructure\Service\LogHandler
         arguments:  ['@logFileFinder']
@@ -49,7 +51,7 @@ services:
         arguments:  ['@timeTracker', '@logFileFinder']
     log.cmd:
         class:      Simtt\Application\Command\Log
-        arguments:  ['@logHandler', '%config.showLogItems%']
+        arguments:  ['@logHandler', '@clock', '%config.showLogItems%']
     tasks.cmd:
         class:      Simtt\Application\Command\Tasks
         arguments:  ['@recentTaskList', '%config.showTaskItems%']
@@ -61,16 +63,16 @@ services:
         arguments:  ['@logHandler', '%prompter%']
     day.cmd:
         class:      Simtt\Application\Command\Day
-        arguments:  ['@logHandler']
+        arguments:  ['@logHandler', '@clock']
     week.cmd:
         class:      Simtt\Application\Command\Week
-        arguments:  ['@logHandler']
+        arguments:  ['@logHandler', '@clock']
     month.cmd:
         class:      Simtt\Application\Command\Month
-        arguments:  ['@logHandler']
+        arguments:  ['@logHandler', '@clock']
     yesterday.cmd:
         class:      Simtt\Application\Command\Yesterday
     now.cmd:
         class:      Simtt\Application\Command\Now
-        arguments:  ['%config.precision%']
+        arguments:  ['@clock', '%config.precision%']
 

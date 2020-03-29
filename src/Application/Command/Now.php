@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Simtt\Application\Command;
 
 use Simtt\Domain\Model\Time;
+use Simtt\Infrastructure\Service\Clock\Clock;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -15,12 +16,16 @@ class Now extends Command
 
     protected static $defaultName = 'now';
 
+    /** @var Clock */
+    private $clock;
+
     /** @var int */
     private $precision;
 
-    public function __construct(int $precision)
+    public function __construct(Clock $clock, int $precision)
     {
         parent::__construct();
+        $this->clock = $clock;
         $this->precision = $precision;
     }
 
@@ -32,9 +37,9 @@ class Now extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $time = Time::now();
+        $time = Time::now($this->clock);
         $time->roundBy($this->precision);
-        $output->writeln('NOW: ' . (date('Y-m-d')) . ' ' . $time);
+        $output->writeln('NOW: ' . $this->clock->getDate() . ' ' . $time);
         return 0;
     }
 }

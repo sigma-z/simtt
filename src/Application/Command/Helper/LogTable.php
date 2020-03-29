@@ -5,6 +5,7 @@ namespace Simtt\Application\Command\Helper;
 
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
+use Simtt\Infrastructure\Service\Clock\Clock;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -21,15 +22,15 @@ class LogTable
     /** @var Time|null */
     private $lastStopTime;
 
-    /** @var bool */
-    private $reverseOrder;
+    /** @var Clock */
+    private $clock;
 
-    public function __construct(Table $table, ?Time $lastStopTime = null, bool $reverseOrder = false)
+    public function __construct(Table $table, Clock $clock, ?Time $lastStopTime = null)
     {
         $this->table = $table;
         $this->table->setHeaders(['Start', 'Stop', 'Duration', 'Task', 'Comment']);
+        $this->clock = $clock;
         $this->lastStopTime = $lastStopTime;
-        $this->reverseOrder = $reverseOrder;
     }
 
     /**
@@ -68,14 +69,12 @@ class LogTable
             $rows[] = [
                 (string)$entry->startTime,
                 $stopTime ? (string)$stopTime : '',
-                $entry->getDuration($stopTime) ?: 'running ...',
+                $this->getDurationAsText($entry, $stopTime),
                 $entry->task,
                 $entry->comment,
             ];
         }
-        if ($this->reverseOrder) {
-            $rows = array_reverse($rows);
-        }
+
         $this->table->setRows($rows);
     }
 
@@ -84,4 +83,18 @@ class LogTable
         $this->table->render();
     }
 
+    private function getDurationAsText(LogEntry $entry, ?Time $stopTime): string
+    {
+        $date = $entry->getDate();
+        $isToday = $date === (new \DateTime())->format('Y-m-d');
+        $isRunning = $stopTime === null;
+        if (!$stopTime && $isToday) {
+            $stopTime = Time::now($this->clock);
+        }
+        $duration = $entry->getDuration($stopTime);
+        if ($isRunning) {
+            $duration .= ($duration ? ' (running)' : 'running ...');
+        }
+        return $duration;
+    }
 }
