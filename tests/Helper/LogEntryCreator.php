@@ -5,6 +5,7 @@ namespace Test\Helper;
 
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
+use Simtt\Infrastructure\Service\Clock\Clock;
 use Simtt\Infrastructure\Service\LogFile;
 
 /**
@@ -20,6 +21,13 @@ class LogEntryCreator
         if ($stopTime) {
             $logEntry->stopTime = new Time($stopTime);
         }
+        return $logEntry;
+    }
+
+    public static function createWithId(string $startTime, string $stopTime, string $taskName, string $comment, Clock $clock): LogEntry
+    {
+        $logEntry = self::create($startTime, $stopTime, $taskName, $comment);
+        $logEntry->setId($clock->getDate() . '-' . $startTime);
         return $logEntry;
     }
 

@@ -119,11 +119,11 @@ class DayTest extends TestCase
         self::assertSame([
             ['01:40', '2', 'task #1', 'comment'],
             ['00:50', '1', 'task #2', ''],
-            ['running ...', '1', 'task #3', ''],
+            ['00:30 (running)', '1', 'task #3', ''],
         ], $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
-        self::assertSame(['02:30', '4', 'Total time', 'Logged from 09:00 to ?'], $sumData);
+        self::assertSame(['03:00 (running)', '4', 'Total time', 'Logged from 09:00 to 12:00 (running)'], $sumData);
     }
 
     public function testDaySumWithStopTime(): void
@@ -221,11 +221,11 @@ class DayTest extends TestCase
         $content = $output->fetch();
         $rowsData = TableRowsCellParser::parse($content, 4, true);
         self::assertSame([
+            ['01:10 (running)', '2', 'task #1', ''],
             ['00:35', '1', 'task #2', ''],
-            ['running ...', '2', 'task #1', ''],
         ], $rowsData);
 
         $sumData = TableRowsCellParser::parseSumRow($content);
-        self::assertSame(['01:45', '3', 'Total time', 'Logged from 10:00 to ?'], $sumData);
+        self::assertSame(['01:45 (running)', '3', 'Total time', 'Logged from 10:00 to ?'], $sumData);
     }
 }

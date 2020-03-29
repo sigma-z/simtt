@@ -86,7 +86,7 @@ abstract class StatsCommand extends Command
     protected function renderTable(InputInterface $input, OutputInterface $output, array $entries): void
     {
         if ($input->getArgument('sum') === 'sum') {
-            $logAggTable = new LogAggregationTable(new Table($output));
+            $logAggTable = new LogAggregationTable(new Table($output), $this->clock);
             $logAggTable->processLogEntries($entries);
             $logAggTable->render();
         }

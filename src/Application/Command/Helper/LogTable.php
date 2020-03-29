@@ -85,8 +85,7 @@ class LogTable
 
     private function getDurationAsText(LogEntry $entry, ?Time $stopTime): string
     {
-        $date = $entry->getDate();
-        $isToday = $date === (new \DateTime())->format('Y-m-d');
+        $isToday = $entry->getDate() === $this->clock->getDate();
         $isRunning = $stopTime === null;
         if (!$stopTime && $isToday) {
             $stopTime = Time::now($this->clock);

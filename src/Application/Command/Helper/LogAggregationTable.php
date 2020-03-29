@@ -5,6 +5,7 @@ namespace Simtt\Application\Command\Helper;
 
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
+use Simtt\Infrastructure\Service\Clock\Clock;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
 
@@ -22,10 +23,14 @@ class LogAggregationTable
     /** @var Table */
     private $table;
 
-    public function __construct(Table $table)
+    /** @var Clock */
+    private $clock;
+
+    public function __construct(Table $table, Clock $clock)
     {
         $this->table = $table;
         $this->table->setHeaders(['Duration', 'Count', 'Task', 'Comment']);
+        $this->clock = $clock;
     }
 
     private static function getEmptyRow(): array
@@ -50,24 +55,33 @@ class LogAggregationTable
         /** @var null|Time $stopTime */
         $stopTime = null;
         $stopDate = null;
+        $taskRunningHash = null;
 
         foreach ($logEntries as $index => $entry) {
             if ($stopTime !== null && $stopTime->isOlderThan($entry->startTime)) {
-                $id = '-- no time logged --';
-                $row = $rows[$id] ?? self::getEmptyRow();
+                $hash = '-- no time logged --';
+                $row = $rows[$hash] ?? self::getEmptyRow();
                 $timeDurationInMinutes = LogEntry::getTimeDurationInMinutes($stopTime, $entry->startTime);
                 $duration = isset($row[self::DURATION]) ? $row[self::DURATION] + $timeDurationInMinutes : $timeDurationInMinutes;
                 $row[self::DURATION] = $duration;
                 $row[self::COUNT]++;
-                $row[self::TASK] = $id;
+                $row[self::TASK] = $hash;
                 $row[self::COMMENT] = '';
-                $rows[$id] = $row;
+                $rows[$hash] = $row;
             }
 
             $stopTime = $entry->stopTime;
             $stopDate = $entry->getDate();
+            $hash = strtolower($entry->task);
             if (!$stopTime) {
-                $stopTime = isset($logEntries[$index + 1]) ? $logEntries[$index + 1]->startTime : null;
+                $nextLogEntry = $logEntries[$index + 1] ?? null;
+                if ($nextLogEntry) {
+                    $stopTime = $nextLogEntry->startTime;
+                }
+                else {
+                    $stopTime = $this->getCurrentTimeAsStopTime($entry);
+                    $taskRunningHash = $hash;
+                }
             }
 
             if ($startTime === null) {
@@ -77,13 +91,12 @@ class LogAggregationTable
 
             $duration = $entry->getDurationInMinutes($stopTime);
             $totalDuration += $duration;
-            $id = strtolower($entry->task);
-            $row = $rows[$id] ?? self::getEmptyRow();
-            $row[self::DURATION] = $duration === null ? null : $row[self::DURATION] + $duration;
+            $row = $rows[$hash] ?? self::getEmptyRow();
+            $row[self::DURATION] += $duration;
             $row[self::COUNT]++;
             $row[self::TASK] = $entry->task;
             $row[self::COMMENT] = $row[self::COMMENT] ? $row[self::COMMENT] . "\n" . $entry->comment : $entry->comment;
-            $rows[$id] = $row;
+            $rows[$hash] = $row;
         }
 
         foreach ($rows as $index => $row) {
@@ -94,16 +107,15 @@ class LogAggregationTable
 
         uasort($rows, [$this, 'sort']);
 
-        $lastKey = array_key_last($rows);
-        if (!isset($rows[$lastKey][self::DURATION])) {
-            $rows[$lastKey][self::DURATION] = 'running ...';
-        }
+        $rows = self::appendTaskRunningInfoToDurationToRows($rows, $taskRunningHash);
+
+        $isRunning = $taskRunningHash !== null;
 
         $totalRow = [
-            self::getDurationAsString($totalDuration),
+            self::getTotalDurationAsString($totalDuration, $isRunning),
             count($logEntries),
             'Total time',
-            self::getLoggedRange($startDate, $startTime, $stopDate, $stopTime)
+            self::getLoggedRange((string)$startDate, (string)$startTime, (string)$stopDate, (string)$stopTime, $isRunning)
         ];
 
         $rows[] = new TableSeparator();
@@ -118,6 +130,28 @@ class LogAggregationTable
         return sprintf('%02d:%02d', $hours, $minutes);
     }
 
+    private static function getTotalDurationAsString(?int $totalDuration, bool $isRunning): string
+    {
+        $duration = self::getDurationAsString($totalDuration);
+        if ($isRunning) {
+            $duration = self::appendTaskRunningInfoToDuration($duration);
+        }
+        return $duration;
+    }
+
+    private static function appendTaskRunningInfoToDuration(?string $duration): string
+    {
+        return $duration ? $duration . ' (running)' : 'running ...';
+    }
+
+    private static function appendTaskRunningInfoToDurationToRows(array $rows, ?string $taskRunningHash): array
+    {
+        if ($taskRunningHash !== null) {
+            $rows[$taskRunningHash][self::DURATION] = self::appendTaskRunningInfoToDuration($rows[$taskRunningHash][self::DURATION]);
+        }
+        return $rows;
+    }
+
     public function render(): void
     {
         $this->table->render();
@@ -130,13 +164,19 @@ class LogAggregationTable
 
     /**
      * @param string|null $startDate
-     * @param Time|null   $startTime
+     * @param string      $startTime
      * @param string|null $stopDate
-     * @param Time|null   $stopTime
+     * @param string      $stopTime
+     * @param bool        $isRunning
      * @return string
      */
-    private static function getLoggedRange(?string $startDate, ?Time $startTime, ?string $stopDate, ?Time $stopTime): string
-    {
+    private static function getLoggedRange(
+        string $startDate,
+        string $startTime,
+        string $stopDate,
+        string $stopTime,
+        bool $isRunning
+    ): string {
         if ($startDate === $stopDate) {
             $start = $startTime;
             $stop = $stopTime;
@@ -146,6 +186,16 @@ class LogAggregationTable
             $stop = "$stopDate $stopTime";
         }
 
-        return "Logged from $start to " . ($stop ?: '?');
+        $range = "Logged from $start to " . ($stop ?: '?');
+        if ($stop && $isRunning) {
+            $range .= ' (running)';
+        }
+        return $range;
+    }
+
+    private function getCurrentTimeAsStopTime(LogEntry $entry): ?Time
+    {
+        $isToday = $entry->getDate() === $this->clock->getDate();
+        return $isToday ? new Time($this->clock->getTime()) : null;
     }
 }
