@@ -31,6 +31,7 @@ class PatternProvider
             'start' => '(start\*?)' . $timePattern . $stringPattern,
             'stop' => '(stop\*?)' . $timePattern . $stringPattern,
             'status' => '(status)',
+            'continue' => '(continue\*?)' . $timePattern,
             'tasks' => "(tasks)({$sp}\d+)?",
             'task' => "(task){$minusNum}{$stringPattern}",
             'comment' => "(comment){$minusNum}{$stringPattern}",
