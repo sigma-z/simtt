@@ -18,7 +18,7 @@ The simple time tracker (Simtt) can be used interactively
 
 **Interactive mode:**
 ```
-$> simtt -i
+$> ./simtt -i
 ```
 
 Running Simmt interactively means the command line script will execute
@@ -26,7 +26,7 @@ Running Simmt interactively means the command line script will execute
 
 **Non-interactive mode:**
 ```
-$> simtt [options|command]
+$> ./simtt [options|command]
 ```
 
 
@@ -45,6 +45,26 @@ $> simtt [options|command]
 ### What did I do yesterday?
 
 ![yesterday and yesterday sum](https://github.com/sigma-z/simtt/raw/master/docs/assets/yesterday_and_yesterday_sum.gif)
+
+
+## Configuration
+
+Copy the `config.json.dist` to `config.json` and edit it to your preferences:
+
+```
+{
+    "logDir": "./logs",
+    "precision": 1,
+    "showLogItems": 15,
+    "showTaskItems": 15
+}
+```
+
+* `logDir` defines your directory where the log files (*.cvs) will be stored, default is `./logs`
+* `precision` defines how precise the time tracking should be, precision of 5 means that the time will be rounded to the nearest 5 minutes,
+ default is `1`
+* `showLogItems` sets the number of items to show when command `log` is used, default is `15`
+* `showTaskItems` sets the number of items to show when command `tasks` is used, default is `15`
 
 
 ## How to track time
