@@ -25,35 +25,35 @@ $simttInteractive = ($_SERVER['argv'][1] ?? null) === '-i';
 $application = new Application('Simtt', SIMTT_VERSION);
 if ($simttInteractive) {
     unset($_SERVER['argv'][1]);
-    /** @noinspection PhpUnhandledExceptionInspection */
+    /** @noinspection PhpParamsInspection */
     $application->add($containerBuilder->get('simtt.cmd'));
     $application->setDefaultCommand('Simtt');
 }
 
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('start.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('stop.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('continue.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('status.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('task.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('comment.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('log.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('day.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('week.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('month.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('yesterday.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('now.cmd'));
-/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('tasks.cmd'));
 $application->run();
