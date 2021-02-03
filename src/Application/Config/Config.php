@@ -21,6 +21,9 @@ class Config
     /** @var int */
     private $showTaskItems;
 
+    /** @var bool */
+    private $promptComment;
+
     public function __construct(array $data, string $rootDir)
     {
         $this->logDir = $data['logDir'] ?? './logs';
@@ -33,6 +36,7 @@ class Config
         $this->precision = $data['precision'] ?? 1;
         $this->showLogItems = $data['showLogItems'] ?? 15;
         $this->showTaskItems = $data['showTaskItems'] ?? 15;
+        $this->promptComment = $data['promptComment'] ?? true;
     }
 
     public function setLogDir(string $logDir): void
@@ -58,5 +62,10 @@ class Config
     public function getShowTaskItems(): int
     {
         return $this->showTaskItems;
+    }
+
+    public function getPromptComment(): bool
+    {
+        return $this->promptComment;
     }
 }

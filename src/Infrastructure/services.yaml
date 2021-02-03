@@ -33,6 +33,8 @@ services:
             '@recentTasksPrinter',
             '@taskPrompter',
             '%prompter%',
+            '@clock',
+            '%config.promptComment%'
         ]
     stop.cmd:
         class:      Simtt\Application\Command\Stop
@@ -42,6 +44,8 @@ services:
             '@recentTasksPrinter',
             '@taskPrompter',
             '%prompter%',
+            '@clock',
+            '%config.promptComment%'
         ]
     status.cmd:
         class:      Simtt\Application\Command\Status

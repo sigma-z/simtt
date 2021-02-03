@@ -9,10 +9,10 @@
     ],
     "require-dev": {
         "roave/security-advisories": "dev-master",
-        "phpunit/phpunit": "^8",
-        "squizlabs/php_codesniffer": "^3.5",
+        "phpunit/phpunit": ">=8",
+        "squizlabs/php_codesniffer": ">=3.5",
         "adlawson/vfs": "*",
-        "sensiolabs-de/deptrac-shim": "^0.6.0"
+        "sensiolabs-de/deptrac-shim": ">=0.6"
     },
     "license": "MIT",
     "authors": [
@@ -28,11 +28,11 @@
         "simtt"
     ],
     "require": {
-        "php": "^7.2",
-        "symfony/console": "^4.4",
-        "symfony/dependency-injection": "^4.4",
-        "symfony/config": "^4.4",
-        "symfony/yaml": "^4.4",
+        "php": ">=7.2",
+        "symfony/console": ">=4.4",
+        "symfony/dependency-injection": ">=4.4",
+        "symfony/config": ">=4.4",
+        "symfony/yaml": ">=4.4",
         "ext-json": "*"
     },
     "autoload" : {

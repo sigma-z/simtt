@@ -51,28 +51,28 @@ class StatusTest extends TestCase
     {
         return [
             [
-                'expectedContent' => "STATUS: Timer started at 09:30 (running for 00:00)\n"
-                    . "Task: task\n"
-                    . "Comment: comment\n",
+                'expectedContent' => "STATUS: Timer started at 09:30 (running for 00:00)" . PHP_EOL
+                    . "Task: task" . PHP_EOL
+                    . "Comment: comment" . PHP_EOL,
                 'task' => 'task',
                 'comment' => 'comment'
             ],
             [
-                'expectedContent' => "STATUS: Timer started at 09:30 (running for 00:00)\n"
-                    . "Task: -\n"
-                    . "Comment: comment\n",
+                'expectedContent' => "STATUS: Timer started at 09:30 (running for 00:00)" . PHP_EOL
+                    . "Task: -" . PHP_EOL
+                    . "Comment: comment" . PHP_EOL,
                 'task' => '',
                 'comment' => 'comment'
             ],
             [
-                'expectedContent' => "STATUS: Timer started at 09:30 (running for 00:00)\n"
-                    . "Task: task\n",
+                'expectedContent' => "STATUS: Timer started at 09:30 (running for 00:00)" . PHP_EOL
+                    . "Task: task" . PHP_EOL,
                 'task' => 'task',
                 'comment' => ''
             ],
             [
-                'expectedContent' => "STATUS: Timer started at 09:30 (running for 00:00)\n"
-                    . "Task: -\n",
+                'expectedContent' => "STATUS: Timer started at 09:30 (running for 00:00)" . PHP_EOL
+                    . "Task: -" . PHP_EOL,
                 'task' => '',
                 'comment' => ''
             ],
@@ -86,9 +86,9 @@ class StatusTest extends TestCase
         ]);
         $output = $this->runCommand('status');
         $content = $output->fetch();
-        $expectedContent = "STATUS: Last timer ran from 09:30 - 10:00 (=0:30)\n"
-                    . "Task: task\n"
-                    . "Comment: comment\n";
+        $expectedContent = "STATUS: Last timer ran from 09:30 - 10:00 (=0:30)" . PHP_EOL
+                    . "Task: task" . PHP_EOL
+                    . "Comment: comment" . PHP_EOL;
         self::assertSame($expectedContent, $content);
     }
 

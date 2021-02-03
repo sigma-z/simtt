@@ -18,5 +18,6 @@ require_once __DIR__ . '/Mock/SymfonyApplicationMock.php';
 require_once __DIR__ . '/Application/Command/TestCase.php';
 
 $containerBuilder->setParameter('config.logDir', VirtualFileSystem::LOG_DIR);
+$containerBuilder->setParameter('config.promptComment', true);
 $containerBuilder->setParameter('currentLogFile', LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR));
 DIContainer::$container = $containerBuilder;

@@ -58,7 +58,10 @@ class LogFileFinderTest extends TestCase
     {
         $logFileFinder = new LogFileFinder(VirtualFileSystem::LOG_DIR);
         $actualLogFile = $logFileFinder->getLastLogFile();
-        self::assertSame(VirtualFileSystem::LOG_DIR . '/2020/01/2020-01-02' . LogFile::FILE_EXT, $actualLogFile->getFile());
+        self::assertSame(
+            static::getFile(VirtualFileSystem::LOG_DIR . '/2020/01/2020-01-02' . LogFile::FILE_EXT),
+            $actualLogFile->getFile()
+        );
     }
 
     public function testGetLogFileForDate(): void
@@ -87,10 +90,19 @@ class LogFileFinderTest extends TestCase
         foreach (self::$structure as $path => $files) {
             foreach ($files as $file => $content) {
                 if (is_string($content) && substr($file, -4) === LogFile::FILE_EXT) {
-                    $expectedFiles[] = VirtualFileSystem::LOG_DIR . '/' . $path . '/' . $file;
+                    $expectedFiles[] = self::getFile(VirtualFileSystem::LOG_DIR . '/' . $path . '/' . $file);
                 }
             }
         }
         return $expectedFiles;
+    }
+
+    private static function getFile($file): string
+    {
+        if ('Linux' === PHP_OS) {
+            return $file;
+        }
+        $parts = explode('://', $file);
+        return $parts[0] . '://' . str_replace('/', DIRECTORY_SEPARATOR, $parts[1]);
     }
 }

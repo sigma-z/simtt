@@ -12,6 +12,7 @@ use Simtt\Domain\Model\LogFileInterface;
 use Simtt\Domain\Model\RecentTask;
 use Simtt\Domain\Model\Time;
 use Simtt\Domain\TimeTracker;
+use Simtt\Infrastructure\Service\Clock\Clock;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -37,6 +38,12 @@ abstract class TimerCommand extends Command
     /** @var PrompterInterface */
     private $prompter;
 
+    /** @var Clock */
+    private $clock;
+
+    /** @var bool */
+    private $promptComment;
+
     abstract protected function getMessageForActionPerformed(LogEntry $logEntry, bool $isPersisted, InputInterface $input): string;
 
     public function __construct(
@@ -44,7 +51,9 @@ abstract class TimerCommand extends Command
         TimeTracker $timeTracker,
         RecentTasksPrinterInterface $recentTasksPrinter,
         TaskPrompterInterface $taskPrompter,
-        PrompterInterface $prompter
+        PrompterInterface $prompter,
+        Clock $clock,
+        bool $promptComment
     ) {
         parent::__construct();
         $this->logFile = $logFileFinder->getLogFileForDate(new \DateTime());
@@ -52,6 +61,8 @@ abstract class TimerCommand extends Command
         $this->prompter = $prompter;
         $this->recentTasksPrinter = $recentTasksPrinter;
         $this->taskPrompter = $taskPrompter;
+        $this->clock = $clock;
+        $this->promptComment = $promptComment;
     }
 
     protected function configure(): void
@@ -88,7 +99,7 @@ abstract class TimerCommand extends Command
             }
             $input->setArgument('taskName', $time);
         }
-        return null;
+        return Time::now($this->clock);
     }
 
     protected function isUpdate(InputInterface $input): bool
@@ -131,7 +142,7 @@ abstract class TimerCommand extends Command
 
     private function shouldPromptForComment(InputInterface $input): bool
     {
-        if (!$input->isInteractive()) {
+        if (!$input->isInteractive() || !$this->promptComment) {
             return false;
         }
         if (static::$defaultName === 'stop' || $this->isUpdate($input)) {

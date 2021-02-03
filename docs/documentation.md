@@ -56,7 +56,8 @@ Copy the `config.json.dist` to `config.json` and edit it to your preferences:
     "logDir": "./logs",
     "precision": 1,
     "showLogItems": 15,
-    "showTaskItems": 15
+    "showTaskItems": 15,
+    "promptComment": true
 }
 ```
 
@@ -65,6 +66,7 @@ Copy the `config.json.dist` to `config.json` and edit it to your preferences:
  default is `1`
 * `showLogItems` sets the number of items to show when command `log` is used, default is `15`
 * `showTaskItems` sets the number of items to show when command `tasks` is used, default is `15`
+* `promptComment` prompts the comment prompt for `start` and `stop` command, if comment haven't been provided yet, default is `true`
 
 
 ## How to track time
