@@ -1,7 +1,7 @@
 # Simtt - Interactive Simple Time Tracker for the CLI in PHP
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/sigma-z/simtt.svg?style=flat-square)](https://packagist.org/packages/sigma-z/simtt)
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg?style=flat-square)](https://php.net/)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg?style=flat-square)](https://php.net/)
 [![CI Status](https://github.com/sigma-z/simtt/workflows/Continuous%20Integration/badge.svg)](https://github.com/sigma-z/simtt/actions)
 
 Read the full [documentation](https://github.com/sigma-z/simtt/blob/master/docs/documentation.md)
