@@ -12,11 +12,11 @@ foreach ([__DIR__ . '/vendor/autoload.php', __DIR__ . '/../../autoload.php'] as 
         break;
     }
 }
-require_once __DIR__ . '/src/bootstrap.php';
+$containerBuilder = require_once __DIR__ . '/src/bootstrap.php';
 
 use Symfony\Component\Console\Application;
 
-define('SIMTT_VERSION', '1.1.0');
+const SIMTT_VERSION = '1.2.1';
 
 echo 'Simtt: the simple interactive time tracker in PHP by Steffen Zeidler' . "\n";
 
@@ -25,35 +25,21 @@ $simttInteractive = ($_SERVER['argv'][1] ?? null) === '-i';
 $application = new Application('Simtt', SIMTT_VERSION);
 if ($simttInteractive) {
     unset($_SERVER['argv'][1]);
-    /** @noinspection PhpParamsInspection */
     $application->add($containerBuilder->get('simtt.cmd'));
     $application->setDefaultCommand('Simtt');
 }
 
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('start.cmd'));
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('stop.cmd'));
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('continue.cmd'));
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('status.cmd'));
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('task.cmd'));
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('comment.cmd'));
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('log.cmd'));
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('day.cmd'));
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('week.cmd'));
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('month.cmd'));
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('yesterday.cmd'));
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('now.cmd'));
-/** @noinspection PhpParamsInspection */
 $application->add($containerBuilder->get('tasks.cmd'));
 $application->run();
