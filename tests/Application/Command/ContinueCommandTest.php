@@ -11,10 +11,11 @@ use Helper\DIContainer;
 use Simtt\Infrastructure\Service\Clock\FixedClock;
 use Simtt\Infrastructure\Service\LogFile;
 use Test\Helper\LogEntryCreator;
-use Test\Helper\VirtualFileSystem;
+use Test\Helper\VirtualFileSystemTrait;
 
 class ContinueCommandTest extends TestCase
 {
+    use VirtualFileSystemTrait;
 
     protected function getCommandShortName(): string
     {
@@ -24,14 +25,8 @@ class ContinueCommandTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        VirtualFileSystem::setUpFileSystem();
+        $this->setUpFileSystem();
         DIContainer::$container->set('clock', new FixedClock(new \DateTime('12:00:00')));
-    }
-
-    protected function tearDown(): void
-    {
-        VirtualFileSystem::tearDownFileSystem();
-        parent::tearDown();
     }
 
     public function testEmptyLog(): void
@@ -55,7 +50,7 @@ class ContinueCommandTest extends TestCase
         $output = $this->runCommand('continue');
         self::assertSame("Timer continued on 12:00 for 'task #2'", rtrim($output->fetch()));
 
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         $logEntries = [
             LogEntryCreator::create('9:00', '', 'task #1'),
             LogEntryCreator::create('10:00', '11:00', 'task #2'),
@@ -73,7 +68,7 @@ class ContinueCommandTest extends TestCase
         $output = $this->runCommand('continue 12:00');
         self::assertSame("Timer continued on 12:00 for 'task #2'", rtrim($output->fetch()));
 
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         $logEntries = [
             LogEntryCreator::create('9:00', '', 'task #1'),
             LogEntryCreator::create('10:00', '11:00', 'task #2'),

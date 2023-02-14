@@ -28,7 +28,9 @@ class Prompter implements PrompterInterface
 
     public function __destruct()
     {
-        fclose($this->stream);
+        if ($this->stream) {
+            fclose($this->stream);
+        }
     }
 
     public static function create(): self

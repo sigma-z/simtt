@@ -39,7 +39,7 @@ class LogEntryCreator
     public static function setUpLogFile(string $date, array $entries): void
     {
         [$year, $month, ] = explode('-', $date);
-        $dir = VirtualFileSystem::LOG_DIR . "/$year/$month";
+        $dir = LOG_DIR . "/$year/$month";
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }

@@ -7,17 +7,20 @@ declare(strict_types=1);
 
 use Helper\DIContainer;
 use Simtt\Infrastructure\Service\LogFile;
-use Test\Helper\VirtualFileSystem;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-require_once __DIR__ . '/../src/bootstrap.php';
+/** @var ContainerBuilder $containerBuilder */
+$containerBuilder = require_once __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/Helper/DIContainer.php';
 require_once __DIR__ . '/Helper/LogEntryCreator.php';
 require_once __DIR__ . '/Helper/TableRowsCellParser.php';
-require_once __DIR__ . '/Helper/VirtualFileSystem.php';
+require_once __DIR__ . '/Helper/VirtualFileSystemTrait.php';
 require_once __DIR__ . '/Mock/SymfonyApplicationMock.php';
 require_once __DIR__ . '/Application/Command/TestCase.php';
 
-$containerBuilder->setParameter('config.logDir', VirtualFileSystem::LOG_DIR);
+const LOG_DIR = 'vfs://root' . DIRECTORY_SEPARATOR . 'logs';
+
+$containerBuilder->setParameter('config.logDir', LOG_DIR);
 $containerBuilder->setParameter('config.promptComment', true);
-$containerBuilder->setParameter('currentLogFile', LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR));
+$containerBuilder->set('currentLogFile', LogFile::createTodayLogFile(LOG_DIR));
 DIContainer::$container = $containerBuilder;

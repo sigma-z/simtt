@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Simtt\Application\Command\PatternProvider;
+use Simtt\Infrastructure\Prompter\Prompter;
 use Simtt\Infrastructure\Service\ConfigLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -17,8 +18,10 @@ $containerBuilder->setParameter('config.showLogItems', $config->getShowLogItems(
 $containerBuilder->setParameter('config.showTaskItems', $config->getShowTaskItems());
 $containerBuilder->setParameter('config.promptComment', $config->getPromptComment());
 $containerBuilder->setParameter('parserPattern', PatternProvider::getPatterns());
-$containerBuilder->setParameter('prompter', \Simtt\Infrastructure\Prompter\Prompter::create());
+$containerBuilder->set('prompter', Prompter::create());
 $loader = new YamlFileLoader($containerBuilder, new FileLocator(APP_ROOT . '/src/Infrastructure'));
 $loader->load('services.yaml');
 
 unset($config, $loader);
+
+return $containerBuilder;

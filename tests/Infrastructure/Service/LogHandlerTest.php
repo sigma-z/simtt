@@ -11,10 +11,11 @@ use PHPUnit\Framework\TestCase;
 use Simtt\Infrastructure\Service\LogFileFinder;
 use Simtt\Infrastructure\Service\LogHandler;
 use Test\Helper\LogEntryCreator;
-use Test\Helper\VirtualFileSystem;
+use Test\Helper\VirtualFileSystemTrait;
 
 class LogHandlerTest extends TestCase
 {
+    use VirtualFileSystemTrait;
 
     /** @var LogHandler */
     private $logHandler;
@@ -22,14 +23,8 @@ class LogHandlerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        VirtualFileSystem::setUpFileSystem();
-        $this->logHandler = new LogHandler(new LogFileFinder(VirtualFileSystem::LOG_DIR));
-    }
-
-    protected function tearDown(): void
-    {
-        VirtualFileSystem::tearDownFileSystem();
-        parent::tearDown();
+        $this->setUpFileSystem();
+        $this->logHandler = new LogHandler(new LogFileFinder(LOG_DIR));
     }
 
     public function testGetAllLogs(): void

@@ -12,25 +12,21 @@ use PHPUnit\Framework\TestCase;
 use Simtt\Domain\Model\RecentTask;
 use Simtt\Infrastructure\Service\RecentTaskList;
 use Test\Helper\LogEntryCreator;
-use Test\Helper\VirtualFileSystem;
+use Test\Helper\VirtualFileSystemTrait;
 
 class RecentTaskListTest extends TestCase
 {
+    use VirtualFileSystemTrait;
 
     protected function setUp(): void
     {
         parent::setUp();
-        VirtualFileSystem::setUpFileSystem();
-    }
-
-    protected function tearDown(): void
-    {
-        VirtualFileSystem::tearDownFileSystem();
-        parent::tearDown();
+        $this->setUpFileSystem();
     }
 
     public function testEmpty(): void
     {
+        /** @noinspection PhpParamsInspection */
         $recentTaskList = new RecentTaskList(DIContainer::$container->get('logFileFinder'));
         $recentTasks = $recentTaskList->getTasks(2);
         self::assertCount(0, $recentTasks);
@@ -45,6 +41,7 @@ class RecentTaskListTest extends TestCase
             LogEntryCreator::createToString('1130', '', 'task #3'),
         ]);
 
+        /** @noinspection PhpParamsInspection */
         $recentTaskList = new RecentTaskList(DIContainer::$container->get('logFileFinder'));
         $recentTasks = $recentTaskList->getTasks(2);
 
@@ -69,6 +66,7 @@ class RecentTaskListTest extends TestCase
             LogEntryCreator::createToString('1630', '', ''),
         ]);
 
+        /** @noinspection PhpParamsInspection */
         $recentTaskList = new RecentTaskList(DIContainer::$container->get('logFileFinder'));
         $recentTasks = $recentTaskList->getTasks(4);
 

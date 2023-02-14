@@ -7,13 +7,16 @@ declare(strict_types=1);
 
 namespace Test\Application\Command;
 
+use Helper\DIContainer;
 use Simtt\Domain\Model\LogEntry;
+use Simtt\Infrastructure\Prompter\Prompter;
 use Simtt\Infrastructure\Service\LogFile;
 use Test\Helper\LogEntryCreator;
-use Test\Helper\VirtualFileSystem;
+use Test\Helper\VirtualFileSystemTrait;
 
 class CommentTest extends TestCase
 {
+    use VirtualFileSystemTrait;
 
     protected function getCommandShortName(): string
     {
@@ -23,13 +26,8 @@ class CommentTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        VirtualFileSystem::setUpFileSystem();
-    }
-
-    protected function tearDown(): void
-    {
-        VirtualFileSystem::tearDownFileSystem();
-        parent::tearDown();
+        $this->setUpFileSystem();
+        DIContainer::$container->set('prompter', Prompter::create());
     }
 
     public function testEmptyLog(): void
@@ -85,7 +83,7 @@ class CommentTest extends TestCase
         self::assertSame(sprintf($expectedMessage, $comment), rtrim($output->fetch()));
 
         $entries[$index]->comment = $comment;
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         self::assertStringEqualsFile($logFile->getFile(), implode("\n", $entries) . "\n");
     }
 
@@ -111,7 +109,7 @@ class CommentTest extends TestCase
         self::assertSame("Comment '' updated for log started at 09:00 for 'task #1'", rtrim($output->fetch()));
 
         $entries[1]->comment = '';
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         self::assertStringEqualsFile($logFile->getFile(), implode("\n", $entries) . "\n");
     }
 }

@@ -8,10 +8,11 @@ declare(strict_types=1);
 namespace Test\Application\Command;
 
 use Test\Helper\LogEntryCreator;
-use Test\Helper\VirtualFileSystem;
+use Test\Helper\VirtualFileSystemTrait;
 
 class StatusTest extends TestCase
 {
+    use VirtualFileSystemTrait;
 
     protected function getCommandShortName(): string
     {
@@ -21,13 +22,7 @@ class StatusTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        VirtualFileSystem::setUpFileSystem();
-    }
-
-    protected function tearDown(): void
-    {
-        VirtualFileSystem::tearDownFileSystem();
-        parent::tearDown();
+        $this->setUpFileSystem();
     }
 
     /**

@@ -13,10 +13,11 @@ use Simtt\Infrastructure\Prompter\Prompter;
 use Simtt\Infrastructure\Service\Clock\FixedClock;
 use Simtt\Infrastructure\Service\LogFile;
 use Test\Helper\LogEntryCreator;
-use Test\Helper\VirtualFileSystem;
+use Test\Helper\VirtualFileSystemTrait;
 
 class StopTest extends TestCase
 {
+    use VirtualFileSystemTrait;
 
     protected function getCommandShortName(): string
     {
@@ -26,14 +27,9 @@ class StopTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        VirtualFileSystem::setUpFileSystem();
+        $this->setUpFileSystem();
+        DIContainer::$container->set('prompter', Prompter::create());
         DIContainer::$container->set('clock', new FixedClock(new \DateTime('12:00:00')));
-    }
-
-    protected function tearDown(): void
-    {
-        VirtualFileSystem::tearDownFileSystem();
-        parent::tearDown();
     }
 
     public function testStopOnEmptyLog(): void
@@ -56,7 +52,7 @@ class StopTest extends TestCase
         $output = $this->runCommand('stop 930');
         self::assertSame('Timer stopped at 09:30', rtrim($output->fetch()));
 
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         $logEntry = LogEntryCreator::create('9:00', '9:30');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
@@ -79,7 +75,7 @@ class StopTest extends TestCase
         $output = $this->runCommand('stop');
         self::assertSame('Timer stopped at 12:00', rtrim($output->fetch()));
 
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         $logEntry = LogEntryCreator::create('9:00', '12:00');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
@@ -92,7 +88,7 @@ class StopTest extends TestCase
         $output = $this->runCommand('stop "123|654"');
         self::assertSame("Timer stopped at 12:00 for '123|654'", rtrim($output->fetch()));
 
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         $logEntry = LogEntryCreator::create('9:00', '12:00', '123|654');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
@@ -162,12 +158,12 @@ class StopTest extends TestCase
             ->willReturnCallback(static function(string $promptText) {
                 return rtrim($promptText, '> ');
             });
-        DIContainer::$container->setParameter('prompter', $prompterMock);
+        DIContainer::$container->set('prompter', $prompterMock);
 
         $output = $this->runCommandInInteractiveMode('stop 930');
         self::assertSame("Timer stopped at 09:30 for 'task'", rtrim($output->fetch()));
 
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         $logEntry = LogEntryCreator::create('9:00', '9:30', 'task', 'comment');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
@@ -183,12 +179,12 @@ class StopTest extends TestCase
             ->willReturnCallback(static function(string $promptText) {
                 return rtrim($promptText, '> ');
             });
-        DIContainer::$container->setParameter('prompter', $prompterMock);
+        DIContainer::$container->set('prompter', $prompterMock);
 
         $output = $this->runCommandInInteractiveMode('stop 930 task123');
         self::assertSame("Timer stopped at 09:30 for 'task123'", rtrim($output->fetch()));
 
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         $logEntry = LogEntryCreator::create('9:00', '9:30', 'task123', 'comment');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
@@ -204,12 +200,12 @@ class StopTest extends TestCase
             ->willReturnCallback(static function(string $promptText) {
                 return rtrim($promptText, '> ');
             });
-        DIContainer::$container->setParameter('prompter', $prompterMock);
+        DIContainer::$container->set('prompter', $prompterMock);
 
         $output = $this->runCommandInInteractiveMode('stop* 930');
         self::assertSame("Timer stop updated to 09:30 for 'task'", rtrim($output->fetch()));
 
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         $logEntry = LogEntryCreator::create('9:00', '9:30', 'task', 'comment');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
@@ -225,12 +221,12 @@ class StopTest extends TestCase
             ->willReturnCallback(static function(string $promptText) {
                 return rtrim($promptText, '> ');
             });
-        DIContainer::$container->setParameter('prompter', $prompterMock);
+        DIContainer::$container->set('prompter', $prompterMock);
 
         $output = $this->runCommandInInteractiveMode('stop* 930');
         self::assertSame("Timer stop updated to 09:30 for 'test task'", rtrim($output->fetch()));
 
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         $logEntry = LogEntryCreator::create('9:00', '9:30', 'test task', 'comment');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }
@@ -246,12 +242,12 @@ class StopTest extends TestCase
             ->willReturnCallback(static function(string $promptText) {
                 return rtrim($promptText, '> ');
             });
-        DIContainer::$container->setParameter('prompter', $prompterMock);
+        DIContainer::$container->set('prompter', $prompterMock);
 
         $output = $this->runCommandInInteractiveMode('stop* 930 task123');
         self::assertSame("Timer stop updated to 09:30 for 'task123'", rtrim($output->fetch()));
 
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         $logEntry = LogEntryCreator::create('9:00', '9:30', 'task123', 'comment');
         self::assertStringEqualsFile($logFile->getFile(),  $logEntry . "\n");
     }

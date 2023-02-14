@@ -9,31 +9,26 @@ namespace Test\Infrastructure\Service;
 
 use PHPUnit\Framework\TestCase;
 use Simtt\Infrastructure\Service\ConfigLoader;
-use Test\Helper\VirtualFileSystem;
+use Test\Helper\VirtualFileSystemTrait;
 
 class ConfigLoaderTest extends TestCase
 {
+    use VirtualFileSystemTrait;
 
     protected function setUp(): void
     {
         parent::setUp();
-        VirtualFileSystem::setUpFileSystem();
-    }
-
-    protected function tearDown(): void
-    {
-        VirtualFileSystem::tearDownFileSystem();
-        parent::tearDown();
+        $this->setUpFileSystem();
     }
 
     public function testLoadFallbackToDist(): void
     {
         $configData = [
-            'logDir' => VirtualFileSystem::LOG_DIR
+            'logDir' => LOG_DIR
         ];
-        file_put_contents(VirtualFileSystem::SCHEME . 'config.json.dist', json_encode($configData));
-        $config = ConfigLoader::load(VirtualFileSystem::SCHEME . 'config.json', APP_ROOT);
-        self::assertSame(VirtualFileSystem::LOG_DIR, $config->getLogDir());
+        file_put_contents('vfs://root/config.json.dist', json_encode($configData));
+        $config = ConfigLoader::load('vfs://root/config.json', APP_ROOT);
+        self::assertSame(LOG_DIR, $config->getLogDir());
     }
 
 }

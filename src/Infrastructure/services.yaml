@@ -24,7 +24,7 @@ services:
 
     simtt.cmd:
         class:      Simtt\Application\Command\Simtt
-        arguments:  ['@parser', '%prompter%']
+        arguments:  ['@parser', '@prompter']
     start.cmd:
         class:      Simtt\Application\Command\Start
         arguments:  [
@@ -32,7 +32,7 @@ services:
             '@timeTracker',
             '@recentTasksPrinter',
             '@taskPrompter',
-            '%prompter%',
+            '@prompter',
             '@clock',
             '%config.promptComment%'
         ]
@@ -43,7 +43,7 @@ services:
             '@timeTracker',
             '@recentTasksPrinter',
             '@taskPrompter',
-            '%prompter%',
+            '@prompter',
             '@clock',
             '%config.promptComment%'
         ]
@@ -61,10 +61,10 @@ services:
         arguments:  ['@recentTaskList', '%config.showTaskItems%']
     task.cmd:
         class:      Simtt\Application\Command\Task
-        arguments:  ['@logHandler', '%prompter%', '@recentTasksPrinter', '@taskPrompter']
+        arguments:  ['@logHandler', '@prompter', '@recentTasksPrinter', '@taskPrompter']
     comment.cmd:
         class:      Simtt\Application\Command\Comment
-        arguments:  ['@logHandler', '%prompter%']
+        arguments:  ['@logHandler', '@prompter']
     day.cmd:
         class:      Simtt\Application\Command\Day
         arguments:  ['@logHandler', '@clock']

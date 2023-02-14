@@ -10,10 +10,11 @@ namespace Test\Application\Command;
 use Helper\DIContainer;
 use Test\Helper\LogEntryCreator;
 use Test\Helper\TableRowsCellParser;
-use Test\Helper\VirtualFileSystem;
+use Test\Helper\VirtualFileSystemTrait;
 
 class TasksTest extends TestCase
 {
+    use VirtualFileSystemTrait;
 
     /** @var int */
     private $backupShowTaskItems;
@@ -26,14 +27,13 @@ class TasksTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        VirtualFileSystem::setUpFileSystem();
+        $this->setUpFileSystem();
         $this->backupShowTaskItems = DIContainer::$container->getParameter('config.showTaskItems');
     }
 
     protected function tearDown(): void
     {
         DIContainer::$container->setParameter('config.showTaskItems', $this->backupShowTaskItems);
-        VirtualFileSystem::tearDownFileSystem();
         parent::tearDown();
     }
 

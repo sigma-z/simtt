@@ -11,10 +11,11 @@ use Helper\DIContainer;
 use Simtt\Infrastructure\Service\Clock\FixedClock;
 use Test\Helper\LogEntryCreator;
 use Test\Helper\TableRowsCellParser;
-use Test\Helper\VirtualFileSystem;
+use Test\Helper\VirtualFileSystemTrait;
 
 class DayTest extends TestCase
 {
+    use VirtualFileSystemTrait;
 
     protected function getCommandShortName(): string
     {
@@ -24,14 +25,8 @@ class DayTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        VirtualFileSystem::setUpFileSystem();
+        $this->setUpFileSystem();
         DIContainer::$container->set('clock', new FixedClock(new \DateTime('12:00:00')));
-    }
-
-    protected function tearDown(): void
-    {
-        VirtualFileSystem::tearDownFileSystem();
-        parent::tearDown();
     }
 
     public function testDayOnEmptyLog(): void

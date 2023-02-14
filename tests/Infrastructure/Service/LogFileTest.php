@@ -11,28 +11,23 @@ use PHPUnit\Framework\TestCase;
 use Simtt\Domain\Model\Time;
 use Simtt\Infrastructure\Service\LogFile;
 use Test\Helper\LogEntryCreator;
-use Test\Helper\VirtualFileSystem;
+use Test\Helper\VirtualFileSystemTrait;
 
 class LogFileTest extends TestCase
 {
+    use VirtualFileSystemTrait;
 
     protected function setUp(): void
     {
         parent::setUp();
-        VirtualFileSystem::setUpFileSystem();
-    }
-
-    protected function tearDown(): void
-    {
-        VirtualFileSystem::tearDownFileSystem();
-        parent::tearDown();
+        $this->setUpFileSystem();
     }
 
     public function testSaveToEmptyLog(): void
     {
         $logEntry = LogEntryCreator::create('800', '830', 'task #1', 'comment #1');
 
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
         $logFile->saveLog($logEntry);
 
         $file = $logFile->getFile();
@@ -44,7 +39,7 @@ class LogFileTest extends TestCase
 
     public function testSaveToExistingLog(): void
     {
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
 
         $lastLogEntry = LogEntryCreator::create('900', '930', 'task #1', 'comment #1');
         $logFile->saveLog($lastLogEntry);
@@ -59,7 +54,7 @@ class LogFileTest extends TestCase
 
     public function testUpdateStopTimeForLogEntry(): void
     {
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
 
         $lastLogEntry = LogEntryCreator::create('900', '930', 'task #1', 'comment #1');
         $logFile->saveLog($lastLogEntry);
@@ -75,7 +70,7 @@ class LogFileTest extends TestCase
 
     public function testUpdateStartTimeForLogEntry(): void
     {
-        $logFile = LogFile::createTodayLogFile(VirtualFileSystem::LOG_DIR);
+        $logFile = LogFile::createTodayLogFile(LOG_DIR);
 
         $lastLogEntry = LogEntryCreator::create('900', '930', 'task #1', 'comment #1');
         $logFile->saveLog($lastLogEntry);

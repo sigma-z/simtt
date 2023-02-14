@@ -11,10 +11,11 @@ use Helper\DIContainer;
 use Simtt\Infrastructure\Service\Clock\FixedClock;
 use Test\Helper\LogEntryCreator;
 use Test\Helper\TableRowsCellParser;
-use Test\Helper\VirtualFileSystem;
+use Test\Helper\VirtualFileSystemTrait;
 
 class LogTest extends TestCase
 {
+    use VirtualFileSystemTrait;
 
     /** @var int */
     private $backupShowLogItems;
@@ -27,7 +28,7 @@ class LogTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        VirtualFileSystem::setUpFileSystem();
+        $this->setUpFileSystem();
         DIContainer::$container->set('clock', new FixedClock(new \DateTime('12:00:00')));
         $this->backupShowLogItems = DIContainer::$container->getParameter('config.showLogItems');
     }
@@ -35,7 +36,6 @@ class LogTest extends TestCase
     protected function tearDown(): void
     {
         DIContainer::$container->setParameter('config.showLogItems', $this->backupShowLogItems);
-        VirtualFileSystem::tearDownFileSystem();
         parent::tearDown();
     }
 
