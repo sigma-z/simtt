@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="./tests/bootstrap.php"
->
-    <testsuites>
-        <testsuite name="Suite">
-            <directory>tests</directory>
-        </testsuite>
-    </testsuites>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" backupGlobals="false" bootstrap="./tests/bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
+  <testsuites>
+    <testsuite name="Suite">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
 </phpunit>

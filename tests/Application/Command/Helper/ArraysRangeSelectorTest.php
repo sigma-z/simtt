@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Test\Application\Command\Helper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Simtt\Application\Command\Helper\ArraysRangeSelector;
 use Simtt\Application\Command\Helper\LogFileEntriesFetcher;
@@ -15,12 +16,7 @@ use Simtt\Domain\Model\LogFileInterface;
 class ArraysRangeSelectorTest extends TestCase
 {
 
-    /**
-     * @dataProvider provideGetElements
-     * @param int   $start
-     * @param int   $end
-     * @param array $expectedElements
-     */
+    #[DataProvider('provideGetElements')]
     public function testGetElements(int $start, int $end, array $expectedElements): void
     {
         $arrays = [
@@ -35,7 +31,7 @@ class ArraysRangeSelectorTest extends TestCase
         self::assertSame($expectedElements, $elements);
     }
 
-    public function provideGetElements(): array
+    public static function provideGetElements(): array
     {
         return [
             [1, 15, ['1.1', '1.2', '1.3', '1.4', '2.1', '2.2', '3.1', '3.2', '3.3', '4.1']],

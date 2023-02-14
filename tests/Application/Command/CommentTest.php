@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Test\Application\Command;
 
 use Helper\DIContainer;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Infrastructure\Prompter\Prompter;
 use Simtt\Infrastructure\Service\LogFile;
@@ -58,8 +59,8 @@ class CommentTest extends TestCase
         self::assertSame('Offset 2 is out of range for today', rtrim($output->fetch()));
     }
 
+    #[DataProvider('provideComment')]
     /**
-     * @dataProvider provideComment
      * @param int    $offset
      * @param int    $index
      * @param string $expectedMessage
@@ -87,7 +88,7 @@ class CommentTest extends TestCase
         self::assertStringEqualsFile($logFile->getFile(), implode("\n", $entries) . "\n");
     }
 
-    public function provideComment(): array
+    public static function provideComment(): array
     {
         return [
             [0, 3, "Comment '%s' updated for log started at 11:30 for 'task #3'"],

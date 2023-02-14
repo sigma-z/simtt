@@ -7,23 +7,20 @@ declare(strict_types=1);
 
 namespace Test\Application\Command;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Simtt\Application\Command\PatternProvider;
 
 class PatternProviderTest extends TestCase
 {
 
-    /**
-     * @dataProvider provideIsTime
-     * @param string $time
-     * @param bool   $matches
-     */
+    #[DataProvider('provideIsTime')]
     public function testIsTime(string $time, bool $matches): void
     {
         self::assertSame($matches, PatternProvider::isTime($time));
     }
 
-    public function provideIsTime(): array
+    public static function provideIsTime(): array
     {
         return [
             ['', false],

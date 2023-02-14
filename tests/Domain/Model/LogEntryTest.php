@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Test\Domain\Model;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Simtt\Domain\Model\LogEntry;
 use Simtt\Domain\Model\Time;
@@ -13,22 +14,14 @@ use Test\Helper\LogEntryCreator;
  */
 class LogEntryTest extends TestCase
 {
-
-    /**
-     * @dataProvider provideToString
-     * @param string $startTime
-     * @param string $stopTime
-     * @param string $taskName
-     * @param string $comment
-     * @param string $expected
-     */
+    #[DataProvider('provideToString')]
     public function testToString(string $startTime, string $stopTime, string $taskName, string $comment, string $expected): void
     {
         $logEntry = LogEntryCreator::create($startTime, $stopTime, $taskName, $comment);
         self::assertEquals($expected, (string)$logEntry);
     }
 
-    public function provideToString(): array
+    public static function provideToString(): array
     {
         return [
             ['900', '', 'task', 'comment', '09:00;     ;"task";"comment"'],
@@ -39,14 +32,7 @@ class LogEntryTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideFromString
-     * @param string $raw
-     * @param string $expectedStart
-     * @param string $expectedStop
-     * @param string $expectedTask
-     * @param string $expectedComment
-     */
+    #[DataProvider('provideFromString')]
     public function testFromString(
         string $raw,
         string $expectedStart,
@@ -62,7 +48,7 @@ class LogEntryTest extends TestCase
         self::assertSame($expectedComment, $logEntry->comment);
     }
 
-    public function provideFromString(): array
+    public static function provideFromString(): array
     {
         return [
             ['09:00;09:30;"task \"1\"";"comment"', '09:00', '09:30', 'task "1"', 'comment'],
@@ -78,19 +64,14 @@ class LogEntryTest extends TestCase
         self::assertSame('2019-12-21-09:00', $logEntry->getId());
     }
 
-    /**
-     * @dataProvider provideDiff
-     * @param string $start
-     * @param string $stop
-     * @param string $expected
-     */
+    #[DataProvider('provideDiff')]
     public function testDiff(string $start, string $stop, string $expected): void
     {
         $logEntry = LogEntryCreator::create($start, $stop);
         self::assertSame($expected, $logEntry->diff());
     }
 
-    public function provideDiff(): array
+    public static function provideDiff(): array
     {
         return [
             ['0:00', '0:00', '0:00'],
@@ -102,18 +83,11 @@ class LogEntryTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideGetDuration
-     * @param string      $startTime
-     * @param string      $stopTime
-     * @param string|null $alternativeStopTime
-     * @param string      $expectedDuration
-     * @param int|null    $expectedDurationInMinutes
-     */
+    #[DataProvider('provideGetDuration')]
     public function testGetDuration(
         string $startTime,
         string $stopTime,
-        $alternativeStopTime,
+        string|null $alternativeStopTime,
         string $expectedDuration,
         ?int $expectedDurationInMinutes
     ): void {
@@ -128,7 +102,7 @@ class LogEntryTest extends TestCase
         self::assertSame($expectedDurationInMinutes, $durationInMinutes);
     }
 
-    public function provideGetDuration(): array
+    public static function provideGetDuration(): array
     {
         return [
             ['9:00', '10:00', null, '01:00', 60],

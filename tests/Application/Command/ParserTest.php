@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Test\Application\Command;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Simtt\Application\Command\Parser;
 use Simtt\Application\Command\ParseResult;
@@ -14,19 +15,14 @@ use Simtt\Application\Command\PatternProvider;
 class ParserTest extends TestCase
 {
 
-    /**
-     * @dataProvider provideParseStartStop
-     * @param string $input
-     * @param string $expectedCommand
-     * @param array  $expectedArgs
-     */
+    #[DataProvider('provideParseStartStop')]
     public function testParseStartStop(string $input, string $expectedCommand, array $expectedArgs): void
     {
         $parseResult = self::executeParse($input);
         $this->assertParse($expectedCommand, $expectedArgs, $parseResult);
     }
 
-    public function provideParseStartStop(): array
+    public static function provideParseStartStop(): array
     {
         return [
             ['start*  2221  Task title sample', 'start*', ['2221', 'Task title sample']],
@@ -44,19 +40,14 @@ class ParserTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideParseLog
-     * @param string $input
-     * @param string $expectedCommand
-     * @param array  $expectedArgs
-     */
+    #[DataProvider('provideParseLog')]
     public function testParseLog(string $input, string $expectedCommand, array $expectedArgs): void
     {
         $parseResult = self::executeParse($input);
         $this->assertParse($expectedCommand, $expectedArgs, $parseResult);
     }
 
-    public function provideParseLog(): array
+    public static function provideParseLog(): array
     {
         return [
             ['log', 'log', [null]],
@@ -67,19 +58,14 @@ class ParserTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideParseOtherTypes
-     * @param string $input
-     * @param string $expectedCommand
-     * @param array  $expectedArgs
-     */
+    #[DataProvider('provideParseOtherTypes')]
     public function testParseOtherTypes(string $input, string $expectedCommand, array $expectedArgs): void
     {
         $parseResult = self::executeParse($input);
         $this->assertParse($expectedCommand, $expectedArgs, $parseResult);
     }
 
-    public function provideParseOtherTypes(): array
+    public static function provideParseOtherTypes(): array
     {
         return [
             ['day', 'day', [null, null]],

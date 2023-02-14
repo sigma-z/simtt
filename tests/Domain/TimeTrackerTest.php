@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Test\Domain;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Simtt\Domain\Exception\InvalidLogEntryException;
@@ -76,12 +77,7 @@ class TimeTrackerTest extends TestCase
         self::assertSame($expectedTime, (string)$log->stopTime, 'Expected time is rounded to ' . $expectedTime);
     }
 
-    /**
-     * @dataProvider provideTimeForRoundByPrecision
-     * @param string $time
-     * @param int    $precision
-     * @param string $expectedTime
-     */
+    #[DataProvider('provideTimeForRoundByPrecision')]
     public function testUpdateStopByPrecisionRoundsTime(string $time, int $precision, string $expectedTime): void
     {
         $this->setLastLog('200');
@@ -90,7 +86,7 @@ class TimeTrackerTest extends TestCase
         self::assertSame($expectedTime, (string)$log->stopTime, 'Expected time is rounded to ' . $expectedTime);
     }
 
-    public function provideTimeForRoundByPrecision(): array
+    public static function provideTimeForRoundByPrecision(): array
     {
         return [
             ['11:12', 5, '11:10'],

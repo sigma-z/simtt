@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Test\Application\Command;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Test\Helper\LogEntryCreator;
 use Test\Helper\VirtualFileSystemTrait;
 
@@ -25,12 +26,7 @@ class StatusTest extends TestCase
         $this->setUpFileSystem();
     }
 
-    /**
-     * @dataProvider provideStatusTimerRunning
-     * @param string $task
-     * @param string $comment
-     * @param string $expectedContent
-     */
+    #[DataProvider('provideStatusTimerRunning')]
     public function testStatusTimerRunning(string $expectedContent, string $task, string $comment): void
     {
         LogEntryCreator::setUpLogFileToday([
@@ -42,7 +38,7 @@ class StatusTest extends TestCase
         self::assertSame($expectedContent, $content);
     }
 
-    public function provideStatusTimerRunning(): array
+    public static function provideStatusTimerRunning(): array
     {
         return [
             [

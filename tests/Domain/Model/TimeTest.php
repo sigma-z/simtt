@@ -7,18 +7,14 @@ declare(strict_types=1);
 
 namespace Test\Domain\Model;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Simtt\Domain\Model\Time;
 
 class TimeTest extends TestCase
 {
 
-    /**
-     * @dataProvider provideConstruct
-     * @param string $time
-     * @param int    $expectedHour
-     * @param int    $expectedMinute
-     */
+    #[DataProvider('provideConstruct')]
     public function testConstruct(string $time, int $expectedHour, int $expectedMinute, string $expectedToString): void
     {
         $time = new Time($time);
@@ -27,7 +23,7 @@ class TimeTest extends TestCase
         self::assertSame($expectedToString, (string)$time);
     }
 
-    public function provideConstruct(): array
+    public static function provideConstruct(): array
     {
         return [
             ['000', 0, 0, '00:00'],
@@ -41,17 +37,14 @@ class TimeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideConstructThrowsException
-     * @param string $time
-     */
+    #[DataProvider('provideConstructThrowsException')]
     public function testConstructThrowsException(string $time): void
     {
         $this->expectException(\RuntimeException::class);
         new Time($time);
     }
 
-    public function provideConstructThrowsException(): array
+    public static function provideConstructThrowsException(): array
     {
         return [
             ['abcd'],
@@ -76,12 +69,7 @@ class TimeTest extends TestCase
         self::assertTrue($actual);
     }
 
-    /**
-     * @dataProvider provideCompare
-     * @param string $timeA
-     * @param string $timeB
-     * @param int    $expected
-     */
+    #[DataProvider('provideCompare')]
     public function testCompare(string $timeA, string $timeB, int $expected): void
     {
         $timeObjA = new Time($timeA);
@@ -89,7 +77,7 @@ class TimeTest extends TestCase
         self::assertSame($expected, $timeObjA->compare($timeObjB));
     }
 
-    public function provideCompare(): array
+    public static function provideCompare(): array
     {
         return [
             ['000', '000', 0],
@@ -100,13 +88,7 @@ class TimeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideDiff
-     * @param string $timeA
-     * @param string $timeB
-     * @param int    $expectedHourDiff
-     * @param int    $expectedMinuteDiff
-     */
+    #[DataProvider('provideDiff')]
     public function testDiff(string $timeA, string $timeB, int $expectedHourDiff, int $expectedMinuteDiff): void
     {
         $timeObjA = new Time($timeA);
@@ -116,7 +98,7 @@ class TimeTest extends TestCase
         self::assertSame($expectedMinuteDiff, $dateInterval->i);
     }
 
-    public function provideDiff(): array
+    public static function provideDiff(): array
     {
         return [
             ['0:00', '0:00', 0, 0],
@@ -127,12 +109,7 @@ class TimeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideRoundBy
-     * @param string $time
-     * @param int    $precision
-     * @param string $expectedTime
-     */
+    #[DataProvider('provideRoundBy')]
     public function testRoundBy(string $time, int $precision, string $expectedTime): void
     {
         $time = new Time($time);
@@ -140,7 +117,7 @@ class TimeTest extends TestCase
         self::assertSame($expectedTime, (string)$time);
     }
 
-    public function provideRoundBy(): array
+    public static function provideRoundBy(): array
     {
         return [
             ['11:10', -5, '11:10'],
